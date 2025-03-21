@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Miami FL Drone Video | Contact{% endblock %}
+
+{% block content %}
+    <section class="contact">
+        <h1>Welcome to {{ corp_name }}</h1>
+        <p>Refined text for the contact section.</p>
+    </section>
+
+    <section class="about">
+        <h2>About Us</h2>
+        <p>Ocean Pride Media was started this year.</p>
+    </section>
+
+    <section class="call-to-action">
+        <h2>Get in Touch</h2>
+        <p>For inquiries, call {{ phone }} or email <a href="mailto:{{ email }}">{{ email }}</a>.</p>
+    </section>
+
+    <section class="photo">
+        <img src="{{ asset("images/dan.png") }}" alt="Your Photo" class="photo-main">
+        <div class="photo-thumbnails">
+            <img src="{{ asset("images/pink.jpg") }}" alt="Thumbnail 1" class="photo-thumbnail">
+            <img src="{{ asset("images/dan.png") }}" alt="Thumbnail 2" class="photo-thumbnail">
+            <!-- Add more thumbnails here -->
+        </div>
+    </section>
+
+    {#    <section class="video"> #}
+    {#        <iframe width="424" height="238" src="https://www.youtube.com/embed/v4qo-e0m6v8" title="Predators Under The Pier" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> #}
+    {#    </section> #}
+
+    <section class="video-container">
+        <iframe src="https://www.youtube.com/embed/v4qo-e0m6v8" title="Predators Under The Pier"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+        </iframe>
+    </section>
+
+    <section class="contact">
+        <h2>Contact Us</h2>
+        <p>{{ my_name }}<br>{{ address }}<br>{{ phone }}<br><a href="mailto:{{ email }}">{{ email }}</a></p>
+    </section>
+{% endblock %}
