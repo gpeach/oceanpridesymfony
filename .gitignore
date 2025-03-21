@@ -35,3 +35,5 @@ yarn-error.log
 /public/media/cache/
 ###< liip/imagine-bundle ###
 .env
+.env/dev
+.env/test
