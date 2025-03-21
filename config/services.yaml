@@ -50,3 +50,7 @@ services:
     League\Flysystem\FilesystemOperator $dropbox:
         alias: flysystem.dropbox_filesystem
         public: true
+
+    App\Service\DropboxLinkHelper:
+        arguments:
+            $accessToken: '%env(DROPBOX_TOKEN)%'

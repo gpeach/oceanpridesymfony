@@ -6,20 +6,32 @@ use App\Entity\GalleryImage;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Vich\UploaderBundle\Form\Type\VichFileType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Validator\Constraints\File;
 
 class GalleryImageType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('file', VichFileType::class, [
+            ->add('file', FileType::class, [
+                'mapped' => false,
                 'required' => true,
-                'allow_delete' => true,
-                'download_uri' => false,
-                'delete_label' => 'Remove',
+                'constraints' => [
+                    new File([
+                        'maxSize' => '500M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'video/mp4',
+                            'video/quicktime',
+                        ],
+                        'mimeTypesMessage' => 'Only JPG, PNG, MP4, and MOV are allowed.',
+                    ]),
+                ],
             ])
-            ->add('name');
+            ->add('name', TextType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

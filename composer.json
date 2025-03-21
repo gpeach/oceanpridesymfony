@@ -11,6 +11,7 @@
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
+        "dropbox/dropbox-sdk": "*",
         "league/flysystem-bundle": "^3.4",
         "liip/imagine-bundle": "^2.13",
         "phpdocumentor/reflection-docblock": "^5.6",

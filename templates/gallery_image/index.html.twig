@@ -1,25 +1,59 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gallery{% endblock %}
+{% block content %}
+    <h1 class="mb-4">Gallery</h1>
 
-{% block body %}
-{#    {{ dump(_context) }}#}
-    <h1>Gallery</h1>
-
-    {% if images is empty %}
-        <p>No images yet.</p>
-    {% else %}
-        <div class="gallery grid">
-            {% for image in images %}
-                <div>
-                    {% if image.url %}
-                        <img src="{{ image.url }}" alt="{{ image.name }}" style="max-width: 200px;">
-                    {% else %}
-                        <p>⚠️ Preview not available for {{ image.name }}</p>
-                    {% endif %}
-                    <p>{{ image.name }}</p>
+    <div class="row g-4">
+        {% for image in images %}
+            <div class="col-md-3">
+                <div class="card h-100 text-center">
+                    <div style="height: 200px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #111;">
+                        {% if image.type == 'image' %}
+                            <img src="{{ image.url }}" alt="{{ image.name }}" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                        {% elseif image.type == 'video' %}
+                            <video muted autoplay loop style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                                <source src="{{ image.url }}" type="video/mp4">
+                            </video>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-title">{{ image.name }}</h6>
+                        {% if image.url %}
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#previewModal{{ loop.index }}">
+                                    Preview
+                                </button>
+                                <a class="btn btn-sm btn-outline-light" href="{{ image.url }}" target="_blank">Full Size</a>
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
-            {% endfor %}
-        </div>
-    {% endif %}
+            </div>
+
+            {% if image.url %}
+                <!-- Modal -->
+                <div class="modal fade" id="previewModal{{ loop.index }}" tabindex="-1" aria-labelledby="modalLabel{{ loop.index }}" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content bg-dark text-white">
+                            <div class="modal-header">
+                                <h6 class="modal-title" id="modalLabel{{ loop.index }}">{{ image.name }}</h6>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center" style="max-height: 65vh; overflow-y: auto;">
+                                {% if image.type == 'image' %}
+                                    <img src="{{ image.url }}" class="img-fluid rounded shadow-sm" style="max-height: 60vh;" alt="{{ image.name }}">
+                                {% elseif image.type == 'video' %}
+                                    <video controls style="max-height: 60vh; width: 100%; object-fit: contain;" class="rounded shadow-sm">
+                                        <source src="{{ image.url }}" type="video/mp4">
+                                    </video>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% else %}
+            <p>No images or videos uploaded yet.</p>
+        {% endfor %}
+    </div>
 {% endblock %}

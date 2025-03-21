@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\GalleryImage;
-use App\Form\GalleryImageType;
+use App\Service\DropboxLinkHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Flysystem\FilesystemOperator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,7 +23,7 @@ class GalleryImageController extends AbstractController
     }
 
     #[Route('/gallery/upload', name: 'gallery_upload')]
-    public function upload(Request $request, FilesystemOperator $dropbox, EntityManagerInterface $em): Response
+    public function upload(Request $request, FilesystemOperator $dropbox, DropboxLinkHelper $dropboxLinks): Response
     {
         $galleryImage = new GalleryImage();
 
@@ -46,14 +46,26 @@ class GalleryImageController extends AbstractController
 
                 if ($stream !== false) {
                     $dropbox->writeStream($filename, $stream);
-                    //fclose($stream);
                 } else {
                     $this->addFlash('error', 'Could not open file stream for upload.');
                 }
 
                 $galleryImage->setFilePath($filename);
-                $em->persist($galleryImage);
-                $em->flush();
+
+                // Auto-detect file type
+                $mime = $file->getMimeType();
+                if (str_starts_with($mime, 'image/')) {
+                    $galleryImage->setType('image');
+                } elseif (str_starts_with($mime, 'video/')) {
+                    $galleryImage->setType('video');
+                }
+
+                // Generate and store Dropbox share link
+                $shareLink = $dropboxLinks->getPreviewLink($filename);
+                $galleryImage->setShareLink($shareLink);
+
+                $this->em->persist($galleryImage);
+                $this->em->flush();
 
                 return $this->redirectToRoute('gallery_index');
             }
@@ -65,25 +77,30 @@ class GalleryImageController extends AbstractController
     }
 
     #[Route('/gallery', name: 'gallery_index')]
-    public function index(EntityManagerInterface $em, FilesystemOperator $dropbox): Response
+    public function index(DropboxLinkHelper $dropboxLinks): Response
     {
-        $images = $em->getRepository(GalleryImage::class)->findAll();
+        $images = $this->em->getRepository(GalleryImage::class)->findAll();
 
         $files = [];
         foreach ($images as $image) {
-            $path = $image->getFilePath();
+            $url = $image->getShareLink();
 
-            try {
-                $url = $dropbox->temporaryUrl($path, new \DateTime('+2 hours'));
-            } catch (\Exception $e) {
-                $url = null;
+            if (!$url) {
+                $url = $dropboxLinks->getPreviewLink($image->getFilePath());
+                if ($url) {
+                    $image->setShareLink($url);
+                    $this->em->persist($image);
+                }
             }
 
             $files[] = [
                 'name' => $image->getName(),
                 'url' => $url,
+                'type' => $image->getType(),
             ];
         }
+
+        $this->em->flush();
 
         return $this->render('gallery_image/index.html.twig', [
             'images' => $files,
@@ -115,3 +132,4 @@ class GalleryImageController extends AbstractController
         return new Response('✅ Uploaded to Dropbox!');
     }
 }
+

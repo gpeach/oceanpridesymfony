@@ -24,6 +24,12 @@ class GalleryImage
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
 
+    #[ORM\Column(type: 'string', length: 500, nullable: true)]
+    private ?string $shareLink = null;
+
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
+    private ?string $type = null;
+
     // === Getters and Setters ===
 
     public function getId(): ?int
@@ -77,6 +83,28 @@ class GalleryImage
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
+    public function getShareLink(): ?string
+    {
+        return $this->shareLink;
+    }
+
+    public function setShareLink(?string $link): self
+    {
+        $this->shareLink = $link;
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(?string $type): self
+    {
+        $this->type = $type;
         return $this;
     }
 }
