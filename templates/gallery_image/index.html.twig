@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="grid">
+        {% for galleryImage in galleryImages %}
+            <div class="grid-item">
+                <img src="{{ asset('uploads/' ~ galleryImage.filePath) }}" alt="Gallery Image">
+                <a href="{{ path('gallery_show', { id: galleryImage.id }) }}">View</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
