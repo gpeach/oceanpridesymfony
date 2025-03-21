@@ -1,12 +1,25 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Gallery{% endblock %}
+
 {% block body %}
-    <div class="grid">
-        {% for galleryImage in galleryImages %}
-            <div class="grid-item">
-                <img src="{{ asset('uploads/' ~ galleryImage.filePath) }}" alt="Gallery Image">
-                <a href="{{ path('gallery_show', { id: galleryImage.id }) }}">View</a>
-            </div>
-        {% endfor %}
-    </div>
+{#    {{ dump(_context) }}#}
+    <h1>Gallery</h1>
+
+    {% if images is empty %}
+        <p>No images yet.</p>
+    {% else %}
+        <div class="gallery grid">
+            {% for image in images %}
+                <div>
+                    {% if image.url %}
+                        <img src="{{ image.url }}" alt="{{ image.name }}" style="max-width: 200px;">
+                    {% else %}
+                        <p>⚠️ Preview not available for {{ image.name }}</p>
+                    {% endif %}
+                    <p>{{ image.name }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endblock %}
