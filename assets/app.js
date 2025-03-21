@@ -9,5 +9,6 @@ import './styles/app.scss';
 
 import './js/index.js';
 import './js/PhotoViewer.js';
+import './js/gallery.js';
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
