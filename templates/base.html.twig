@@ -34,23 +34,20 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 {% set current = app.request.attributes.get('_route') %}
 
-                <li class="nav-item me-2">
-                    <a class="btn btn-sm {{ current == 'app_home' ? 'btn-primary' : 'btn-outline-primary' }}"
-                       href="{{ path('app_home') }}">Home</a>
-                </li>
-                <li class="nav-item me-2">
-                    <a class="btn btn-sm {{ current == 'app_contact' ? 'btn-primary' : 'btn-outline-primary' }}"
-                       href="{{ path('app_contact') }}">Contact</a>
-                </li>
-                <li class="nav-item me-2">
-                    <a class="btn btn-sm {{ current == 'gallery_index' ? 'btn-primary' : 'btn-outline-primary' }}"
-                       href="{{ path('gallery_index') }}">Gallery</a>
-                </li>
-                <li class="nav-item me-2">
-                    <a class="btn btn-sm {{ current == 'gallery_upload' ? 'btn-primary' : 'btn-outline-primary' }}"
-                       href="{{ path('gallery_upload') }}">Upload</a>
-                </li>
-            </ul>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a href="{{ path('app_home') }}" class="nav-link {{ current == 'app_home' ? 'active' : '' }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ path('app_contact') }}" class="nav-link {{ current == 'app_contact' ? 'active' : '' }}">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ path('gallery_index') }}" class="nav-link {{ current == 'gallery_index' ? 'active' : '' }}">Gallery</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ path('gallery_upload') }}" class="nav-link {{ current == 'gallery_upload' ? 'active' : '' }}">Upload</a>
+                    </li>
+                </ul>
 
             {#                <li class="nav-item"> #}
             {#                    <a class="nav-link active" aria-current="page" href="index_old.php">Home</a> #}

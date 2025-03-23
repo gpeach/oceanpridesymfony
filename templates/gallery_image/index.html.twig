@@ -6,7 +6,7 @@
     <div class="row g-4">
         {% for image in images %}
             <div class="col-md-3">
-                <div class="card h-100 text-center">
+                <div class="card h-100 text-center p-1 border-red-deep">
                     <div style="height: 200px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #111;">
                         {% if image.type == 'image' %}
                             <img src="{{ image.url }}" alt="{{ image.name }}" style="max-height: 100%; max-width: 100%; object-fit: contain;">
@@ -19,11 +19,11 @@
                     <div class="card-body">
                         <h6 class="card-title">{{ image.name }}</h6>
                         {% if image.url %}
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#previewModal{{ loop.index }}">
+                            <div class="d-flex justify-content-center gap-2">
+                                <button class="btn btn-xs btn-red-dark" data-bs-toggle="modal" data-bs-target="#previewModal{{ loop.index }}">
                                     Preview
                                 </button>
-                                <a class="btn btn-sm btn-outline-light" href="{{ image.url }}" target="_blank">Full Size</a>
+                                <a class="btn btn-xs btn-outline-red-dark" href="{{ image.url }}" target="_blank">Full Size</a>
                             </div>
                         {% endif %}
                     </div>

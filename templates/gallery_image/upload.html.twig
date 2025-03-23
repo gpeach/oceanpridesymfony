@@ -4,7 +4,7 @@
     <div class="container py-5">
         <h1 class="mb-4 text-center">📤 Upload to Gallery</h1>
 
-        <div class="card shadow-sm border-0 mx-auto" style="max-width: 600px;">
+        <div class="card shadow-sm mx-auto border-red-deep" style="max-width: 600px;">
             <div class="card-body">
                 {{ form_start(form, { attr: { id: 'uploadForm', enctype: 'multipart/form-data' } }) }}
 
@@ -18,7 +18,7 @@
                     {{ form_widget(form.file, { attr: { class: 'form-control' } }) }}
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100">
+                <button type="submit" class="btn btn-red w-100">
                     ⬆️ Upload File
                 </button>
 

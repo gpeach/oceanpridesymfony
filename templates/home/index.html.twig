@@ -3,7 +3,7 @@
 {% block title %}Fort Lauderdale FL Aerial Video | Home{% endblock %}
 
 {% block content %}
-    <section class="bg-dark text-white text-center p-5 rounded">
+    <section class="bg-dark text-white text-center p-5 rounded border-red-deep mt-5">
         <h1>Welcome to {{ corp_name }}</h1>
         <p>Gary Hardin-Peach</p>
         <p>Videographer - Camera Operator</p>
@@ -11,7 +11,7 @@
         <p>Video Editor</p>
     </section>
 
-    <section class="bg-primary text-white p-5 rounded">
+    <section class="bg-dark text-white p-5 rounded border-red-deep">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-6 photo">
@@ -22,21 +22,28 @@
                 </div>
                 <div class="col-md-6">
                     <div class="ratio ratio-16x9">
-                        <iframe src="https://www.youtube.com/embed/v4qo-e0m6v8" class="rounded shadow-sm"
-                                title="Predators Under The Pier"
-                                allowfullscreen allow="autoplay; encrypted-media"></iframe>
+                        {#                        <iframe src="https://www.youtube.com/embed/v4qo-e0m6v8" class="rounded shadow-sm" #}
+                        {#                                title="Predators Under The Pier" #}
+                        {#                                allowfullscreen allow="autoplay; encrypted-media"></iframe> #}
+                        <div class="video-container rounded shadow-sm">
+                            <video controls class="w-100 h-100 rounded" style="object-fit: cover;">
+                                <source src="https://ucc0c397cef2495d9c7b672b5301.dl.dropboxusercontent.com/cd/0/inline/CmamKdAzSIx9H_Fk-YUx5gfnvs0O8B6jdQRC5egdxSwPTL42JSBbPACC8T18rMDwPrsZeCvYW8KpsnxWjVlf4hDqyaJtavv3THUHgWUYDIDmXNoQaWJx4YdDAEAaHL4MD1fLQK4p-ehpOakmSbkatUOH/file"
+                                        type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="bg-dark text-white text-center p-5 rounded">
+    <section class="bg-dark text-white text-center p-5 rounded border-red-deep">
         <h2>Get in Touch</h2>
-        <p>Call {{ phone }} or email <a href="mailto:{{ email }}" class="text-warning">{{ email }}</a></p>
+        <p>Call {{ phone }} or email <a href="mailto:{{ email }}">{{ email }}</a></p>
     </section>
 
-    <section class="bg-secondary p-5 text-white text-center rounded photo">
+    <section class="bg-dark p-5 text-white text-center rounded photo border-red-deep">
         <div class="container">
             <img src="{{ asset("images/pink.jpg") }}" alt="Main Photo"
                  class="img-fluid rounded shadow-sm mb-3 photo-carousel">
@@ -49,9 +56,8 @@
         </div>
     </section>
 
-    <section class="bg-dark text-white text-center p-5 rounded">
+    <section class="bg-dark text-white text-center p-5 rounded border-red-deep">
         <h2>Contact Us</h2>
-        <p>{{ my_name }}<br>{{ address }}<br>{{ phone }}<br><a href="mailto:{{ email }}"
-                                                               class="text-warning">{{ email }}</a></p>
+        <p>{{ my_name }}<br>{{ address }}<br>{{ phone }}<br><a href="mailto:{{ email }}">{{ email }}</a></p>
     </section>
 {% endblock %}

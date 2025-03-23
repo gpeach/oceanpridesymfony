@@ -3,12 +3,12 @@
 {% block title %}Miami FL Drone Video | Contact{% endblock %}
 
 {% block content %}
-    <section class="bg-dark text-white text-center p-5 rounded">
+    <section class="bg-dark text-white text-center p-5 rounded border-red-deep mt-5">
         <h1>Welcome to {{ corp_name }}</h1>
         <p>Refined text for the contact section.</p>
     </section>
 
-    <section class="bg-primary text-white p-5 rounded">
+    <section class="bg-dark text-white p-5 rounded border-red-deep">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-6">
@@ -26,7 +26,7 @@
         </div>
     </section>
 
-    <section class="bg-secondary text-white text-center p-5 rounded photo">
+    <section class="bg-dark text-white text-center p-5 rounded photo border-red-deep">
         <div class="container">
             <img src="{{ asset("images/dan.png") }}" alt="Main Photo"
                  class="img-fluid rounded shadow-sm mb-3 photo-carousel">
@@ -39,9 +39,8 @@
         </div>
     </section>
 
-    <section class="bg-dark text-white text-center p-5 rounded">
+    <section class="bg-dark text-white text-center p-5 rounded border-red-deep">
         <h2>Contact Us</h2>
-        <p>{{ my_name }}<br>{{ address }}<br>{{ phone }}<br><a href="mailto:{{ email }}"
-                                                               class="text-warning">{{ email }}</a></p>
+        <p>{{ my_name }}<br>{{ address }}<br>{{ phone }}<br><a href="mailto:{{ email }}">{{ email }}</a></p>
     </section>
 {% endblock %}
