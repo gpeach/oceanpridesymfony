@@ -20,10 +20,10 @@
                         <h6 class="card-title">{{ image.name }}</h6>
                         {% if image.url %}
                             <div class="d-flex justify-content-center gap-2">
-                                <button class="btn btn-xs btn-red-dark" data-bs-toggle="modal" data-bs-target="#previewModal{{ loop.index }}">
+                                <button class="btn btn-xs btn-red" data-bs-toggle="modal" data-bs-target="#previewModal{{ loop.index }}">
                                     Preview
                                 </button>
-                                <a class="btn btn-xs btn-outline-red-dark" href="{{ image.url }}" target="_blank">Full Size</a>
+                                <a class="btn btn-xs btn-outline-red" href="{{ image.url }}" target="_blank">Full Size</a>
                             </div>
                         {% endif %}
                     </div>
