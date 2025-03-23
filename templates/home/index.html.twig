@@ -4,21 +4,41 @@
 
 {% block content %}
     <section class="bg-dark text-white text-center p-5 rounded border-red-deep mt-5">
-        <h1>Welcome to {{ corp_name }}</h1>
-        <p>Gary Hardin-Peach</p>
-        <p>Videographer - Camera Operator</p>
-        <p>LICENSED DRONE PILOT</p>
-        <p>Video Editor</p>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h1 class="text-start">Welcome to<br>{{ corp_name }}</h1>
+                    <p class="text-start">Gary Hardin-Peach<br>
+                        Videographer - Camera Operator<br>
+                        LICENSED DRONE PILOT<br>
+                        Video Editor</p></div>
+                <div class="col-md-6">
+                    <img src="https://uc3ebbac8bcb95ea320684ad6972.dl.dropboxusercontent.com/cd/0/inline/CmaANPyG6AOFLCgenl55u4-XnP_b12K4NvdO_bn2N332wOp58H1Kc6A4K1H7uCTWD9h1FrmmsG3pljQN5-YOMUA3811jo_B1egF9W5NjucHjCDUX5H4TbyHKwBRhwhMMmIbgoy2nPxc8teqAqf9BZQTc/file#"
+                         alt="Main Photo" class="img-fluid rounded shadow-sm mb-3">
+                </div>
+            </div>
+        </div>
+
     </section>
 
     <section class="bg-dark text-white p-5 rounded border-red-deep">
         <div class="container">
-            <div class="row align-items-center">
+            <div class="row">
                 <div class="col-md-6 photo">
-                    <img src="{{ asset("images/dan.png") }}" alt="Your Photo"
-                         class="img-fluid rounded shadow-sm photo-lg">
-                    <h2 class="mt-3">About Us</h2>
-                    <p>Ocean Pride Media was started this year.</p>
+                    {#                    <img src="{{ asset("images/dan.png") }}" alt="Your Photo" #}
+                    {#                         class="img-fluid rounded shadow-sm photo-lg"> #}
+                    <h2 class="mt-3 text-start">About Us</h2>
+                    <p class="text-start">
+                        <strong>Ocean Pride Media
+                        </strong> is a creative aerial media company based in South Florida, specializing in
+                        high-quality drone photography and video production. Founded with a passion for stunning visuals
+                        and a love for coastal living, we capture breathtaking perspectives that elevate your brand,
+                        tell your story, and showcase your property from new heights.</p>
+
+                    <p class="text-start">We're FAA Part 107 certified, fully insured, and committed to delivering
+                        exceptional results
+                        with every flight.
+                    </p>
                 </div>
                 <div class="col-md-6">
                     <div class="ratio ratio-16x9">
@@ -38,19 +58,22 @@
         </div>
     </section>
 
-    <section class="bg-dark text-white text-center p-5 rounded border-red-deep">
-        <h2>Get in Touch</h2>
-        <p>Call {{ phone }} or email <a href="mailto:{{ email }}">{{ email }}</a></p>
-    </section>
+    {#    <section class="bg-dark text-white text-center p-5 rounded border-red-deep"> #}
+    {#        <h2>Get in Touch</h2> #}
+    {#        <p>Call {{ phone }} or email <a href="mailto:{{ email }}">{{ email }}</a></p> #}
+    {#    </section> #}
 
     <section class="bg-dark p-5 text-white text-center rounded photo border-red-deep">
         <div class="container">
-            <img src="{{ asset("images/pink.jpg") }}" alt="Main Photo"
-                 class="img-fluid rounded shadow-sm mb-3 photo-carousel">
+            <img src="https://uc3ebbac8bcb95ea320684ad6972.dl.dropboxusercontent.com/cd/0/inline/CmaANPyG6AOFLCgenl55u4-XnP_b12K4NvdO_bn2N332wOp58H1Kc6A4K1H7uCTWD9h1FrmmsG3pljQN5-YOMUA3811jo_B1egF9W5NjucHjCDUX5H4TbyHKwBRhwhMMmIbgoy2nPxc8teqAqf9BZQTc/file#"
+                 alt="Main Photo"
+                 class="img-fluid rounded shadow-sm mb-3 photo-carousel-landscape">
             <div class="d-flex justify-content-center gap-2 flex-wrap">
-                <img src="{{ asset("images/pink.jpg") }}" alt="Thumbnail 1" class="img-thumbnail photo-thumbnail"
+                <img src="https://uc3ebbac8bcb95ea320684ad6972.dl.dropboxusercontent.com/cd/0/inline/CmaANPyG6AOFLCgenl55u4-XnP_b12K4NvdO_bn2N332wOp58H1Kc6A4K1H7uCTWD9h1FrmmsG3pljQN5-YOMUA3811jo_B1egF9W5NjucHjCDUX5H4TbyHKwBRhwhMMmIbgoy2nPxc8teqAqf9BZQTc/file#"
+                     alt="Thumbnail 1" class="img-thumbnail photo-thumbnail"
                      style="width:100px;">
-                <img src="{{ asset("images/dan.png") }}" alt="Thumbnail 2" class="img-thumbnail photo-thumbnail"
+                <img src="https://uc134fdafe45cce797335a8f3c6f.dl.dropboxusercontent.com/cd/0/inline/CmaNFjBwMTjKGmLPcHFgbxg4npR_pte2Th9t1iiGETOXK2bll1x3XA6H_nl70OR5JrT3G4Poy88-7ZoPW3dWtJZlhGS60yAVufaPpTUmNuhzF4Dj8EB6xOqwydlWIqjD2sP6v_i_bU--6iG9_U1OzABX/file#"
+                     alt="Thumbnail 2" class="img-thumbnail photo-thumbnail"
                      style="width:100px;">
             </div>
         </div>

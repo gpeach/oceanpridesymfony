@@ -80,6 +80,18 @@ section {
     }
   }
 
+  .photo-carousel-landscape {
+    max-width: 900px;
+    height: auto;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+
+    @media (max-width: 768px) {
+      max-width: 100%;
+    }
+  }
+
   .photo-thumbnails {
     display: flex;
     justify-content: center;
