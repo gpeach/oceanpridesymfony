@@ -32,38 +32,47 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% set current = app.request.attributes.get('_route') %}
 
-                <li class="nav-item {{ basename(app.request.uri) == 'home' ? 'active' : '' }}">
-                    <a class="nav-link" aria-current="page" href="home">Home</a>
+                <li class="nav-item me-2">
+                    <a class="btn btn-sm {{ current == 'app_home' ? 'btn-primary' : 'btn-outline-primary' }}"
+                       href="{{ path('app_home') }}">Home</a>
                 </li>
-                {#                <li class="nav-item {{ basename(app.request.uri) == 'about.php' ? 'active' : '' }}"> #}
-                {#                    <a class="nav-link" aria-current="page" href="about.php">About</a> #}
-                {#                </li> #}
-                <li class="nav-item {{ basename(app.request.uri) == 'contact' ? 'active' : '' }}">
-                    <a class="nav-link" aria-current="page" href="contact">Contact</a>
+                <li class="nav-item me-2">
+                    <a class="btn btn-sm {{ current == 'app_contact' ? 'btn-primary' : 'btn-outline-primary' }}"
+                       href="{{ path('app_contact') }}">Contact</a>
                 </li>
-
-                {#                <li class="nav-item"> #}
-                {#                    <a class="nav-link active" aria-current="page" href="index_old.php">Home</a> #}
-                {#                </li> #}
-                {#                <li class="nav-item"> #}
-                {#                    <a class="nav-link" href="contact.php">Contact</a> #}
-                {#                </li> #}
-                {#                <li class="nav-item dropdown"> #}
-                {#                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> #}
-                {#                        Dropdown #}
-                {#                    </a> #}
-                {#                    <ul class="dropdown-menu"> #}
-                {#                        <li><a class="dropdown-item" href="#">Action</a></li> #}
-                {#                        <li><a class="dropdown-item" href="#">Another action</a></li> #}
-                {#                        <li><hr class="dropdown-divider"></li> #}
-                {#                        <li><a class="dropdown-item" href="#">Something else here</a></li> #}
-                {#                    </ul> #}
-                {#                </li> #}
-                {#                <li class="nav-item"> #}
-                {#                    <a class="nav-link disabled" aria-disabled="true">Disabled</a> #}
-                {#                </li> #}
+                <li class="nav-item me-2">
+                    <a class="btn btn-sm {{ current == 'gallery_index' ? 'btn-primary' : 'btn-outline-primary' }}"
+                       href="{{ path('gallery_index') }}">Gallery</a>
+                </li>
+                <li class="nav-item me-2">
+                    <a class="btn btn-sm {{ current == 'gallery_upload' ? 'btn-primary' : 'btn-outline-primary' }}"
+                       href="{{ path('gallery_upload') }}">Upload</a>
+                </li>
             </ul>
+
+            {#                <li class="nav-item"> #}
+            {#                    <a class="nav-link active" aria-current="page" href="index_old.php">Home</a> #}
+            {#                </li> #}
+            {#                <li class="nav-item"> #}
+            {#                    <a class="nav-link" href="contact.php">Contact</a> #}
+            {#                </li> #}
+            {#                <li class="nav-item dropdown"> #}
+            {#                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> #}
+            {#                        Dropdown #}
+            {#                    </a> #}
+            {#                    <ul class="dropdown-menu"> #}
+            {#                        <li><a class="dropdown-item" href="#">Action</a></li> #}
+            {#                        <li><a class="dropdown-item" href="#">Another action</a></li> #}
+            {#                        <li><hr class="dropdown-divider"></li> #}
+            {#                        <li><a class="dropdown-item" href="#">Something else here</a></li> #}
+            {#                    </ul> #}
+            {#                </li> #}
+            {#                <li class="nav-item"> #}
+            {#                    <a class="nav-link disabled" aria-disabled="true">Disabled</a> #}
+            {#                </li> #}
+
             {#            <form class="d-flex" role="search"> #}
             {#                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"> #}
             {#                <button class="btn btn-outline-success" type="submit">Search</button> #}
@@ -74,7 +83,7 @@
 <div class="container">
     {% block content %}{% endblock %}
 </div>
-{#<script type="module" src="{{ asset('js/index.js') }}"></script>#}
-{#<script type="module" src="{{ asset('js/PhotoViewer.js') }}"></script>#}
+{# <script type="module" src="{{ asset('js/index.js') }}"></script> #}
+{# <script type="module" src="{{ asset('js/PhotoViewer.js') }}"></script> #}
 </body>
 </html>

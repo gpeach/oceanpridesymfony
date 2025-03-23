@@ -8,13 +8,15 @@ galleryImages.forEach((image) => {
 });
 
 const fileInput = document.querySelector('#file');
+if(fileInput) {
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        const fileSize = file.size / 1024 / 1024;
 
-fileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    const fileSize = file.size / 1024 / 1024;
+        if (fileSize > 200) {
+            alert('File size exceeds 200MB');
+            e.target.value = '';
+        }
+    });
+}
 
-    if (fileSize > 200) {
-        alert('File size exceeds 200MB');
-        e.target.value = '';
-    }
-});

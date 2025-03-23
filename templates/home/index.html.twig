@@ -1,28 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Fort Lauderdale FL Aerial Video | Home{% endblock %}
-{#{% block title %}Hello HomeController!{% endblock %}#}
-
-{#{% block body %}#}
-{#<style>#}
-{#    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }#}
-{#    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }#}
-{#</style>#}
-
-{#<div class="example-wrapper">#}
-{#    <h1>Hello {{ controller_name }}! ✅</h1>#}
-
-{#    This friendly message is coming from:#}
-{#    <ul>#}
-{#        <li>Your controller at <code>C:/xampp/htdocs/oceanpridesymfony/src/Controller/HomeController.php</code></li>#}
-{#        <li>Your template at <code>C:/xampp/htdocs/oceanpridesymfony/templates/home/index.html.twig</code></li>#}
-{#    </ul>#}
-{#</div>#}
-{#{% endblock %}#}
 
 {% block content %}
-{#    {{ dump(_context) }}#}
-    <section class="welcome">
+    <section class="bg-dark text-white text-center p-5 rounded">
         <h1>Welcome to {{ corp_name }}</h1>
         <p>Gary Hardin-Peach</p>
         <p>Videographer - Camera Operator</p>
@@ -30,44 +11,47 @@
         <p>Video Editor</p>
     </section>
 
-    <section class="about">
-        <div class="left-container">
-            <img src="{{ asset("images/dan.png") }}" alt="Your Photo" class="photo-about">
-            <h2>About Us</h2>
-            <p>Ocean Pride Media was started this year.</p>
+    <section class="bg-primary text-white p-5 rounded">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 photo">
+                    <img src="{{ asset("images/dan.png") }}" alt="Your Photo"
+                         class="img-fluid rounded shadow-sm photo-lg">
+                    <h2 class="mt-3">About Us</h2>
+                    <p>Ocean Pride Media was started this year.</p>
+                </div>
+                <div class="col-md-6">
+                    <div class="ratio ratio-16x9">
+                        <iframe src="https://www.youtube.com/embed/v4qo-e0m6v8" class="rounded shadow-sm"
+                                title="Predators Under The Pier"
+                                allowfullscreen allow="autoplay; encrypted-media"></iframe>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="right-container">
-            <section class="video-container-about">
-                <iframe src="https://www.youtube.com/embed/v4qo-e0m6v8" title="Predators Under The Pier"
-                        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
-                </iframe>
-            </section>
-        </div>
-
     </section>
 
-    <section class="call-to-action">
+    <section class="bg-dark text-white text-center p-5 rounded">
         <h2>Get in Touch</h2>
-        <p>For inquiries, call {{ phone }} or email <a href="mailto:{{ email }}">{{ email }}</a>.</p>
+        <p>Call {{ phone }} or email <a href="mailto:{{ email }}" class="text-warning">{{ email }}</a></p>
     </section>
 
-    <section class="photo">
-        <img src="{{ asset("images/pink.jpg") }}" alt="Your Photo" class="photo-main">
-        <div class="photo-thumbnails">
-            <img src="{{ asset("images/pink.jpg") }}" alt="Thumbnail 1" class="photo-thumbnail">
-            <img src="{{ asset("images/dan.png") }}" alt="Thumbnail 2" class="photo-thumbnail">
-            <!-- Add more thumbnails here -->
+    <section class="bg-secondary p-5 text-white text-center rounded photo">
+        <div class="container">
+            <img src="{{ asset("images/pink.jpg") }}" alt="Main Photo"
+                 class="img-fluid rounded shadow-sm mb-3 photo-carousel">
+            <div class="d-flex justify-content-center gap-2 flex-wrap">
+                <img src="{{ asset("images/pink.jpg") }}" alt="Thumbnail 1" class="img-thumbnail photo-thumbnail"
+                     style="width:100px;">
+                <img src="{{ asset("images/dan.png") }}" alt="Thumbnail 2" class="img-thumbnail photo-thumbnail"
+                     style="width:100px;">
+            </div>
         </div>
     </section>
 
-    {#    <section class="video">#}
-    {#        <iframe width="424" height="238" src="https://www.youtube.com/embed/v4qo-e0m6v8" title="Predators Under The Pier" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>#}
-    {#    </section>#}
-
-
-    <section class="contact">
+    <section class="bg-dark text-white text-center p-5 rounded">
         <h2>Contact Us</h2>
-        <p>{{ my_name }}<br>{{ address }}<br>{{ phone }}<br><a href="mailto:{{ email }}">{{ email }}</a></p>
+        <p>{{ my_name }}<br>{{ address }}<br>{{ phone }}<br><a href="mailto:{{ email }}"
+                                                               class="text-warning">{{ email }}</a></p>
     </section>
 {% endblock %}

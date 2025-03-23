@@ -1,196 +1,143 @@
-// Import Bootstrap's SCSS files
 @import "~bootstrap/scss/bootstrap";
 
+// Typography
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
+    line-height: 1.6;
     background-color: #09275b;
+    color: #e0e0e0;
+    padding-bottom: 50px;
 }
 
+// Sections
+section {
+    margin-bottom: 3rem;
+}
+
+// Welcome Section
 .welcome {
-    padding: 50px;
-    color: #fff;
-    background-color: #444;
+    text-align: center;
+    padding: 3rem 1rem;
 }
 
-//.about {
-//  padding: 50px;
-//  color: #fff;
-//}
-
+// About Section
 .about {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 2rem;
+    align-items: center;
+}
 
-    .left-container,
-    .right-container {
-        flex: 1 1 50%;
-        max-width: 50%;
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+.left-container,
+.right-container {
+    flex: 1 1 400px;
+}
+
+.photo-about {
+    max-width: 100%;
+    border-radius: 1rem;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+// Video container (16:9 aspect)
+.video-container-about,
+.video-container {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+    iframe {
+        width: 100%;
+        height: 100%;
     }
+}
 
-    .left-container {
-        //background-color: #007bff;
-    }
+// Call to Action
+.call-to-action {
+    background: #1f1f1f;
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
+}
 
-    .right-container {
-        //background-color: #07d5f1;
-    }
+// Photo Section
+.photo {
+    text-align: center;
+    .photo-lg, .photo-carousel {
+        max-width: 400px;
+        height: auto;
+        border-radius: 1rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 
-    @media (max-width: 768px) {
-        flex-direction: column;
-
-        .left-container,
-        .right-container {
-            flex: 1 1 100%;
+        @media (max-width: 768px) {
             max-width: 100%;
+        }
+    }
+    .photo-thumbnails {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+
+        .photo-thumbnail {
+            width: 100px;
+            height: auto;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.1);
+            transition: transform 0.2s ease;
+            &:hover {
+                transform: scale(1.05);
+            }
         }
     }
 }
 
-.call-to-action {
-    padding: 50px;
-    color: #fff;
-    background-color: #444;
+// Forms
+form .form-control {
+    border-radius: 0.5rem;
+    padding: 0.75rem;
 }
 
-.photo {
-    padding: 50px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+// Buttons
+.btn {
+    border-radius: 0.5rem;
 }
 
-.photo-about {
-    width: 100%;
-    max-width: 150px; /* Adjust the max width as needed */
-    height: auto;
-    max-height: 150px; /* Adjust the max height as needed */
-    border-radius: 10px;
-    margin-bottom: 20px;
-    margin-top: 20px;
-}
-
-.photo-main {
-    width: 100%;
-    height: 500px;
-    object-fit: cover;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-.photo-thumbnails {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.photo-thumbnail {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 10px;
-    margin: 10px;
-    cursor: pointer;
-}
-
-.video {
-    padding: 50px;
-}
-
-.video-container {
-    position: relative;
-    width: 100%;
-    max-width: 560px; /* Adjust max width for larger screens */
-    aspect-ratio: 16 / 9; /* Maintains video aspect ratio */
-    margin: 50px auto; /* Centers it */
-}
-
-.video-container iframe {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-}
-
-.video-container-about {
-    width: 100%;
-    max-width: 100%;
-    aspect-ratio: 16 / 9;
-    margin: 50px auto;
-}
-
-.video-container-about iframe {
-    width: 100%;
-    height: 100%;
-}
-
-.contact {
-    padding: 50px;
-    color: #fff;
-    background-color: #444;
-}
-
-
-//navbar
-
-//nav.navbar {
-//  background-color: #ff0088;
-//  padding: 10px;
-//}
-//
-//nav.navbar ul {
-//  list-style: none;
-//  padding: 0;
-//  margin: 0;
-//  display: flex;
-//}
-//
-//nav.navbar ul li {
-//  margin-right: 20px;
-//}
-//
-//nav.navbar ul li a {
-//  color: #fff;
-//  text-decoration: none;
-//  font-weight: bold;
-//}
-//
-//nav.navbar ul li a:hover {
-//  text-decoration: underline;
-//}
-
-
-//blue theme
-[data-bs-theme="blue"] {
-    --bs-body-color: var(--bs-white);
-    --bs-body-color-rgb: #{to-rgb($white)};
-    --bs-body-bg: var(--bs-blue);
-    --bs-body-bg-rgb: #{to-rgb($blue)};
-    --bs-tertiary-bg: #{$blue-600};
-
-    .dropdown-menu {
-        --bs-dropdown-bg: #{mix($blue-500, $blue-600)};
-        --bs-dropdown-link-active-bg: #{$blue-700};
-    }
-
-    .btn-secondary {
-        --bs-btn-bg: #{mix($gray-600, $blue-400, .5)};
-        --bs-btn-border-color: #{rgba($white, .25)};
-        --bs-btn-hover-bg: #{darken(mix($gray-600, $blue-400, .5), 5%)};
-        --bs-btn-hover-border-color: #{rgba($white, .25)};
-        --bs-btn-active-bg: #{darken(mix($gray-600, $blue-400, .5), 10%)};
-        --bs-btn-active-border-color: #{rgba($white, .5)};
-        --bs-btn-focus-border-color: #{rgba($white, .5)};
-        --bs-btn-focus-box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .2);
+// Upload progress bar
+#uploadProgress {
+    background-color: #2a2a2a;
+    .progress-bar {
+        font-weight: bold;
     }
 }
 
-.nav-item.active .nav-link {
-    font-weight: bold;
-    color: #007bff; /* Change this to your desired highlight color */
+// Gallery Card Styling
+.card {
+    background-color: #1e1e1e;
+    border: none;
+    border-radius: 1rem;
+    overflow: hidden;
+    .card-body {
+        padding: 1rem;
+        h6 {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+    }
+    .btn {
+        margin-top: 0.5rem;
+    }
+}
+
+// Modal overrides for dark theme
+.modal-content {
+    background-color: #1a1a1a;
+    color: #fff;
+    .modal-header {
+        border-bottom: 1px solid #333;
+    }
 }
