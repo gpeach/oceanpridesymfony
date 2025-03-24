@@ -1,0 +1,75 @@
+System:
+
+You are my website-building assistant.
+I will ask for multiple things when I request that you generate website code so that we can maximize the use of each turn.
+When you respond, reiterate my requirements and any steps that it took you to formulate a response so I know that you understood me.
+Code that you give me must be complete, not snippets.
+All sites use PHP with Twig, Bootstrap, SCSS, Flexbox, dark colors, modern JS using module syntax if needed, and no Babel.
+All site code must be responsive with media queries.
+Each page will contain a PHP file using a Twig template and a JS file.
+PHP pages will reference shared, post-compiled CSS.
+JS should be Prettier-formatted.
+PHP should follow PSR-1, PSR-4 if required, PSR-7, and PSR-15 standards.
+Use Guzzle for APIs like Dropbox or Vimeo.
+The first response must include the response to the user request plus instructions to set up SCSS, Composer, and Twig.
+For setup instructions, assume a developer-level audience and provide a brief cheat-sheet style guide, but it has to be complete enough for setup.
+All forms must use JS validation and submit without refreshing the whole page.
+Sites begin with first page added to a Bootstrap nav bar.
+Future pages built will be added to the nav, and any necessary code changes for that will be included in the response.
+
+
+User:
+
+Prompt 0: Initial Homepage
+Create a homepage with a professional, high-end design.
+The homepage should be classy and modern, with an elegant layout and dark color scheme.
+Include a welcome section with refined text, a lorem ipsum about section, and a call-to-action for inquiries, using the placeholders: "For inquiries, call [phone] or email [email]."
+Add a placeholder for a high-quality picture of me prominently displayed with or near the video.
+Showcase a main video in a dedicated section with a sleek embedded player.
+Implement a small, elegant JavaScript photo viewer that features one large photo with clickable thumbnail previews.
+Display contact details as required on page with placeholders: [email], [phone], [address], [my name], [my first name], [corp name].
+Language must include somewhere:  [corp name], Aerial Photography and Videography,  Real Estate - Residential - Commercial - Construction - Inspections
+
+Prompt 0-A: Contact Page
+Create a clean and minimal contact page with a professional design.
+Include a contact form with fields for name, email, phone, and message.
+The form should use JavaScript validation and submit via AJAX without a full-page reload.
+Display contact details using placeholders: [email], [phone], [address], [my name], [my first name], [corp name].
+Ensure the layout is responsive and elegant, with a clear call-to-action inviting users to get in touch.
+Link the contact page in the site navigation.
+Provide setup instructions for SCSS, Composer, and Twig in a concise, cheat-sheet style.
+
+Prompt 1: Client Photo Area with Dropbox API
+Expand the website by adding a client photo viewing and storage area using the Dropbox API.
+Create a secure client photo gallery where users can view high-resolution images.
+Allow photo uploads that sync directly to a Dropbox folder.
+Ensure privacy by requiring authentication for access to client galleries.
+Include a front-end UI for browsing and viewing images in a grid layout.
+Use JavaScript for smooth image loading and client-side validation before uploading.
+Update the site navigation to include a link to the client photo gallery.
+Provide instructions for setting up Dropbox API credentials and integrating them.
+
+Prompt 2: Video Showcase with Vimeo API
+Create a video showcase section where clients can view embedded videos from Vimeo.
+Retrieve video data dynamically from the Vimeo API.
+Ensure videos are displayed in a modern, responsive layout.
+Implement a filtering or categorization system to organize videos.
+Use JavaScript to lazy-load videos for performance optimization.
+Update the site navigation to include a link to the video showcase.
+Provide instructions for setting up Vimeo API credentials and integrating them.
+
+Prompt 3: Advanced Contact & Inquiry System
+Enhance the contact page by adding an inquiry form with a file upload option.
+Allow users to attach documents or images to their inquiries.
+Use JavaScript validation to ensure proper file formats and size limits.
+Store uploaded files in a secure location with links sent to the admin via email.
+Include a CAPTCHA or spam prevention mechanism.
+Provide instructions for setting up file handling security measures and best practices.
+
+Prompt 4: Admin Dashboard for Managing Content
+Develop an admin dashboard where site owners can manage photos, videos, and client inquiries.
+Allow admin users to approve or delete uploaded content.
+Use a login system for secure access with session-based authentication.
+Implement a clean UI for efficient content management.
+Ensure all admin actions use JavaScript for smooth, real-time updates.
+Provide instructions for setting up authentication and session management.

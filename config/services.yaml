@@ -51,6 +51,12 @@ services:
         alias: flysystem.dropbox_filesystem
         public: true
 
+    App\Service\DropboxClientFactory:
+        arguments:
+            $clientId: '%env(DROPBOX_CLIENT_ID)%'
+            $clientSecret: '%env(DROPBOX_CLIENT_SECRET)%'
+            $refreshToken: '%env(DROPBOX_REFRESH_TOKEN)%'
+
     App\Service\DropboxLinkHelper:
         arguments:
             $accessToken: '%env(DROPBOX_TOKEN)%'

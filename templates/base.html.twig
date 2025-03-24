@@ -22,7 +22,7 @@
 {# </head> #}
 <body>
 {% block body %}{% endblock %}
-<nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="blue">
+<nav style="height: 200px; background-size: cover;  background-position: 50% 60%; background-image: url('https://uc3ebbac8bcb95ea320684ad6972.dl.dropboxusercontent.com/cd/0/inline/CmaANPyG6AOFLCgenl55u4-XnP_b12K4NvdO_bn2N332wOp58H1Kc6A4K1H7uCTWD9h1FrmmsG3pljQN5-YOMUA3811jo_B1egF9W5NjucHjCDUX5H4TbyHKwBRhwhMMmIbgoy2nPxc8teqAqf9BZQTc/file#')" class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="blue">
     <div class="container-fluid">
         {#        <a class="navbar-brand" href="#">Navbar</a> #}
         <a href="#" class="navbar-brand"><img src="{{ asset('images/dolphin_60px_72dpi.png') }}"></a>
@@ -44,9 +44,11 @@
                     <li class="nav-item">
                         <a href="{{ path('gallery_index') }}" class="nav-link {{ current == 'gallery_index' ? 'active' : '' }}">Gallery</a>
                     </li>
-                    <li class="nav-item">
-                        <a href="{{ path('gallery_upload') }}" class="nav-link {{ current == 'gallery_upload' ? 'active' : '' }}">Upload</a>
-                    </li>
+                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                        <li class="nav-item">
+                            <a href="{{ path('gallery_upload') }}" class="nav-link {{ current == 'gallery_upload' ? 'active' : '' }}">Upload</a>
+                        </li>
+                    {% endif %}
                 </ul>
 
             {#                <li class="nav-item"> #}
