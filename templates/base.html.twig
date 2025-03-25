@@ -44,9 +44,17 @@
                     <li class="nav-item">
                         <a href="{{ path('gallery_index') }}" class="nav-link {{ current == 'gallery_index' ? 'active' : '' }}">Gallery</a>
                     </li>
-                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                        <li class="nav-item">
+                            <a href="{{ path('app_login') }}" class="nav-link {{ current == 'app_login' ? 'active' : '' }}">Login</a>
+                        </li>
+                    {% endif %}
+                    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                         <li class="nav-item">
                             <a href="{{ path('gallery_upload') }}" class="nav-link {{ current == 'gallery_upload' ? 'active' : '' }}">Upload</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ path('app_logout') }}" class="nav-link {{ current == 'app_logout' ? 'active' : '' }}">Logout</a>
                         </li>
                     {% endif %}
                 </ul>
