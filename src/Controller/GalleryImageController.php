@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\GalleryImage;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Flysystem\FilesystemOperator;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -12,15 +13,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\DropboxClientFactory;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class GalleryImageController extends AbstractController
 {
     private EntityManagerInterface $em;
+    private LoggerInterface $log;
+    private bool $DEBUG_UPLOAD = true;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, LoggerInterface $log)
     {
         $this->em = $em;
+        $this->log = $log;
     }
 
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
@@ -40,6 +45,25 @@ class GalleryImageController extends AbstractController
 
         $form->handleRequest($request);
 
+        $this->log('Form handled');
+        $this->log('Form submitted: ' . ($form->isSubmitted() ? 'yes' : 'no'));
+
+        if ($form->isSubmitted()) {
+            $this->log('Form is valid: ' . ($form->isValid() ? 'yes' : 'no'));
+
+            if (!$form->isValid()) {
+                foreach ($form->getErrors(true) as $error) {
+                    $this->log('Form error: ' . $error->getMessage());
+                }
+            }
+        }
+
+        if ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors(true) as $error) {
+                $this->log('Form error: ' . $error->getMessage());
+            }
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form->get('file')->getData();
 
@@ -48,9 +72,13 @@ class GalleryImageController extends AbstractController
                 $dropboxPath = '/client_photos/' . $filename;
 
                 try {
+                    if ($this->DEBUG_UPLOAD) $this->log('Calling uploadChunked');
                     $this->uploadChunked($dropbox, $dropboxPath, $file->getPathname());
 
+                    if ($this->DEBUG_UPLOAD) $this->log('Upload to Dropbox done');
+
                     $galleryImage->setFilePath($dropboxPath);
+                    $galleryImage->setName($form->get('name')->getData());
 
                     $mime = $file->getMimeType();
                     if (str_starts_with($mime, 'image/')) {
@@ -62,9 +90,12 @@ class GalleryImageController extends AbstractController
                     $this->em->persist($galleryImage);
                     $this->em->flush();
 
+                    if ($this->DEBUG_UPLOAD) $this->log('Saved to DB with ID: ' . $galleryImage->getId());
+
                     return $this->redirectToRoute('gallery_index');
                 } catch (\Throwable $e) {
                     $this->addFlash('error', 'Upload failed: ' . $e->getMessage());
+                    if ($this->DEBUG_UPLOAD) $this->log('Exception: ' . $e->getMessage());
                     return $this->redirectToRoute('gallery_upload');
                 }
             }
@@ -97,6 +128,8 @@ class GalleryImageController extends AbstractController
 
     private function uploadChunked(\Spatie\Dropbox\Client $dropbox, string $dropboxPath, string $localPath, int $chunkSize = 8 * 1024 * 1024): void
     {
+        if ($this->DEBUG_UPLOAD) $this->log("uploadChunked() start for file", ['path' => $localPath]);
+
         if (!file_exists($localPath)) {
             throw new \RuntimeException("File not found: $localPath");
         }
@@ -109,39 +142,51 @@ class GalleryImageController extends AbstractController
         $stream = fopen($localPath, 'rb');
 
         if ($fileSize <= 150 * 1024 * 1024) {
+            if ($this->DEBUG_UPLOAD) $this->log("Using simple upload: $fileSize bytes");
             $dropbox->upload($dropboxPath, $stream, 'add');
-            fclose($stream);
             return;
         }
 
+        if ($this->DEBUG_UPLOAD) $this->log("Using chunked upload: $fileSize bytes");
+
         $offset = 0;
         $uploadSessionId = null;
+        $lastChunk = null;
 
         while (!feof($stream)) {
             $chunk = fread($stream, $chunkSize);
             $length = strlen($chunk);
+            $lastChunk = $chunk;
 
             if ($offset === 0) {
-                $response = $dropbox->uploadSessionStart($chunk, false);
-                $uploadSessionId = $response['session_id'];
+               $result = $dropbox->uploadSessionStart($chunk, false);
+                $uploadSessionId = $result->session_id;
+                if ($this->DEBUG_UPLOAD) $this->log("Started session ID");
             } else {
                 $cursor = new \Spatie\Dropbox\UploadSessionCursor($uploadSessionId, $offset);
-                $dropbox->uploadSessionAppendV2($cursor, $chunk);
+                $dropbox->uploadSessionAppend($chunk, $cursor);
+                if ($this->DEBUG_UPLOAD) $this->log("Appended chunk at offset $offset");
             }
 
             $offset += $length;
         }
 
         $cursor = new \Spatie\Dropbox\UploadSessionCursor($uploadSessionId, $offset);
-        $commit = [
-            'path' => $dropboxPath,
-            'mode' => 'add',
-            'autorename' => true,
-            'mute' => false,
-        ];
 
-        $dropbox->uploadSessionFinish($cursor, $commit, '');
-        fclose($stream);
+        $path = $dropboxPath;
+        $mode = 'add';
+        $autorename = true;
+        $mute = false;
+
+        $dropbox->uploadSessionFinish($lastChunk, $cursor, $path, $mode, $autorename, $mute);
+        if ($this->DEBUG_UPLOAD) $this->log("Upload session finished for $dropboxPath");
+    }
+
+    private function log(string $message, array $context = []): void
+    {
+        if ($this->DEBUG_UPLOAD) {
+            $this->log->info('[UPLOAD DEBUG] ' . $message, $context);
+        }
     }
 
     #[Route('/test-list', name: 'test_dropbox_list')]
@@ -209,4 +254,3 @@ class GalleryImageController extends AbstractController
         return new Response('<pre>' . ob_get_clean() . '</pre>');
     }
 }
-
