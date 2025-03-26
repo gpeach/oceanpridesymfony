@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Service;
+
+interface CloudStorageInterface
+{
+    public function download(string $cloudPath): string;
+
+    public function downloadStream(string $cloudPath): mixed;
+
+    public function upload(string $cloudPath, string $localPath): void;
+
+    public function list(string $directory): array;
+
+    public function delete(string $path): void;
+}

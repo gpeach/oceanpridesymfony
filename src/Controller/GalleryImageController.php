@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\GalleryImage;
+use App\Service\CloudStorageInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use League\Flysystem\FilesystemOperator;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -12,28 +12,23 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Service\DropboxClientFactory;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class GalleryImageController extends AbstractController
 {
-    private EntityManagerInterface $em;
-    private LoggerInterface $log;
     private bool $DEBUG_UPLOAD = true;
 
-    public function __construct(EntityManagerInterface $em, LoggerInterface $log)
-    {
-        $this->em = $em;
-        $this->log = $log;
-    }
+    public function __construct(
+        private EntityManagerInterface $em,
+        private LoggerInterface $log,
+        private CloudStorageInterface $cloudStorage
+    ) {}
 
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     #[Route('/gallery/upload', name: 'gallery_upload')]
-    public function upload(Request $request, DropboxClientFactory $dropboxFactory): Response
+    public function upload(Request $request): Response
     {
         $galleryImage = new GalleryImage();
-        $dropbox = $dropboxFactory->create();
 
         $form = $this->createFormBuilder($galleryImage)
             ->add('name', TextType::class)
@@ -58,26 +53,19 @@ class GalleryImageController extends AbstractController
             }
         }
 
-        if ($form->isSubmitted() && !$form->isValid()) {
-            foreach ($form->getErrors(true) as $error) {
-                $this->log('Form error: ' . $error->getMessage());
-            }
-        }
-
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form->get('file')->getData();
 
             if ($file) {
                 $filename = uniqid() . '.' . $file->guessExtension();
-                $dropboxPath = '/client_photos/' . $filename;
+                $cloudPath = '/client_photos/' . $filename;
 
                 try {
-                    if ($this->DEBUG_UPLOAD) $this->log('Calling uploadChunked');
-                    $this->uploadChunked($dropbox, $dropboxPath, $file->getPathname());
+                    if ($this->DEBUG_UPLOAD) $this->log('Calling cloudStorage->upload()');
 
-                    if ($this->DEBUG_UPLOAD) $this->log('Upload to Dropbox done');
+                    $this->cloudStorage->upload($cloudPath, $file->getPathname());
 
-                    $galleryImage->setFilePath($dropboxPath);
+                    $galleryImage->setFilePath($cloudPath);
                     $galleryImage->setName($form->get('name')->getData());
 
                     $mime = $file->getMimeType();
@@ -124,62 +112,6 @@ class GalleryImageController extends AbstractController
         return $this->render('gallery_image/index.html.twig', [
             'images' => $files,
         ]);
-    }
-
-    private function uploadChunked(\Spatie\Dropbox\Client $dropbox, string $dropboxPath, string $localPath, int $chunkSize = 8 * 1024 * 1024): void
-    {
-        if ($this->DEBUG_UPLOAD) $this->log("uploadChunked() start for file", ['path' => $localPath]);
-
-        if (!file_exists($localPath)) {
-            throw new \RuntimeException("File not found: $localPath");
-        }
-
-        if (!is_readable($localPath)) {
-            throw new \RuntimeException("File is not readable: $localPath");
-        }
-
-        $fileSize = filesize($localPath);
-        $stream = fopen($localPath, 'rb');
-
-        if ($fileSize <= 150 * 1024 * 1024) {
-            if ($this->DEBUG_UPLOAD) $this->log("Using simple upload: $fileSize bytes");
-            $dropbox->upload($dropboxPath, $stream, 'add');
-            return;
-        }
-
-        if ($this->DEBUG_UPLOAD) $this->log("Using chunked upload: $fileSize bytes");
-
-        $offset = 0;
-        $uploadSessionId = null;
-        $lastChunk = null;
-
-        while (!feof($stream)) {
-            $chunk = fread($stream, $chunkSize);
-            $length = strlen($chunk);
-            $lastChunk = $chunk;
-
-            if ($offset === 0) {
-               $result = $dropbox->uploadSessionStart($chunk, false);
-                $uploadSessionId = $result->session_id;
-                if ($this->DEBUG_UPLOAD) $this->log("Started session ID");
-            } else {
-                $cursor = new \Spatie\Dropbox\UploadSessionCursor($uploadSessionId, $offset);
-                $dropbox->uploadSessionAppend($chunk, $cursor);
-                if ($this->DEBUG_UPLOAD) $this->log("Appended chunk at offset $offset");
-            }
-
-            $offset += $length;
-        }
-
-        $cursor = new \Spatie\Dropbox\UploadSessionCursor($uploadSessionId, $offset);
-
-        $path = $dropboxPath;
-        $mode = 'add';
-        $autorename = true;
-        $mute = false;
-
-        $dropbox->uploadSessionFinish($lastChunk, $cursor, $path, $mode, $autorename, $mute);
-        if ($this->DEBUG_UPLOAD) $this->log("Upload session finished for $dropboxPath");
     }
 
     private function log(string $message, array $context = []): void
