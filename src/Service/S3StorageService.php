@@ -40,24 +40,27 @@ class S3StorageService implements CloudStorageInterface
             'Key' => $cloudPath,
         ]);
 
-        $body = $result['Body'];
+        $body = $result['Body']; // This is a Guzzle StreamInterface
 
-        // If it's already a stream resource (depends on S3 SDK internals)
-        if (is_resource($body)) {
-            return $body;
+        if (method_exists($body, 'detach')) {
+            $body = $body->detach(); // ⬅️ Detach Guzzle stream to get native PHP resource
         }
 
-        // If it's a Guzzle stream interface
-        if (is_object($body) && method_exists($body, 'detach')) {
-            return $body->detach(); // returns raw stream
+        if (!is_resource($body)) {
+            throw new \RuntimeException("Expected resource stream from S3, got " . gettype($body));
         }
 
-        // Fallback: create stream from string (least efficient)
-        $stream = fopen('php://temp', 'r+');
-        fwrite($stream, $body->getContents());
-        rewind($stream);
+        // Convert to native PHP temp stream
+        $tmpFile = tmpfile();
 
-        return $stream;
+        if (!is_resource($tmpFile)) {
+            throw new \RuntimeException('Unable to create temporary stream.');
+        }
+
+        stream_copy_to_stream($body, $tmpFile); // Copies content from Guzzle stream
+        rewind($tmpFile);
+
+        return $tmpFile;
     }
 
     public function list(string $directory): array
@@ -76,5 +79,18 @@ class S3StorageService implements CloudStorageInterface
             'Bucket' => $this->bucket,
             'Key' => $path,
         ]);
+    }
+
+    public function getSignedUrl(string $cloudPath, string $expires = '+1 hour'): string
+    {
+        $cmd = $this->s3->getCommand('GetObject', [
+            'Bucket' => $this->bucket,
+            'Key'    => $cloudPath,
+            'ResponseContentDisposition' => 'inline',
+            'response-content-type' => 'video/mp4',
+        ]);
+
+        $request = $this->s3->createPresignedRequest($cmd, $expires);
+        return (string) $request->getUri();
     }
 }

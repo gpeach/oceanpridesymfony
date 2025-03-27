@@ -13,4 +13,6 @@ interface CloudStorageInterface
     public function list(string $directory): array;
 
     public function delete(string $path): void;
+
+    public function getSignedUrl(string $cloudPath, string $expires = '+1 hour'): string;
 }

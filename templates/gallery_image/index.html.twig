@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% set body_class = 'gallery-page' %}
+
 {% block content %}
     <h1 class="m-4">Gallery</h1>
 
@@ -7,71 +9,83 @@
         {% for image in images %}
             <div class="col-md-3">
                 <div class="card h-100 text-center p-1 border-red-deep">
-                    <div style="height: 200px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #111;">
+                    <div style="height: 200px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #111;"
+                         data-id="{{ image.id }}">
                         {% if image.type == 'image' %}
-                            {#                            <img src="{{ image.url }}" alt="{{ image.name }}" style="max-height: 100%; max-width: 100%; object-fit: contain;"> #}
                             <img src="{{ image.url }}" alt="{{ image.name }}"
                                  style="max-height: 100%; max-width: 100%; object-fit: contain;"
                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"/>
                             <span style="display: none;">Image not found</span>
                         {% elseif image.type == 'video' %}
-                            <video muted autoplay loop style="max-height: 100%; max-width: 100%; object-fit: contain;">
-                                <source src="{{ image.url }}" type="video/mp4"
-                                        onerror="this.parentElement.style.display='none'; this.parentElement.nextElementSibling.style.display='block';">
-                            </video>
-                            <span style="display: none;">Video not found</span>
+                            <img id="poster-{{ image.id }}"
+                                 src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                                 alt="Video preview" style="max-height: 100%; max-width: 100%; object-fit: contain;"/>
+                            <video id="thumb-video-{{ image.id }}" preload="metadata"
+                                   style="display:none; max-height: 100%; max-width: 100%; object-fit: contain;"
+                                   muted></video>
+                            <canvas id="canvas-{{ image.id }}" style="display:none;"></canvas>
                         {% endif %}
                     </div>
                     <div class="card-body">
                         <h6 class="card-title">{{ image.name }}</h6>
-                        {% if image.url %}
-                            <div class="d-flex justify-content-center gap-2">
-                                <button class="btn btn-xs btn-red" data-bs-toggle="modal"
-                                        data-bs-target="#previewModal{{ loop.index }}">
-                                    Preview
-                                </button>
+                        <div class="d-flex justify-content-center gap-2">
+
+                            <button class="btn btn-xs btn-red" data-bs-toggle="modal"
+                                    data-bs-target="#previewModal{{ image.id }}">
+                                Preview
+                            </button>
+                            {% if image.type == 'image' %}
                                 <a class="btn btn-xs btn-outline-red" href="{{ image.url }}" target="_blank">Full
                                     Size</a>
-                            </div>
-                        {% endif %}
+                            {% elseif image.type == 'video' %}
+                                <a class="btn btn-xs btn-outline-red" href="#" data-id="{{ image.id }}"
+                                   data-action="fullscreen-preview">Full Size</a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {% if image.url %}
-                <!-- Modal -->
-                <div class="modal fade" id="previewModal{{ loop.index }}" tabindex="-1"
-                     aria-labelledby="modalLabel{{ loop.index }}" aria-hidden="true">
-                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-                        <div class="modal-content bg-dark text-white">
-                            <div class="modal-header">
-                                <h6 class="modal-title" id="modalLabel{{ loop.index }}">{{ image.name }}</h6>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body text-center" style="max-height: 65vh; overflow-y: auto;">
-                                {% if image.type == 'image' %}
-                                    <div class="image-wrapper">
-                                        <img src="{{ image.url }}" class="img-fluid rounded shadow-sm"
-                                             style="max-height: 60vh;" alt="{{ image.name }}"
-                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                        <span style="display: none;">Image not found</span>
-                                    </div>
-                                {% elseif image.type == 'video' %}
-                                    <video controls style="max-height: 60vh; width: 100%; object-fit: contain;"
-                                           class="rounded shadow-sm">
-                                        <source src="{{ image.url }}" type="video/mp4"
-                                                onerror="this.parentElement.style.display='none'; this.parentElement.nextElementSibling.style.display='block';">
-                                    </video>
-                                    <span style="display: none;">Video not found</span>
-                                {% endif %}
-                            </div>
+            <!-- Modal for Video Preview -->
+            {#            {% if image.type == 'video' %} #}
+            <div class="modal fade" id="previewModal{{ image.id }}" tabindex="-1"
+                 aria-labelledby="modalLabel{{ image.id }}" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content bg-dark text-white">
+                        <div class="modal-header">
+                            <h6 class="modal-title" id="modalLabel{{ image.id }}">{{ image.name }}</h6>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center" style="max-height: 65vh; overflow-y: auto;">
+
+                            {% if image.type == 'image' %}
+                                <div class="image-wrapper">
+                                    <img src="{{ image.url }}" class="img-fluid rounded shadow-sm"
+                                         style="max-height: 60vh;" alt="{{ image.name }}"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                    <span style="display: none;">Image not found</span>
+                                </div>
+                            {% elseif image.type == 'video' %}
+                                <video controls style="max-height: 60vh; width: 100%; object-fit: contain;"
+                                       id="modal-video-{{ image.id }}" class="rounded shadow-sm">
+                                    <!-- src is set dynamically -->
+                                </video>
+                                <span style="display: none;">Video not found</span>
+                            {% endif %}
+
                         </div>
                     </div>
                 </div>
-            {% endif %}
+            </div>
+            {#            {% endif %} #}
         {% else %}
             <p>No images or videos uploaded yet.</p>
         {% endfor %}
     </div>
+
+    {# Fullscreen Video Player Reusable Element #}
+    <video id="preview-fullscreen-player" controls
+           style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; background: black;"
+           autoplay></video>
 {% endblock %}
