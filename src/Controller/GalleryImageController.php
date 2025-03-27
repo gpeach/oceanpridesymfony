@@ -75,6 +75,9 @@ class GalleryImageController extends AbstractController
                         $galleryImage->setType('video');
                     }
 
+                    $cloudStorageType = $_ENV['CLOUD_STORAGE_DRIVER'] ?? 's3';
+                    $galleryImage->setCloudStorageType($cloudStorageType);
+
                     $this->em->persist($galleryImage);
                     $this->em->flush();
 
@@ -97,7 +100,8 @@ class GalleryImageController extends AbstractController
     #[Route('/gallery', name: 'gallery_index')]
     public function index(): Response
     {
-        $images = $this->em->getRepository(GalleryImage::class)->findAll();
+        $cloudStorageType = $_ENV['CLOUD_STORAGE_DRIVER'] ?? 's3';
+        $images = $this->em->getRepository(GalleryImage::class)->findBy(['cloudStorageType' => $cloudStorageType]);
 
         $files = [];
         foreach ($images as $image) {
@@ -105,6 +109,7 @@ class GalleryImageController extends AbstractController
                 'id' => $image->getId(),
                 'name' => $image->getName(),
                 'type' => $image->getType(),
+                'cloudStorageType' => $image->getCloudStorageType(),
                 'url' => $this->generateUrl('media_image', ['id' => $image->getId()]),
             ];
         }

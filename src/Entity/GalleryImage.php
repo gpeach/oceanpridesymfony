@@ -30,6 +30,9 @@ class GalleryImage
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private ?string $type = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $cloudStorageType = null;
+
     // === Getters and Setters ===
 
     public function getId(): ?int
@@ -105,6 +108,18 @@ class GalleryImage
     public function setType(?string $type): self
     {
         $this->type = $type;
+        return $this;
+    }
+
+    public function getCloudStorageType(): ?string
+    {
+        return $this->cloudStorageType;
+    }
+
+    public function setCloudStorageType(?string $cloudStorageType): static
+    {
+        $this->cloudStorageType = $cloudStorageType;
+
         return $this;
     }
 }
