@@ -15,4 +15,8 @@ interface CloudStorageInterface
     public function delete(string $path): void;
 
     public function getSignedUrl(string $cloudPath, string $expires = '+1 hour'): string;
+
+    public function cachePosterImage(string $cloudPath, string $posterImagePath): void;
+
+    public function getCachedPosterImage(string $cloudPath): ?string;
 }

@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class GalleryImageController extends AbstractController
 {
@@ -21,7 +23,8 @@ class GalleryImageController extends AbstractController
     public function __construct(
         private EntityManagerInterface $em,
         private LoggerInterface $log,
-        private CloudStorageInterface $cloudStorage
+        private CloudStorageInterface $cloudStorage,
+        private CacheInterface $cache
     ) {}
 
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
@@ -77,6 +80,13 @@ class GalleryImageController extends AbstractController
 
                     $cloudStorageType = $_ENV['CLOUD_STORAGE_DRIVER'] ?? 's3';
                     $galleryImage->setCloudStorageType($cloudStorageType);
+
+                    // Cache the poster image
+                    $posterImagePath = $this->cache->get('poster_image_' . $galleryImage->getId(), function (ItemInterface $item) use ($galleryImage) {
+                        $item->expiresAfter(3600);
+                        return $this->generatePosterImage($galleryImage);
+                    });
+                    $galleryImage->setPosterImagePath($posterImagePath);
 
                     $this->em->persist($galleryImage);
                     $this->em->flush();
@@ -189,5 +199,37 @@ class GalleryImageController extends AbstractController
         }
 
         return new Response('<pre>' . ob_get_clean() . '</pre>');
+    }
+
+    private function generatePosterImage(GalleryImage $galleryImage): string
+    {
+        $localVideoPath = tempnam(sys_get_temp_dir(), 'video_');
+        $posterImagePath = tempnam(sys_get_temp_dir(), 'poster_') . '.jpg';
+
+        try {
+            // Download the video file locally
+            $stream = $this->cloudStorage->downloadStream($galleryImage->getFilePath());
+            file_put_contents($localVideoPath, stream_get_contents($stream));
+            fclose($stream);
+
+            // Generate the poster image using ffmpeg
+            $command = sprintf(
+                'ffmpeg -i %s -ss 00:00:01.000 -vframes 1 %s',
+                escapeshellarg($localVideoPath),
+                escapeshellarg($posterImagePath)
+            );
+
+            exec($command, $output, $returnVar);
+            if ($returnVar !== 0) {
+                throw new \RuntimeException("Failed to generate poster image: " . implode("\n", $output));
+            }
+
+            return $posterImagePath;
+        } finally {
+            // Clean up temporary files
+            if (file_exists($localVideoPath)) {
+                unlink($localVideoPath);
+            }
+        }
     }
 }

@@ -19,6 +19,9 @@ class GalleryImage
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $filePath = null;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $posterImagePath = null;
+
     private ?File $file = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
@@ -59,6 +62,17 @@ class GalleryImage
     public function setFilePath(?string $filePath): self
     {
         $this->filePath = $filePath;
+        return $this;
+    }
+
+    public function getPosterImagePath(): ?string
+    {
+        return $this->posterImagePath;
+    }
+
+    public function setPosterImagePath(?string $posterImagePath): self
+    {
+        $this->posterImagePath = $posterImagePath;
         return $this;
     }
 
