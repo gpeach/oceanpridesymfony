@@ -21,9 +21,9 @@ if(fileInput) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (!document.body.classList.contains('gallery-page')) return;
+    // if (!document.body.classList.contains('gallery-page')) return;
 
-    // Handle gallery card thumbnails
+    // Handle gallery card thumbnail image and video (hidden right now, using poster images)
     document.querySelectorAll('[data-id]').forEach(card => {
         const id = card.dataset.id;
 
@@ -52,26 +52,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 video.addEventListener('loadeddata', () => {
                     video.currentTime = 0.5;
                 });
-
-                // video.addEventListener('seeked', () => {
-                //     try {
-                //         img.src = canvas.toDataURL('image/jpeg');
-                //     } catch (err) {
-                //         console.warn(`Canvas export blocked for card ID ${id}:`, err);
-                //         // Leave placeholder image or fallback visual
-                //     }
-                // });
             })
             .catch(err => console.error(`Error fetching signed URL for card ID ${id}:`, err));
     });
 
-    // Handle modal video previews
+    // Handle modal image and video preview buttons
     document.querySelectorAll('[data-bs-target^="#previewModal"]').forEach(button => {
         button.addEventListener('click', () => {
             const modalId = button.getAttribute('data-bs-target');
             const id = modalId.replace('#previewModal', '');
-
-            //if (!video) return;
 
             fetch(`/media/play/${id}`)
                 .then(res => res.json())
@@ -99,26 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch(err => console.error(`Error fetching signed URL for modal ID ${id}:`, err));
         });
     });
-    //Handle "Full Size" button for videos
-    // document.querySelectorAll('[data-action="full-size"]').forEach(link => {
-    //     link.addEventListener('click', (e) => {
-    //         e.preventDefault();
-    //         const id = link.dataset.id;
-    //
-    //         fetch(`/media/play/${id}`)
-    //             .then(res => res.json())
-    //             .then(data => {
-    //                 if (!data.url) {
-    //                     console.error(`No full-size URL for ID ${id}:`, data);
-    //                     return;
-    //                 }
-    //
-    //                 window.open(data.url, '_blank');
-    //             })
-    //             .catch(err => console.error(`Error fetching full-size URL for ID ${id}:`, err));
-    //     });
-    // });
 
+    //image handler full screen display with close button
     document.querySelectorAll('[data-action="full-size"]').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
@@ -176,6 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    //video player setup in full screen
     document.querySelectorAll('[data-action="fullscreen-preview"]').forEach(btn => {
         btn.addEventListener('click', e => {
             e.preventDefault();

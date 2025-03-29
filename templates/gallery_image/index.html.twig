@@ -8,6 +8,7 @@
     <div class="row g-4">
         {% for image in images %}
             <div class="col-md-3">
+{#                gallery cards/tiles#}
                 <div class="card h-100 text-center p-1 border-red-deep">
                     <div style="height: 200px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #111;"
                          data-id="{{ image.id }}">
@@ -17,9 +18,6 @@
                                  alt="Image preview" style="max-height: 100%; max-width: 100%; object-fit: contain;"
                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"/>
                             <span style="display: none;">Image not found</span>
-                            {#                            <img id="thumb-image-{{ image.id }}" src="{{ image.url }}" alt="{{ image.name }}" #}
-                            {#                                 style="max-height: 100%; max-width: 100%; object-fit: contain;" /> #}
-
                         {% elseif image.type == 'video' %}
                             <img id="poster-{{ image.id }}"
                                  src="{{ image.posterUrl }}"
@@ -27,7 +25,6 @@
                             <video id="thumb-video-{{ image.id }}" preload="metadata"
                                    style="display:none; max-height: 100%; max-width: 100%; object-fit: contain;"
                                    muted></video>
-                            {#                            <canvas id="canvas-{{ image.id }}" style="display:none;"></canvas> #}
                         {% endif %}
                     </div>
                     <div class="card-body">
@@ -51,7 +48,6 @@
             </div>
 
             <!-- Modal for Video Preview -->
-            {#            {% if image.type == 'video' %} #}
             <div class="modal fade" id="previewModal{{ image.id }}" tabindex="-1"
                  aria-labelledby="modalLabel{{ image.id }}" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -82,30 +78,30 @@
                     </div>
                 </div>
             </div>
-            {#            {% endif %} #}
         {% else %}
             <p>No images or videos uploaded yet.</p>
         {% endfor %}
     </div>
 
-    <!-- Fullscreen Modal -->
-    <div class="modal fade" id="fullscreenModal" tabindex="-1" aria-labelledby="fullscreenLabel" aria-hidden="true">
-        <div class="modal-dialog modal-fullscreen modal-dialog-centered">
-            <div class="modal-content bg-black text-white">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="fullscreenLabel"></h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center d-flex align-items-center justify-content-center"
-                     style="background: black;">
-                    <img id="fullscreenImage" class="img-fluid d-none" alt="Full-size image"/>
-                    <video id="fullscreenVideo" class="w-100 h-auto d-none" controls style="max-height: 90vh;"></video>
-                </div>
-            </div>
-        </div>
-    </div>
+{#    <!-- Fullscreen Modal -->#}
+{#    <div class="modal fade" id="fullscreenModal" tabindex="-1" aria-labelledby="fullscreenLabel" aria-hidden="true">#}
+{#        <div class="modal-dialog modal-fullscreen modal-dialog-centered">#}
+{#            <div class="modal-content bg-black text-white">#}
+{#                <div class="modal-header">#}
+{#                    <h5 class="modal-title" id="fullscreenLabel"></h5>#}
+{#                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"#}
+{#                            aria-label="Close"></button>#}
+{#                </div>#}
+{#                <div class="modal-body text-center d-flex align-items-center justify-content-center"#}
+{#                     style="background: black;">#}
+{#                    <img id="fullscreenImage" class="img-fluid d-none" alt="Full-size image"/>#}
+{#                    <video id="fullscreenVideo" class="w-100 h-auto d-none" controls style="max-height: 90vh;"></video>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
 
+    <!-- Fullscreen Image Reusable Element | for blowing up gallery cards with images to full screen-->
     <div id="fullscreen-image-container"
          style="display: none; background: black; justify-content: center; align-items: center; position: fixed;
             top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; flex-direction: column;">
@@ -117,10 +113,10 @@
             ×
         </button>
         <img id="fullscreen-image"
-             style="max-width: 100%; max-height: 100%; object-fit: contain;" />
+             style="max-width: 100%; max-height: 100%; object-fit: contain;"/>
     </div>
 
-    {# Fullscreen Video Player Reusable Element #}
+    {# Fullscreen Video Player Reusable Element | for blowing up gallery cards with videos to full screen in a player #}
     <video id="preview-fullscreen-player" controls
            style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; background: black;"
            autoplay></video>
