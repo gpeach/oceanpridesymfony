@@ -21,9 +21,9 @@ if(fileInput) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (!document.body.classList.contains('gallery-page')) return;
+    // if (!document.body.classList.contains('gallery-page')) return;
 
-    // Handle gallery card thumbnails
+    // Handle gallery card thumbnail image and video (hidden right now, using poster images)
     document.querySelectorAll('[data-id]').forEach(card => {
         const id = card.dataset.id;
 
@@ -36,10 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const video = document.getElementById(`thumb-video-${id}`);
-                const canvas = document.getElementById(`canvas-${id}`);
-                const img = document.getElementById(`poster-${id}`);
+                const img = document.getElementById(`thumb-image-${id}`);
 
-                if (!video || !canvas || !img) {
+                if(img !== null){
+                    img.src = data.url;
+                }
+                if (!video) {
                     console.warn(`Missing elements for card ID ${id}`);
                     return;
                 }
@@ -50,31 +52,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 video.addEventListener('loadeddata', () => {
                     video.currentTime = 0.5;
                 });
-
-                video.addEventListener('seeked', () => {
-                    try {
-                        canvas.width = video.videoWidth;
-                        canvas.height = video.videoHeight;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                        img.src = canvas.toDataURL('image/jpeg');
-                    } catch (err) {
-                        console.warn(`Canvas export blocked for card ID ${id}:`, err);
-                        // Leave placeholder image or fallback visual
-                    }
-                });
             })
             .catch(err => console.error(`Error fetching signed URL for card ID ${id}:`, err));
     });
 
-    // Handle modal video previews
+    // Handle modal image and video preview buttons
     document.querySelectorAll('[data-bs-target^="#previewModal"]').forEach(button => {
         button.addEventListener('click', () => {
             const modalId = button.getAttribute('data-bs-target');
             const id = modalId.replace('#previewModal', '');
-            const video = document.getElementById(`modal-video-${id}`);
-
-            if (!video) return;
 
             fetch(`/media/play/${id}`)
                 .then(res => res.json())
@@ -83,8 +69,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         console.error(`No video URL returned for modal ID ${id}:`, data);
                         return;
                     }
-
-                    video.src = data.url;
+                    const video = document.getElementById(`modal-video-${id}`);
+                    const image = document.getElementById(`modal-image-${id}`);
+                    if(image !== null){
+                        image.src = data.url;
+                        image.style.display="block";
+                    }
+                    if(video !== null) {
+                        video.src = data.url;
+                    }
                     video.load();
 
                     // Try to autoplay (some browsers may block it unless muted or interacted)
@@ -95,11 +88,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch(err => console.error(`Error fetching signed URL for modal ID ${id}:`, err));
         });
     });
-    // Handle "Full Size" button for videos
+
+    //image handler full screen display with close button
     document.querySelectorAll('[data-action="full-size"]').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const id = link.dataset.id;
+            const type = link.closest('[data-id]')?.dataset?.type;
 
             fetch(`/media/play/${id}`)
                 .then(res => res.json())
@@ -109,12 +104,50 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
 
-                    window.open(data.url, '_blank');
+                    if (type === 'video') {
+                        window.open(data.url, '_blank');
+                        return;
+                    }
+
+                    // IMAGE fullscreen
+                    const container = document.getElementById('fullscreen-image-container');
+                    const img = document.getElementById('fullscreen-image');
+                    const closeBtn = document.getElementById('close-fullscreen-image');
+
+                    img.src = data.url;
+                    container.style.display = 'flex';
+                    img.style.display = 'block';
+
+                    const requestFS = container.requestFullscreen || container.webkitRequestFullscreen || container.msRequestFullscreen;
+                    const exitFS = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+
+                    if (requestFS) requestFS.call(container);
+
+                    const exitHandler = () => {
+                        const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
+
+                        if (!isFullscreen) {
+                            img.src = '';
+                            img.style.display = 'none';
+                            container.style.display = 'none';
+
+                            document.removeEventListener('fullscreenchange', exitHandler);
+                            document.removeEventListener('webkitfullscreenchange', exitHandler);
+                        }
+                    };
+
+                    document.addEventListener('fullscreenchange', exitHandler);
+                    document.addEventListener('webkitfullscreenchange', exitHandler);
+
+                    closeBtn.onclick = () => {
+                        if (exitFS) exitFS.call(document);
+                    };
                 })
                 .catch(err => console.error(`Error fetching full-size URL for ID ${id}:`, err));
         });
     });
 
+    //video player setup in full screen
     document.querySelectorAll('[data-action="fullscreen-preview"]').forEach(btn => {
         btn.addEventListener('click', e => {
             e.preventDefault();

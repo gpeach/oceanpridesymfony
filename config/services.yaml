@@ -27,6 +27,9 @@ services:
     App\Twig\AppExtension:
         tags: ['twig.extension']
 
+    App\Command\CachePostersCommand:
+        tags: [ 'console.command' ]
+
     Aws\S3\S3Client:
         factory: ['Aws\S3\S3Client', 'factory']
         arguments:

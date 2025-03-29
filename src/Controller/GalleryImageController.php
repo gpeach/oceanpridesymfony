@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class GalleryImageController extends AbstractController
 {
@@ -21,8 +23,10 @@ class GalleryImageController extends AbstractController
     public function __construct(
         private EntityManagerInterface $em,
         private LoggerInterface $log,
-        private CloudStorageInterface $cloudStorage
-    ) {}
+        private CloudStorageInterface $cloudStorage,
+        private CacheInterface $cache
+    ) {
+    }
 
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     #[Route('/gallery/upload', name: 'gallery_upload')]
@@ -61,7 +65,9 @@ class GalleryImageController extends AbstractController
                 $cloudPath = '/client_photos/' . $filename;
 
                 try {
-                    if ($this->DEBUG_UPLOAD) $this->log('Calling cloudStorage->upload()');
+                    if ($this->DEBUG_UPLOAD) {
+                        $this->log('Calling cloudStorage->upload()');
+                    }
 
                     $this->cloudStorage->upload($cloudPath, $file->getPathname());
 
@@ -78,15 +84,29 @@ class GalleryImageController extends AbstractController
                     $cloudStorageType = $_ENV['CLOUD_STORAGE_DRIVER'] ?? 's3';
                     $galleryImage->setCloudStorageType($cloudStorageType);
 
+                    // Cache the poster image
+                    $posterImagePath = $this->cache->get(
+                        'poster_image_' . $galleryImage->getId(),
+                        function (ItemInterface $item) use ($galleryImage) {
+                            $item->expiresAfter(3600);
+                            return $this->generatePosterImage($galleryImage);
+                        }
+                    );
+                    $galleryImage->setPosterImagePath($posterImagePath);
+
                     $this->em->persist($galleryImage);
                     $this->em->flush();
 
-                    if ($this->DEBUG_UPLOAD) $this->log('Saved to DB with ID: ' . $galleryImage->getId());
+                    if ($this->DEBUG_UPLOAD) {
+                        $this->log('Saved to DB with ID: ' . $galleryImage->getId());
+                    }
 
                     return $this->redirectToRoute('gallery_index');
                 } catch (\Throwable $e) {
                     $this->addFlash('error', 'Upload failed: ' . $e->getMessage());
-                    if ($this->DEBUG_UPLOAD) $this->log('Exception: ' . $e->getMessage());
+                    if ($this->DEBUG_UPLOAD) {
+                        $this->log('Exception: ' . $e->getMessage());
+                    }
                     return $this->redirectToRoute('gallery_upload');
                 }
             }
@@ -105,13 +125,33 @@ class GalleryImageController extends AbstractController
 
         $files = [];
         foreach ($images as $image) {
-            $files[] = [
-                'id' => $image->getId(),
-                'name' => $image->getName(),
-                'type' => $image->getType(),
-                'cloudStorageType' => $image->getCloudStorageType(),
-                'url' => $this->generateUrl('media_image', ['id' => $image->getId()]),
-            ];
+            try {
+                $posterImagePath = $this->cache->get(
+                    'poster_image_' . $image->getId(),
+                    function (ItemInterface $item) use ($image) {
+                        $item->expiresAfter(3600);
+                        $this->log('Cache miss for image ID ' . $image->getId());
+                        return $this->generatePosterImage($image);
+                    }
+                );
+
+                if ($posterImagePath) {
+                    $this->log('Cache hit for image ID ' . $image->getId());
+                }
+
+                $image->setPosterImagePath($posterImagePath);
+                $files[] = [
+                    'id' => $image->getId(),
+                    'name' => $image->getName(),
+                    'type' => $image->getType(),
+                    'cloudStorageType' => $image->getCloudStorageType(),
+                    'url' => $this->generateUrl('media_play', ['id' => $image->getId()]),
+                    // Let JS fetch signed video URL
+                    'posterUrl' => $image->getPosterImagePath(),
+                ];
+            } catch (\Throwable $e) {
+                $this->log('Failed to retrieve poster image for ID ' . $image->getId() . ': ' . $e->getMessage());
+            }
         }
 
         return $this->render('gallery_image/index.html.twig', [
@@ -126,68 +166,70 @@ class GalleryImageController extends AbstractController
         }
     }
 
-    #[Route('/test-list', name: 'test_dropbox_list')]
-    public function testList(FilesystemOperator $dropbox): Response
+    #[Route('/gallery/generate-poster/{id}', name: 'gallery_generate_poster')]
+    public function generatePosterImage(GalleryImage $galleryImage): string
     {
-        try {
-            $dropbox->write('moo-' . uniqid() . '.txt', 'Testing file visibility.');
-            $listing = $dropbox->listContents('', false);
-            $output = "<h1>Dropbox File List</h1>";
+        $ffmpegPath = $_ENV['FFMPEG_PATH'] ?? 'ffmpeg';
+        //$posterDir = $this->getParameter('kernel.project_dir') . '/public/images/posters';
+        $posterDir = $this->getParameter(
+                'kernel.project_dir'
+            ) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'posters';
+        $posterFilename = $galleryImage->getId() . '.jpg';
+        $posterFullPath = $posterDir . DIRECTORY_SEPARATOR . $posterFilename;
+        $publicRelativePath = 'images/posters/' . $posterFilename;
 
-            foreach ($listing as $item) {
-                $output .= $item->path() . '<br>';
+        if (!is_dir($posterDir)) {
+            mkdir($posterDir, 0775, true);
+        }
+
+        if (file_exists($posterFullPath)) {
+            return $publicRelativePath;
+        }
+
+        $localVideoPath = tempnam(sys_get_temp_dir(), 'video_');
+        $posterTempPath = tempnam(sys_get_temp_dir(), 'poster_') . '.jpg';
+
+        try {
+            $stream = $this->cloudStorage->downloadStream($galleryImage->getFilePath());
+            file_put_contents($localVideoPath, stream_get_contents($stream));
+            fclose($stream);
+            -
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $mimeType = $finfo->file($localVideoPath);
+
+            if (str_starts_with($mimeType, 'video/')) {
+                // ffmpeg poster from video
+                $command = sprintf(
+                    '%s -i %s -ss 00:00:01.000 -vframes 1 -vf scale=640:-1 %s',
+                    escapeshellarg($ffmpegPath),
+                    escapeshellarg($localVideoPath),
+                    escapeshellarg($posterTempPath)
+                );
+                exec($command, $output, $returnVar);
+            } else {
+                // Resize image input with ffmpeg
+                $command = sprintf(
+                    '%s -i %s -vf scale=640:-1 %s',
+                    escapeshellarg($ffmpegPath),
+                    escapeshellarg($localVideoPath),
+                    escapeshellarg($posterTempPath)
+                );
+                exec($command, $output, $returnVar);
+            }
+            if ($returnVar !== 0 || !file_exists($posterTempPath)) {
+                throw new \RuntimeException("Failed to generate poster image: " . implode("\n", $output));
             }
 
-            return new Response($output);
-        } catch (\Throwable $e) {
-            return new Response('❌ Error listing Dropbox files: ' . $e->getMessage());
+            rename($posterTempPath, $posterFullPath);
+
+            return $publicRelativePath;
+        } finally {
+            if (file_exists($localVideoPath)) {
+                unlink($localVideoPath);
+            }
+            if (file_exists($posterTempPath)) {
+                unlink($posterTempPath);
+            }
         }
-    }
-
-    #[Route('/test-upload', name: 'test_upload')]
-    public function test(FilesystemOperator $dropbox): Response
-    {
-        $dropbox->write('test-file.txt', 'This is a Dropbox test upload!');
-        return new Response('✅ Uploaded to Dropbox!');
-    }
-
-    #[Route('/test-dropbox-auth', name: 'test_dropbox_auth')]
-    public function testDropboxAuth(HttpClientInterface $http): Response
-    {
-        $clientId = $_ENV['DROPBOX_CLIENT_ID'] ?? 'MISSING';
-        $clientSecret = $_ENV['DROPBOX_CLIENT_SECRET'] ?? 'MISSING';
-        $refreshToken = $_ENV['DROPBOX_REFRESH_TOKEN'] ?? 'MISSING';
-
-        ob_start(); // capture all output
-
-        echo "Testing Dropbox Auth...\n";
-        echo "Client ID: " . $clientId . "\n";
-        echo "Client Secret: " . substr($clientSecret, 0, 5) . "...\n";
-        echo "Refresh Token: " . substr($refreshToken, 0, 5) . "...\n\n";
-
-        try {
-            $response = $http->request('POST', 'https://api.dropboxapi.com/oauth2/token', [
-                'headers' => [
-                    'Content-Type' => 'application/x-www-form-urlencoded',
-                ],
-                'body' => [
-                    'grant_type' => 'refresh_token',
-                    'refresh_token' => $refreshToken,
-                    'client_id' => $clientId,
-                    'client_secret' => $clientSecret,
-                ],
-            ]);
-
-            $data = $response->toArray();
-
-            echo "SUCCESS:\n";
-            print_r($data);
-
-        } catch (\Exception $e) {
-            echo "ERROR:\n";
-            echo $e->getMessage();
-        }
-
-        return new Response('<pre>' . ob_get_clean() . '</pre>');
     }
 }

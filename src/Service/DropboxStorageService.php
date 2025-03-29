@@ -26,6 +26,9 @@ class DropboxStorageService implements CloudStorageInterface
         } else {
             $this->uploadChunked($cloudPath, $localPath);
         }
+
+        // Generate and cache the poster image
+        $posterImagePath = $this->generateAndCachePosterImage($cloudPath);
     }
 
     private function uploadChunked(string $cloudPath, string $localPath, int $chunkSize = 8 * 1024 * 1024): void
@@ -131,6 +134,64 @@ class DropboxStorageService implements CloudStorageInterface
             return $response;
         } catch (\Throwable $e) {
             throw new RuntimeException('Dropbox error: ' . $e->getMessage(), 0, $e);
+        }
+    }
+
+    public function cachePosterImage(string $cloudPath, string $posterImagePath): void
+    {
+        $cacheDir = '/path/to/cache/directory';
+        if (!is_dir($cacheDir)) {
+            mkdir($cacheDir, 0777, true);
+        }
+
+        $cacheFilePath = $cacheDir . '/' . md5($cloudPath) . '.jpg';
+        copy($posterImagePath, $cacheFilePath);
+    }
+
+    public function getCachedPosterImage(string $cloudPath): ?string
+    {
+        $cacheDir = '/path/to/cache/directory';
+        $cacheFilePath = $cacheDir . '/' . md5($cloudPath) . '.jpg';
+
+        return file_exists($cacheFilePath) ? $cacheFilePath : null;
+    }
+
+    private function generateAndCachePosterImage(string $cloudPath): string
+    {
+        $localVideoPath = tempnam(sys_get_temp_dir(), 'video_');
+        $posterImagePath = tempnam(sys_get_temp_dir(), 'poster_') . '.jpg';
+
+        try {
+            // Download the video file locally
+            $stream = $this->client->download($cloudPath);
+            if (!is_resource($stream)) {
+                throw new RuntimeException("Expected resource from Dropbox, got " . gettype($stream));
+            }
+
+            file_put_contents($localVideoPath, stream_get_contents($stream));
+            fclose($stream);
+
+            // Generate the poster image using ffmpeg
+            $command = sprintf(
+                'ffmpeg -i %s -ss 00:00:01.000 -vframes 1 %s',
+                escapeshellarg($localVideoPath),
+                escapeshellarg($posterImagePath)
+            );
+
+            exec($command, $output, $returnVar);
+            if ($returnVar !== 0) {
+                throw new RuntimeException("Failed to generate poster image: " . implode("\n", $output));
+            }
+
+            // Cache the poster image
+            $this->cachePosterImage($cloudPath, $posterImagePath);
+
+            return $posterImagePath;
+        } finally {
+            // Clean up temporary files
+            if (file_exists($localVideoPath)) {
+                unlink($localVideoPath);
+            }
         }
     }
 }
