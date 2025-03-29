@@ -245,7 +245,7 @@ class GalleryImageController extends AbstractController
             $stream = $this->cloudStorage->downloadStream($galleryImage->getFilePath());
             file_put_contents($localVideoPath, stream_get_contents($stream));
             fclose($stream);
-
+-
             $finfo = new \finfo(FILEINFO_MIME_TYPE);
             $mimeType = $finfo->file($localVideoPath);
 

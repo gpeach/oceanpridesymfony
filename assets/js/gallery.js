@@ -138,23 +138,28 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
 
-                    // Fullscreen image logic
+                    // IMAGE fullscreen
                     const container = document.getElementById('fullscreen-image-container');
                     const img = document.getElementById('fullscreen-image');
+                    const closeBtn = document.getElementById('close-fullscreen-image');
 
                     img.src = data.url;
-                    img.style.display = 'block';
                     container.style.display = 'flex';
+                    img.style.display = 'block';
 
                     const requestFS = container.requestFullscreen || container.webkitRequestFullscreen || container.msRequestFullscreen;
+                    const exitFS = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+
                     if (requestFS) requestFS.call(container);
 
                     const exitHandler = () => {
                         const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
+
                         if (!isFullscreen) {
                             img.src = '';
                             img.style.display = 'none';
                             container.style.display = 'none';
+
                             document.removeEventListener('fullscreenchange', exitHandler);
                             document.removeEventListener('webkitfullscreenchange', exitHandler);
                         }
@@ -162,6 +167,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     document.addEventListener('fullscreenchange', exitHandler);
                     document.addEventListener('webkitfullscreenchange', exitHandler);
+
+                    closeBtn.onclick = () => {
+                        if (exitFS) exitFS.call(document);
+                    };
                 })
                 .catch(err => console.error(`Error fetching full-size URL for ID ${id}:`, err));
         });
