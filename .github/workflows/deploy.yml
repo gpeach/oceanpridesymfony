@@ -22,7 +22,7 @@ jobs:
 
       - name: Deploy to DreamHost via rsync
         run: |
-          rsync -avz --delete --exclude='.git*' --exclude='var/*' --exclude='node_modules' ./ ${{ secrets.DREAMHOST_USER }}@${{ secrets.DREAMHOST_HOST }}:${{ secrets.DREAMHOST_PATH }}
+          rsync -avz --delete --exclude='.env' --exclude='.git*' --exclude='var/*' --exclude='node_modules' ./ ${{ secrets.DREAMHOST_USER }}@${{ secrets.DREAMHOST_HOST }}:${{ secrets.DREAMHOST_PATH }}
 
       - name: Run Symfony cache:clear and warmup
         run: |
