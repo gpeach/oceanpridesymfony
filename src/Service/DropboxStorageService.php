@@ -28,7 +28,7 @@ class DropboxStorageService implements CloudStorageInterface
         }
 
         // Generate and cache the poster image
-        $posterImagePath = $this->generateAndCachePosterImage($cloudPath);
+        //$posterImagePath = $this->generateAndCachePosterImage($cloudPath);
     }
 
     private function uploadChunked(string $cloudPath, string $localPath, int $chunkSize = 8 * 1024 * 1024): void
