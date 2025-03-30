@@ -1,0 +1,33 @@
+name: Deploy to DreamHost
+
+on:
+  push:
+    branches:
+      - master  # Change this to match your deployment branch if different
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.DREAMHOST_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to DreamHost via rsync
+        run: |
+          rsync -avz --delete --exclude='.git*' --exclude='var/*' --exclude='node_modules' ./ ${{ secrets.DREAMHOST_USER }}@${{ secrets.DREAMHOST_HOST }}:${{ secrets.DREAMHOST_PATH }}
+
+      - name: Run Symfony cache:clear and warmup
+        run: |
+          ssh ${{ secrets.DREAMHOST_USER }}@${{ secrets.DREAMHOST_HOST }} "
+            cd ${{ secrets.DREAMHOST_PATH }} &&
+            php bin/console cache:clear --env=prod &&
+            php bin/console cache:warmup --env=prod
+          "
