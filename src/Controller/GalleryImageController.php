@@ -177,7 +177,9 @@ class GalleryImageController extends AbstractController
         $posterFilename = $galleryImage->getId() . '.jpg';
         $posterFullPath = $posterDir . DIRECTORY_SEPARATOR . $posterFilename;
         $publicRelativePath = 'images/posters/' . $posterFilename;
-
+        $this->log('Poster dir: ' . $posterDir);
+        $this->log('Poster path: ' . $posterFullPath);
+        $this->log('public relative path: ' . $publicRelativePath);
         if (!is_dir($posterDir)) {
             mkdir($posterDir, 0775, true);
         }
