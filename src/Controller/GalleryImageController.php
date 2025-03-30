@@ -89,6 +89,7 @@ class GalleryImageController extends AbstractController
                         'poster_image_' . $galleryImage->getId(),
                         function (ItemInterface $item) use ($galleryImage) {
                             $item->expiresAfter(3600);
+                            $this->log('about to generate');
                             return $this->generatePosterImage($galleryImage);
                         }
                     );
