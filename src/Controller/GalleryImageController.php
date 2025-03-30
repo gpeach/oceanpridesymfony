@@ -169,6 +169,9 @@ class GalleryImageController extends AbstractController
     #[Route('/gallery/generate-poster/{id}', name: 'gallery_generate_poster')]
     public function generatePosterImage(GalleryImage $galleryImage): string
     {
+        if ($this->DEBUG_UPLOAD) {
+            $this->log('hit generatePosterImage');
+        }
         $ffmpegPath = $_ENV['FFMPEG_PATH'] ?? 'ffmpeg';
         //$posterDir = $this->getParameter('kernel.project_dir') . '/public/images/posters';
         $posterDir = $this->getParameter(
@@ -177,9 +180,13 @@ class GalleryImageController extends AbstractController
         $posterFilename = $galleryImage->getId() . '.jpg';
         $posterFullPath = $posterDir . DIRECTORY_SEPARATOR . $posterFilename;
         $publicRelativePath = 'images/posters/' . $posterFilename;
-        $this->log('Poster dir: ' . $posterDir);
-        $this->log('Poster path: ' . $posterFullPath);
-        $this->log('public relative path: ' . $publicRelativePath);
+
+        if ($this->DEBUG_UPLOAD) {
+            $this->log('Poster dir: ' . $posterDir);
+            $this->log('Poster path: ' . $posterFullPath);
+            $this->log('public relative path: ' . $publicRelativePath);
+        }
+
         if (!is_dir($posterDir)) {
             mkdir($posterDir, 0775, true);
         }
