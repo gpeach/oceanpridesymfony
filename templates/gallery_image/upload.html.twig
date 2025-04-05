@@ -73,7 +73,7 @@
             xhr.onerror = function () {
                 result.classList.remove('d-none', 'alert-success');
                 result.classList.add('alert-danger');
-                result.textContent = '❌ Network error during upload.';
+                result.textContent = '❌ Network error during upload: ' + xhr.responseText;
             };
 
             xhr.send(formData);
