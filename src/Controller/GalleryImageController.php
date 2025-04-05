@@ -172,10 +172,7 @@ class GalleryImageController extends AbstractController
             mkdir($posterDir, 0775, true);
         }
 
-        $localVideoPath = $this->getParameter(
-                'kernel.project_dir'
-            ) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $galleryImage->getFilePath(
-            );
+        $localVideoPath = Path::canonicalize($this->getParameter('kernel.project_dir') . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $galleryImage->getFilePath());
 
         $cloudDownloadPath = $_ENV['CLOUD_FOLDER'] . '/' . $galleryImage->getFilePath();
 
@@ -188,11 +185,16 @@ class GalleryImageController extends AbstractController
 
 
             $posterFilename = $galleryImage->getId() . '.' . $posterFileExtension;
-            $posterTempPath = $this->getParameter(
-                    'kernel.project_dir'
-                ) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $posterFilename;
+            $posterTempPath = Path::canonicalize($this->getParameter('kernel.project_dir') . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $posterFilename);
             $posterFullPath = $posterDir . DIRECTORY_SEPARATOR . $posterFilename;
             $publicRelativePath = 'images/posters/' . $posterFilename;
+
+            if ($this->DEBUG_UPLOAD) {
+                $this->log->info('[UPLOAD DEBUG] $posterFilename: ' . $posterFilename);
+                $this->log->info('[UPLOAD DEBUG] $posterTempPath: ' . $posterTempPath);
+                $this->log->info('[UPLOAD DEBUG] $posterFullPath: ' . $posterFullPath);
+                $this->log->info('[UPLOAD DEBUG] $publicRelativePath: ' . $publicRelativePath);
+            }
 
 
             if (str_starts_with($mimeType, 'video/') && !file_exists($posterFullPath)) {
