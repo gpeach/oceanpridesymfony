@@ -13,19 +13,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Contracts\Cache\CacheInterface;
-use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Component\Filesystem\Path;
 
 class GalleryImageController extends AbstractController
 {
-    private bool $DEBUG_UPLOAD = true;
+    private bool $DEBUG_UPLOAD = false;
 
     public function __construct(
         private EntityManagerInterface $em,
         private LoggerInterface $log,
         private CloudStorageInterface $cloudStorage,
-        private CacheInterface $cache
     ) {
     }
 
