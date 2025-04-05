@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+ini_set('memory_limit', '512M');
+
 use App\Entity\GalleryImage;
 use App\Service\CloudStorageInterface;
 use Doctrine\ORM\EntityManagerInterface;
