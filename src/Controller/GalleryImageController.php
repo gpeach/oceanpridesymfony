@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-ini_set('memory_limit', '512M');
-
 use App\Entity\GalleryImage;
 use App\Service\CloudStorageInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -50,21 +48,12 @@ class GalleryImageController extends AbstractController
         if ($form->isSubmitted()) {
             $this->log('Form is valid: ' . ($form->isValid() ? 'yes' : 'no'));
 
-            if ($request->isXmlHttpRequest() && !$form->isValid()) {
-                $errors = [];
+            if (!$form->isValid()) {
                 foreach ($form->getErrors(true) as $error) {
-                    $errors[] = $error->getMessage();
+                    $this->log('Form error: ' . $error->getMessage());
                 }
-
-                return $this->json([
-                    'status' => 'error',
-                    'message' => 'Validation failed.',
-                    'errors' => $errors,
-                ], 400);
             }
         }
-
-
 
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form->get('file')->getData();
@@ -109,12 +98,7 @@ class GalleryImageController extends AbstractController
 
                     return $this->redirectToRoute('gallery_index');
                 } catch (\Throwable $e) {
-                    if ($request->isXmlHttpRequest()) {
-                        return $this->json([
-                            'status' => 'error',
-                            'message' => 'Upload failed: ' . $e->getMessage(),
-                        ], 500);
-                    }
+                    $this->addFlash('error', 'Upload failed: ' . $e->getMessage());
                     if ($this->DEBUG_UPLOAD) {
                         $this->log('Exception: ' . $e->getMessage());
                     }
