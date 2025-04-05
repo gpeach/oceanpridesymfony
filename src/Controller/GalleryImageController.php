@@ -179,8 +179,11 @@ class GalleryImageController extends AbstractController
 
         try {
             $stream = $this->cloudStorage->downloadStream($cloudDownloadPath);
-            file_put_contents($localVideoPath, stream_get_contents($stream));
-            fclose($stream);
+            $fp = fopen($localVideoPath, 'w');
+            while (!feof($stream)) {
+                fwrite($fp, fread($stream, 8192));
+            }
+            fclose($fp);
             $posterFileExtension = 'jpg';
             $mimeType = mime_content_type($localVideoPath);
 
