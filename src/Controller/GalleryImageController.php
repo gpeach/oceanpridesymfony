@@ -164,12 +164,16 @@ class GalleryImageController extends AbstractController
             $this->log('hit generatePosterImage');
         }
         $ffmpegPath = $_ENV['FFMPEG_PATH'] ?? 'ffmpeg';
-        $posterDir = $this->getParameter(
-                'kernel.project_dir'
-            ) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'posters';
+        $posterDir = Path::canonicalize($this->getParameter('kernel.project_dir') . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'posters');
+        $tmpDir = Path::canonicalize($this->getParameter('kernel.project_dir') . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'tmp');
+
 
         if (!is_dir($posterDir)) {
             mkdir($posterDir, 0775, true);
+        }
+
+        if (!is_dir($tmpDir)) {
+            mkdir($tmpDir, 0775, true);
         }
 
         $localVideoPath = Path::canonicalize($this->getParameter('kernel.project_dir') . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $galleryImage->getFilePath());
@@ -183,8 +187,8 @@ class GalleryImageController extends AbstractController
             $posterFileExtension = 'jpg';
             $mimeType = mime_content_type($localVideoPath);
 
-
             $posterFilename = $galleryImage->getId() . '.' . $posterFileExtension;
+
             $posterTempPath = Path::canonicalize($this->getParameter('kernel.project_dir') . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $posterFilename);
             $posterFullPath = $posterDir . DIRECTORY_SEPARATOR . $posterFilename;
             $publicRelativePath = 'images/posters/' . $posterFilename;
