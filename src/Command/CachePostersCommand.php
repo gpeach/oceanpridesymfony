@@ -41,21 +41,16 @@ class CachePostersCommand extends Command
 
         foreach ($images as $image) {
             try {
-                $posterImagePath = $this->cache->get(
-                    'poster_image_' . $image->getId(),
-                    function (ItemInterface $item) use ($image) {
-                        $item->expiresAfter(3600);
-                        return $this->galleryImageController->generatePosterImage($image);
-                    }
-                );
-                $image->setPosterImagePath($posterImagePath);
-                $this->em->persist($image);
-                $cachedCount++;
+                if(!$image->getPosterImagePath()){
+                    $posterImagePath = $this->galleryImageController->generatePosterImage($image);
+                    $image->setPosterImagePath($posterImagePath);
+                    $this->em->persist($image);
+                    $cachedCount++;
+                }
             } catch (\Throwable $e) {
                 $this->log->error('Failed to cache poster image for ID ' . $image->getId() . ': ' . $e->getMessage());
             }
         }
-        print_r($image);
         $this->em->flush();
 
         $io->success('Cached poster images for ' . $cachedCount . ' uploads.');

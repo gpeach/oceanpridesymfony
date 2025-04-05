@@ -143,7 +143,7 @@ class S3StorageService implements CloudStorageInterface
             }
 
             // Cache the poster image
-            $this->cachePosterImage($cloudPath, $posterImagePath);
+            //$this->cachePosterImage($cloudPath, $posterImagePath);
 
             return $posterImagePath;
         } finally {

@@ -15,6 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Component\Filesystem\Path;
 
 class GalleryImageController extends AbstractController
 {
@@ -62,7 +63,7 @@ class GalleryImageController extends AbstractController
 
             if ($file) {
                 $filename = uniqid() . '.' . $file->guessExtension();
-                $cloudPath = '/client_photos/' . $filename;
+                $cloudPath = $_ENV['CLOUD_FOLDER'] .'/'. $filename;
 
                 try {
                     if ($this->DEBUG_UPLOAD) {
@@ -71,7 +72,7 @@ class GalleryImageController extends AbstractController
 
                     $this->cloudStorage->upload($cloudPath, $file->getPathname());
 
-                    $galleryImage->setFilePath($cloudPath);
+                    $galleryImage->setFilePath($filename);
                     $galleryImage->setName($form->get('name')->getData());
 
                     $mime = $file->getMimeType();
@@ -83,20 +84,16 @@ class GalleryImageController extends AbstractController
 
                     $cloudStorageType = $_ENV['CLOUD_STORAGE_DRIVER'] ?? 's3';
                     $galleryImage->setCloudStorageType($cloudStorageType);
-
-                    // Cache the poster image
-                    $posterImagePath = $this->cache->get(
-                        'poster_image_' . $galleryImage->getId(),
-                        function (ItemInterface $item) use ($galleryImage) {
-                            $item->expiresAfter(3600);
-                            $this->log('about to generate');
-                            return $this->generatePosterImage($galleryImage);
-                        }
-                    );
-                    $galleryImage->setPosterImagePath($posterImagePath);
-
                     $this->em->persist($galleryImage);
                     $this->em->flush();
+
+                    $posterPath = Path::canonicalize($this->getParameter('kernel.project_dir') . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR .$galleryImage->getPosterImagePath());
+                    if(!$galleryImage->getPosterImagePath()){
+                        $posterImagePath = $this->generatePosterImage($galleryImage);
+                        $galleryImage->setPosterImagePath($posterImagePath);
+                        $this->em->persist($galleryImage);
+                        $this->em->flush();
+                    }
 
                     if ($this->DEBUG_UPLOAD) {
                         $this->log('Saved to DB with ID: ' . $galleryImage->getId());
@@ -127,20 +124,13 @@ class GalleryImageController extends AbstractController
         $files = [];
         foreach ($images as $image) {
             try {
-                $posterImagePath = $this->cache->get(
-                    'poster_image_' . $image->getId(),
-                    function (ItemInterface $item) use ($image) {
-                        $item->expiresAfter(3600);
-                        $this->log('Cache miss for image ID ' . $image->getId());
-                        return $this->generatePosterImage($image);
-                    }
-                );
-
-                if ($posterImagePath) {
-                    $this->log('Cache hit for image ID ' . $image->getId());
+                if(!$image->getPosterImagePath()){
+                    $posterImagePath = $this->generatePosterImage($image);
+                    $image->setPosterImagePath($posterImagePath);
+                    $this->em->persist($image);
+                    $this->em->flush();
                 }
 
-                $image->setPosterImagePath($posterImagePath);
                 $files[] = [
                     'id' => $image->getId(),
                     'name' => $image->getName(),
@@ -174,63 +164,68 @@ class GalleryImageController extends AbstractController
             $this->log('hit generatePosterImage');
         }
         $ffmpegPath = $_ENV['FFMPEG_PATH'] ?? 'ffmpeg';
-        //$posterDir = $this->getParameter('kernel.project_dir') . '/public/images/posters';
         $posterDir = $this->getParameter(
                 'kernel.project_dir'
             ) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'posters';
-        $posterFilename = $galleryImage->getId() . '.jpg';
-        $posterFullPath = $posterDir . DIRECTORY_SEPARATOR . $posterFilename;
-        $publicRelativePath = 'images/posters/' . $posterFilename;
-
-        if ($this->DEBUG_UPLOAD) {
-            $this->log('Poster dir: ' . $posterDir);
-            $this->log('Poster path: ' . $posterFullPath);
-            $this->log('public relative path: ' . $publicRelativePath);
-        }
 
         if (!is_dir($posterDir)) {
             mkdir($posterDir, 0775, true);
         }
 
-        if (file_exists($posterFullPath)) {
-            return $publicRelativePath;
-        }
+        $localVideoPath = $this->getParameter(
+                'kernel.project_dir'
+            ) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $galleryImage->getFilePath(
+            );
 
-        $localVideoPath = tempnam(sys_get_temp_dir(), 'video_');
-        $posterTempPath = tempnam(sys_get_temp_dir(), 'poster_') . '.jpg';
+        $cloudDownloadPath = $_ENV['CLOUD_FOLDER'] . '/' . $galleryImage->getFilePath();
 
         try {
-            $stream = $this->cloudStorage->downloadStream($galleryImage->getFilePath());
+            $stream = $this->cloudStorage->downloadStream($cloudDownloadPath);
             file_put_contents($localVideoPath, stream_get_contents($stream));
             fclose($stream);
-            -
-            $finfo = new \finfo(FILEINFO_MIME_TYPE);
-            $mimeType = $finfo->file($localVideoPath);
+            $posterFileExtension = 'jpg';
+            $mimeType = mime_content_type($localVideoPath);
 
-            if (str_starts_with($mimeType, 'video/')) {
+
+            $posterFilename = $galleryImage->getId() . '.' . $posterFileExtension;
+            $posterTempPath = $this->getParameter(
+                    'kernel.project_dir'
+                ) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $posterFilename;
+            $posterFullPath = $posterDir . DIRECTORY_SEPARATOR . $posterFilename;
+            $publicRelativePath = 'images/posters/' . $posterFilename;
+
+
+            if (str_starts_with($mimeType, 'video/') && !file_exists($posterFullPath)) {
                 // ffmpeg poster from video
                 $command = sprintf(
-                    '%s -i %s -ss 00:00:01.000 -vframes 1 -vf scale=640:-1 %s',
+                    '%s -i %s -ss 00:00:01.000 -vframes 1 -vf scale=640:-1 %s &',
                     escapeshellarg($ffmpegPath),
                     escapeshellarg($localVideoPath),
                     escapeshellarg($posterTempPath)
                 );
                 exec($command, $output, $returnVar);
             } else {
-                // Resize image input with ffmpeg
-                $command = sprintf(
-                    '%s -i %s -vf scale=640:-1 %s',
-                    escapeshellarg($ffmpegPath),
-                    escapeshellarg($localVideoPath),
-                    escapeshellarg($posterTempPath)
-                );
-                exec($command, $output, $returnVar);
+                if (!file_exists($posterFullPath)) {
+                    // Resize image input with ffmpeg
+                    $command = sprintf(
+                        '%s -i %s -vf scale=640:-1 %s &',
+                        escapeshellarg($ffmpegPath),
+                        escapeshellarg($localVideoPath),
+                        escapeshellarg($posterTempPath)
+                    );
+                    exec($command, $output, $returnVar);
+                }
             }
             if ($returnVar !== 0 || !file_exists($posterTempPath)) {
                 throw new \RuntimeException("Failed to generate poster image: " . implode("\n", $output));
             }
 
-            rename($posterTempPath, $posterFullPath);
+            try {
+                rename($posterTempPath, $posterFullPath);
+            } catch (\Throwable $e) {
+                $this->log('Failed to rename poster image: ' . $e->getMessage());
+                throw new \RuntimeException("Failed to rename poster image: " . $e->getMessage());
+            }
 
             return $publicRelativePath;
         } finally {

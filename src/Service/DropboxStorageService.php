@@ -22,7 +22,6 @@ class DropboxStorageService implements CloudStorageInterface
         if ($fileSize <= 150 * 1024 * 1024) {
             $stream = fopen($localPath, 'rb');
             $this->client->upload($cloudPath, $stream, 'add');
-            fclose($stream);
         } else {
             $this->uploadChunked($cloudPath, $localPath);
         }
@@ -184,7 +183,7 @@ class DropboxStorageService implements CloudStorageInterface
             }
 
             // Cache the poster image
-            $this->cachePosterImage($cloudPath, $posterImagePath);
+            //$this->cachePosterImage($cloudPath, $posterImagePath);
 
             return $posterImagePath;
         } finally {
