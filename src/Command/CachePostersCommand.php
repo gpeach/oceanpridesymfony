@@ -29,11 +29,18 @@ class CachePostersCommand extends Command
     protected function configure(): void
     {
         $this->setName(self::$defaultName)
-            ->setDescription('Batch cache poster images for existing uploads');
+            ->setDescription('Batch cache poster images for existing uploads')
+            ->addOption(
+                'all',         // long name: --all
+                'a',           // shortcut: -a
+                InputOption::VALUE_NONE, // it’s a boolean flag
+                'Run the command on all items'
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $runAll = $input->getOption('all');
         $io = new SymfonyStyle($input, $output);
         $cloudStorageType = $_ENV['CLOUD_STORAGE_DRIVER'] ?? 's3';
         $images = $this->em->getRepository(GalleryImage::class)->findBy(['cloudStorageType' => $cloudStorageType]);
@@ -41,7 +48,7 @@ class CachePostersCommand extends Command
 
         foreach ($images as $image) {
             try {
-                if(!$image->getPosterImagePath()){
+                if(!$image->getPosterImagePath() || $runAll) {
                     $posterImagePath = $this->galleryImageController->generatePosterImage($image);
                     $image->setPosterImagePath($posterImagePath);
                     $this->em->persist($image);
