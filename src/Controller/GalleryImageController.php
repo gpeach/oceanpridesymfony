@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Path;
 
 class GalleryImageController extends AbstractController
 {
-    private bool $DEBUG_UPLOAD = false;
+    private bool $DEBUG_UPLOAD = true;
 
     public function __construct(
         private EntityManagerInterface $em,
