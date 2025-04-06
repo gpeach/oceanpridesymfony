@@ -22,6 +22,8 @@ class S3StorageService implements CloudStorageInterface
             throw new \RuntimeException("Invalid or unreadable file: $localPath");
         }
 
+        $this->logger->info('[S3 MULTIPART UPLOAD] starting upload: ' . $localPath);
+
         $uploader = new MultipartUploader($this->s3, $localPath, [
             'bucket' => $_ENV['AWS_BUCKET'],
             'key'    => $cloudPath,
