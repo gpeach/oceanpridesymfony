@@ -8,7 +8,7 @@
 // });
 
 const fileInput = document.querySelector('#file');
-if(fileInput) {
+if (fileInput) {
     fileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         const fileSize = file.size / 1024 / 1024;
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const video = document.getElementById(`thumb-video-${id}`);
                 const img = document.getElementById(`thumb-image-${id}`);
 
-                if(img !== null){
+                if (img !== null) {
                     img.src = data.url;
                 }
                 if (!video) {
@@ -71,11 +71,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     const video = document.getElementById(`modal-video-${id}`);
                     const image = document.getElementById(`modal-image-${id}`);
-                    if(image !== null){
+                    if (image !== null) {
                         image.src = data.url;
-                        image.style.display="block";
+                        image.style.display = "block";
                     }
-                    if(video !== null) {
+                    if (video !== null) {
                         video.src = data.url;
                     }
                     video.load();
@@ -144,6 +144,37 @@ document.addEventListener('DOMContentLoaded', () => {
                     };
                 })
                 .catch(err => console.error(`Error fetching full-size URL for ID ${id}:`, err));
+        });
+    });
+
+    //delete button handler
+
+    document.querySelectorAll('.delete-button').forEach(button => {
+        button.addEventListener('click', async () => {
+            const confirmed = confirm('Are you sure you want to delete this file?');
+            if (!confirmed) return;
+
+            const name = button.dataset.name;
+            const imageId = button.dataset.imageId;
+
+            try {
+                const response = await fetch('/gallery/delete', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({name, imageId})
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('✅ File deleted!');
+                    location.reload();
+                } else {
+                    alert('❌ Error: ' + result.error);
+                }
+            } catch (err) {
+                alert('❌ Network error');
+                console.error(err);
+            }
         });
     });
 

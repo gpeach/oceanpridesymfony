@@ -43,6 +43,14 @@
                                 <a class="btn btn-xs btn-outline-red" href="#" data-id="{{ image.id }}"
                                    data-action="fullscreen-preview">Full Size</a>
                             {% endif %}
+                            {% if is_granted('ROLE_ADMIN') %}
+                            <button
+                                    class="btn btn-xs btn-outline-red delete-button"
+                                    data-image-id="{{ image.id }}"
+                                    data-name="{{ image.name }}">
+                                Delete
+                            </button>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

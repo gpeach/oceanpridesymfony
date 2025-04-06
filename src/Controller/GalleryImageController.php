@@ -61,7 +61,7 @@ class GalleryImageController extends AbstractController
 
             if ($file) {
                 $filename = uniqid() . '.' . $file->guessExtension();
-                $cloudPath = $_ENV['CLOUD_FOLDER'] .'/'. $filename;
+                $cloudPath = $_ENV['CLOUD_FOLDER'] . '/' . $filename;
 
                 try {
                     if ($this->DEBUG_UPLOAD) {
@@ -85,8 +85,12 @@ class GalleryImageController extends AbstractController
                     $this->em->persist($galleryImage);
                     $this->em->flush();
 
-                    $posterPath = Path::canonicalize($this->getParameter('kernel.project_dir') . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR .$galleryImage->getPosterImagePath());
-                    if(!$galleryImage->getPosterImagePath()){
+                    $posterPath = Path::canonicalize(
+                        $this->getParameter(
+                            'kernel.project_dir'
+                        ) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . $galleryImage->getPosterImagePath()
+                    );
+                    if (!$galleryImage->getPosterImagePath()) {
                         $posterImagePath = $this->generatePosterImage($galleryImage);
                         $galleryImage->setPosterImagePath($posterImagePath);
                         $this->em->persist($galleryImage);
@@ -122,7 +126,7 @@ class GalleryImageController extends AbstractController
         $files = [];
         foreach ($images as $image) {
             try {
-                if(!$image->getPosterImagePath()){
+                if (!$image->getPosterImagePath()) {
                     $posterImagePath = $this->generatePosterImage($image);
                     $image->setPosterImagePath($posterImagePath);
                     $this->em->persist($image);
@@ -162,8 +166,16 @@ class GalleryImageController extends AbstractController
             $this->log('hit generatePosterImage');
         }
         $ffmpegPath = $_ENV['FFMPEG_PATH'] ?? 'ffmpeg';
-        $posterDir = Path::canonicalize($this->getParameter('kernel.project_dir') . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'posters');
-        $tmpDir = Path::canonicalize($this->getParameter('kernel.project_dir') . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'tmp');
+        $posterDir = Path::canonicalize(
+            $this->getParameter(
+                'kernel.project_dir'
+            ) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'posters'
+        );
+        $tmpDir = Path::canonicalize(
+            $this->getParameter(
+                'kernel.project_dir'
+            ) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'tmp'
+        );
 
 
         if (!is_dir($posterDir)) {
@@ -174,7 +186,12 @@ class GalleryImageController extends AbstractController
             mkdir($tmpDir, 0775, true);
         }
 
-        $localVideoPath = Path::canonicalize($this->getParameter('kernel.project_dir') . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $galleryImage->getFilePath());
+        $localVideoPath = Path::canonicalize(
+            $this->getParameter(
+                'kernel.project_dir'
+            ) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $galleryImage->getFilePath(
+            )
+        );
 
         $cloudDownloadPath = $_ENV['CLOUD_FOLDER'] . '/' . $galleryImage->getFilePath();
 
@@ -190,7 +207,11 @@ class GalleryImageController extends AbstractController
 
             $posterFilename = $galleryImage->getId() . '.' . $posterFileExtension;
 
-            $posterTempPath = Path::canonicalize($this->getParameter('kernel.project_dir') . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $posterFilename);
+            $posterTempPath = Path::canonicalize(
+                $this->getParameter(
+                    'kernel.project_dir'
+                ) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $posterFilename
+            );
             $posterFullPath = $posterDir . DIRECTORY_SEPARATOR . $posterFilename;
             $publicRelativePath = 'images/posters/' . $posterFilename;
 
@@ -278,9 +299,9 @@ class GalleryImageController extends AbstractController
         $image = new GalleryImage();
         $image->setName($data['name']);
         $image->setFilePath($data['file_path']);
-        if(str_starts_with($data['type'], 'video/')){
+        if (str_starts_with($data['type'], 'video/')) {
             $image->setType('video');
-        } elseif(str_starts_with($data['type'], 'image/')) {
+        } elseif (str_starts_with($data['type'], 'image/')) {
             $image->setType('image');
         }
         $image->setCloudStorageType($data['cloud_storage_type']);
@@ -298,5 +319,40 @@ class GalleryImageController extends AbstractController
             'id' => $image->getId(),
             'poster_image_path' => $posterPath,
         ]);
+    }
+
+    #[Route('/gallery/delete', name: 'gallery_delete', methods: ['POST'])]
+    public function deleteImage(Request $request): JsonResponse
+    {
+
+
+        try {
+            $data = json_decode($request->getContent(), true);
+
+            if (!$this->isGranted('ROLE_ADMIN')) {
+                return $this->json(['error' => 'Access denied'], 403);
+            }
+
+            $image = $this->em->getRepository(GalleryImage::class)->findOneBy([
+                'id' => $data['imageId']
+            ]);
+
+            if (!isset($data['name'])) {
+                return $this->json(['error' => 'Invalid input'], 400);
+            }
+
+            $path = $_ENV['CLOUD_FOLDER'] . '/' . $image->getFilePath();
+
+            $this->cloudStorage->delete($path);
+
+            if ($image) {
+                $this->em->remove($image);
+                $this->em->flush();
+            }
+
+            return $this->json(['success' => true]);
+        } catch (\Throwable $e) {
+            return $this->json(['error' => $e->getMessage()], 500);
+        }
     }
 }
