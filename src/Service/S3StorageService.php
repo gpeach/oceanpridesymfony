@@ -3,12 +3,18 @@
 namespace App\Service;
 
 use Aws\S3\S3Client;
+use Aws\S3\MultipartUploader;
+use Aws\Exception\MultipartUploadException;
+use Psr\Log\LoggerInterface;
 
 class S3StorageService implements CloudStorageInterface
 {
-    public function __construct(private S3Client $s3, private string $bucket)
-    {
-    }
+
+    public function __construct(
+        private S3Client $s3,
+        private string $bucket,
+        private LoggerInterface $logger
+    ) {}
 
     public function upload(string $cloudPath, string $localPath): void
     {
@@ -16,15 +22,39 @@ class S3StorageService implements CloudStorageInterface
             throw new \RuntimeException("Invalid or unreadable file: $localPath");
         }
 
-        $this->s3->putObject([
-            'Bucket' => $this->bucket,
-            'Key' => $cloudPath,
-            'SourceFile' => $localPath,
+        $uploader = new MultipartUploader($this->s3, $localPath, [
+            'bucket' => $_ENV['AWS_BUCKET'],
+            'key'    => $cloudPath,
+            'ACL'    => 'public-read',
         ]);
 
-        // Generate and cache the poster image
-        //$posterImagePath = $this->generateAndCachePosterImage($cloudPath);
+        try {
+            $result = $uploader->upload();
+            $this->logger->info('[S3 MULTIPART UPLOAD] Upload complete: ' . $result['ObjectURL']);
+        } catch (MultipartUploadException $e) {
+            $this->logger->error('[S3 MULTIPART UPLOAD] Multipart upload failed: ' . $e->getMessage());
+            throw new \RuntimeException('Upload failed: ' . $e->getMessage());
+        }
     }
+
+
+//    public function upload(string $cloudPath, string $localPath): void
+//    {
+//        if (!file_exists($localPath) || !is_readable($localPath)) {
+//            throw new \RuntimeException("Invalid or unreadable file: $localPath");
+//        }
+//
+//        $this->s3->putObject([
+//            'Bucket' => $this->bucket,
+//            'Key' => $cloudPath,
+//            'SourceFile' => $localPath,
+//        ]);
+//
+//        // Generate and cache the poster image
+//        //$posterImagePath = $this->generateAndCachePosterImage($cloudPath);
+//    }
+
+
 
     public function download(string $cloudPath): string
     {
