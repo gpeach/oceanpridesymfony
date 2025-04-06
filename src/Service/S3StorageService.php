@@ -24,13 +24,11 @@ class S3StorageService implements CloudStorageInterface
 
         $this->logger->info('[S3 MULTIPART UPLOAD] starting upload: ' . $localPath);
 
-        $uploader = new MultipartUploader($this->s3, $localPath, [
-            'bucket' => $_ENV['AWS_BUCKET'],
-            'key'    => $cloudPath,
-            'ACL'    => 'public-read',
-        ]);
-
         try {
+            $uploader = new MultipartUploader($this->s3, $localPath, [
+                'bucket' => $_ENV['AWS_S3_BUCKET'],
+                'key'    => $cloudPath,
+            ]);
             $result = $uploader->upload();
             $this->logger->info('[S3 MULTIPART UPLOAD] Upload complete: ' . $result['ObjectURL']);
         } catch (MultipartUploadException $e) {
