@@ -86,8 +86,8 @@ class GalleryImageController extends AbstractController
 
                     $posterPath = Path::canonicalize($this->getParameter('kernel.project_dir') . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR .$galleryImage->getPosterImagePath());
                     if(!$galleryImage->getPosterImagePath()){
-                        //$posterImagePath = $this->generatePosterImage($galleryImage);
-                        //$galleryImage->setPosterImagePath($posterImagePath);
+                        $posterImagePath = $this->generatePosterImage($galleryImage);
+                        $galleryImage->setPosterImagePath($posterImagePath);
                         $this->em->persist($galleryImage);
                         $this->em->flush();
                     }
