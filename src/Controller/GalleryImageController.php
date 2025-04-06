@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Filesystem\Path;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class GalleryImageController extends AbstractController
 {
@@ -242,5 +243,60 @@ class GalleryImageController extends AbstractController
                 unlink($posterTempPath);
             }
         }
+    }
+
+    #[Route('/gallery/s3put', name: 'gallery_s3_put_presign', methods: ['POST'])]
+    public function s3PutPresign(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['name'], $data['type'])) {
+            return $this->json(['error' => 'Invalid input'], 400);
+        }
+
+        $extension = pathinfo($data['name'], PATHINFO_EXTENSION);
+        $filename = uniqid() . '.' . $extension;
+
+        try {
+            // ✅ This calls your new PUT presigner method
+            $presignData = $this->cloudStorage->createPresignedPutUrl($filename, $data['type']);
+            return $this->json($presignData);
+        } catch (\Throwable $e) {
+            return $this->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    #[Route('/gallery/metadata', name: 'gallery_upload_metadata', methods: ['POST'])]
+    public function uploadMetadata(Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if (!$data || !isset($data['file_path'], $data['name'], $data['type'], $data['cloud_storage_type'])) {
+            return new JsonResponse(['error' => 'Invalid input'], 400);
+        }
+
+        $image = new GalleryImage();
+        $image->setName($data['name']);
+        $image->setFilePath($data['file_path']);
+        if(str_starts_with($data['type'], 'video/')){
+            $image->setType('video');
+        } elseif(str_starts_with($data['type'], 'image/')) {
+            $image->setType('image');
+        }
+        $image->setCloudStorageType($data['cloud_storage_type']);
+        $image->setUpdatedAt(new \DateTime());
+
+        $em->persist($image);
+        $em->flush();
+
+        // Generate and save poster
+        $posterPath = $this->generatePosterImage($image);
+        $image->setPosterImagePath($posterPath);
+        $em->flush();
+
+        return new JsonResponse([
+            'id' => $image->getId(),
+            'poster_image_path' => $posterPath,
+        ]);
     }
 }

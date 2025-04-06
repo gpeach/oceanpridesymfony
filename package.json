@@ -22,6 +22,7 @@
     "dependencies": {
         "@popperjs/core": "^2.11.8",
         "@symfony/stimulus-bundle": "^2.23.0",
-        "bootstrap": "^5.3.3"
+        "bootstrap": "^5.3.3",
+        "uuid": "^11.1.0"
     }
 }

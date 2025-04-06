@@ -3,9 +3,11 @@
 namespace App\Service;
 
 use Aws\S3\S3Client;
+use Aws\S3\PostObjectV4;
 use Aws\S3\MultipartUploader;
 use Aws\Exception\MultipartUploadException;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class S3StorageService implements CloudStorageInterface
 {
@@ -14,8 +16,10 @@ class S3StorageService implements CloudStorageInterface
         private S3Client $s3,
         private string $bucket,
         private LoggerInterface $logger
-    ) {}
+    ) {
+    }
 
+    //think we are deprecating this in favor of js, at least for s3
     public function upload(string $cloudPath, string $localPath): void
     {
         if (!file_exists($localPath) || !is_readable($localPath)) {
@@ -27,7 +31,7 @@ class S3StorageService implements CloudStorageInterface
         try {
             $uploader = new MultipartUploader($this->s3, $localPath, [
                 'bucket' => $_ENV['AWS_S3_BUCKET'],
-                'key'    => $cloudPath,
+                'key' => $cloudPath,
             ]);
             $result = $uploader->upload();
             $this->logger->info('[S3 MULTIPART UPLOAD] Upload complete: ' . $result['ObjectURL']);
@@ -35,6 +39,25 @@ class S3StorageService implements CloudStorageInterface
             $this->logger->error('[S3 MULTIPART UPLOAD] Multipart upload failed: ' . $e->getMessage());
             throw new \RuntimeException('Upload failed: ' . $e->getMessage());
         }
+    }
+
+    public function createPresignedPutUrl(string $filename, string $mimeType): array
+    {
+        $folder = $_ENV['CLOUD_FOLDER'];
+        $path = $folder . '/' . $filename;
+
+        $cmd = $this->s3->getCommand('PutObject', [
+            'Bucket' => $this->bucket,
+            'Key' => $path,
+            'ContentType' => $mimeType
+        ]);
+
+        $request = $this->s3->createPresignedRequest($cmd, '+10 minutes');
+
+        return [
+            'url' => (string)$request->getUri(),
+            'filename' => $filename,
+        ];
     }
 
 
@@ -55,7 +78,6 @@ class S3StorageService implements CloudStorageInterface
 //    }
 
 
-
     public function download(string $cloudPath): string
     {
         $result = $this->s3->getObject([
@@ -63,7 +85,7 @@ class S3StorageService implements CloudStorageInterface
             'Key' => $cloudPath,
         ]);
 
-        return (string) $result['Body'];
+        return (string)$result['Body'];
     }
 
     public function downloadStream(string $cloudPath): mixed
@@ -118,69 +140,12 @@ class S3StorageService implements CloudStorageInterface
     {
         $cmd = $this->s3->getCommand('GetObject', [
             'Bucket' => $this->bucket,
-            'Key'    => $cloudPath,
+            'Key' => $cloudPath,
             'ResponseContentDisposition' => 'inline',
             'response-content-type' => 'video/mp4',
         ]);
 
         $request = $this->s3->createPresignedRequest($cmd, $expires);
-        return (string) $request->getUri();
-    }
-
-    public function cachePosterImage(string $cloudPath, string $posterImagePath): void
-    {
-        $cacheDir = '/path/to/cache/directory';
-        if (!is_dir($cacheDir)) {
-            mkdir($cacheDir, 0777, true);
-        }
-
-        $cacheFilePath = $cacheDir . '/' . md5($cloudPath) . '.jpg';
-        copy($posterImagePath, $cacheFilePath);
-    }
-
-    public function getCachedPosterImage(string $cloudPath): ?string
-    {
-        $cacheDir = '/path/to/cache/directory';
-        $cacheFilePath = $cacheDir . '/' . md5($cloudPath) . '.jpg';
-
-        return file_exists($cacheFilePath) ? $cacheFilePath : null;
-    }
-
-    private function generateAndCachePosterImage(string $cloudPath): string
-    {
-        $localVideoPath = tempnam(sys_get_temp_dir(), 'video_');
-        $posterImagePath = tempnam(sys_get_temp_dir(), 'poster_') . '.jpg';
-
-        try {
-            // Download the video file locally
-            $result = $this->s3->getObject([
-                'Bucket' => $this->bucket,
-                'Key' => $cloudPath,
-            ]);
-
-            file_put_contents($localVideoPath, $result['Body']);
-
-            // Generate the poster image using ffmpeg
-            $command = sprintf(
-                'ffmpeg -i %s -ss 00:00:01.000 -vframes 1 %s',
-                escapeshellarg($localVideoPath),
-                escapeshellarg($posterImagePath)
-            );
-
-            exec($command, $output, $returnVar);
-            if ($returnVar !== 0) {
-                throw new \RuntimeException("Failed to generate poster image: " . implode("\n", $output));
-            }
-
-            // Cache the poster image
-            //$this->cachePosterImage($cloudPath, $posterImagePath);
-
-            return $posterImagePath;
-        } finally {
-            // Clean up temporary files
-            if (file_exists($localVideoPath)) {
-                unlink($localVideoPath);
-            }
-        }
+        return (string)$request->getUri();
     }
 }
