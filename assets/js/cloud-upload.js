@@ -55,11 +55,11 @@ export async function saveToDatabase({ name, filename, type, storage }) {
 // Upload handling
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('uploadForm');
-    const storageType = document.body.dataset.storage;
-
     const progressBar = document.querySelector('.progress-bar');
     const progressWrapper = document.getElementById('uploadProgress');
     const result = document.getElementById('uploadResult');
+
+    const storageType = document.body.dataset.storage;
 
     if (!form) return;
 
@@ -105,7 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // your original Dropbox flow
             const formData = new FormData(form);
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', form.getAttribute('action'), true);
+            xhr.open('POST', '/gallery/upload', true);
+            // xhr.open('POST', form.getAttribute('action'), true);
 
             xhr.upload.addEventListener('progress', function (e) {
                 if (e.lengthComputable) {

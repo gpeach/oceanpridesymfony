@@ -148,7 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     //delete button handler
-
     document.querySelectorAll('.delete-button').forEach(button => {
         button.addEventListener('click', async () => {
             const confirmed = confirm('Are you sure you want to delete this file?');

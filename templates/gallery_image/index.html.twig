@@ -76,7 +76,7 @@
                                     <span style="display: none;">Video not found</span>
                                 </div>
                             {% elseif image.type == 'video' %}
-                                <video controls style="max-height: 60vh; width: 100%; object-fit: contain;"
+                                <video controls preload="auto" style="max-height: 60vh; width: 100%; object-fit: contain;"
                                        id="modal-video-{{ image.id }}" class="rounded shadow-sm">
                                     <!-- src is set dynamically -->
                                 </video>
@@ -126,7 +126,7 @@
     </div>
 
     {# Fullscreen Video Player Reusable Element | for blowing up gallery cards with videos to full screen in a player - test deploy #}
-    <video id="preview-fullscreen-player" controls
+    <video id="preview-fullscreen-player" controls preload="auto"
            style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; background: black;"
            autoplay></video>
 {% endblock %}

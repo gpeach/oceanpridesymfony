@@ -9,7 +9,9 @@ use RuntimeException;
 
 class DropboxStorageService implements CloudStorageInterface
 {
-    public function __construct(private Client $client) {}
+    public function __construct(private Client $client)
+    {
+    }
 
     public function upload(string $cloudPath, string $localPath): void
     {
@@ -23,11 +25,9 @@ class DropboxStorageService implements CloudStorageInterface
             $stream = fopen($localPath, 'rb');
             $this->client->upload($cloudPath, $stream, 'add');
         } else {
+            $cloudPath = '/' . $cloudPath;
             $this->uploadChunked($cloudPath, $localPath);
         }
-
-        // Generate and cache the poster image
-        //$posterImagePath = $this->generateAndCachePosterImage($cloudPath);
     }
 
     private function uploadChunked(string $cloudPath, string $localPath, int $chunkSize = 8 * 1024 * 1024): void
@@ -42,7 +42,7 @@ class DropboxStorageService implements CloudStorageInterface
 
             if ($offset === 0) {
                 $result = $this->client->uploadSessionStart($chunk, false);
-                $uploadSessionId = $result['session_id'];
+                $uploadSessionId = $result->session_id;
             } else {
                 $cursor = new UploadSessionCursor($uploadSessionId, $offset);
                 $this->client->uploadSessionAppend($chunk, $cursor);
@@ -52,17 +52,66 @@ class DropboxStorageService implements CloudStorageInterface
         }
 
         $cursor = new UploadSessionCursor($uploadSessionId, $offset);
-        $this->client->uploadSessionFinish(
-            $chunk, // last chunk
-            $cursor,
-            $cloudPath,
-            'add',
-            true,
-            false
-        );
+        try {
+            $this->client->uploadSessionFinish(
+                $chunk, // last chunk
+                $cursor,
+                $cloudPath,
+                'add',
+                true,
+                false
+            );
+        } catch (\Throwable $e) {
+            throw new RuntimeException('Failed to finish upload session: ' . $e->getMessage());
+        }
+
 
         fclose($stream);
+        $dummy = 'done';
     }
+
+//    private function uploadChunked(string $cloudPath, string $localPath, int $chunkSize = 8 * 1024 * 1024): void
+//    {
+//        $stream = fopen($localPath, 'rb');
+//        $offset = 0;
+//        $uploadSessionId = null;
+//
+//        while (!feof($stream)) {
+//            $chunk = fread($stream, $chunkSize);
+//            $length = strlen($chunk);
+//
+//            if ($offset === 0) {
+//                $result = $this->client->uploadSessionStart($chunk, false);
+//                $uploadSessionId = $result->session_id;
+//            } else {
+//                $cursor = new UploadSessionCursor($uploadSessionId, $offset);
+//
+//                if (feof($stream)) {
+//                    try {
+//                        $this->client->uploadSessionFinish(
+//                            $chunk,
+//                            $cursor,
+//                            $cloudPath,
+//                            'add',
+//                            true,
+//                            false
+//                        );
+//                    } catch (\Throwable $e) {
+//                        throw new \RuntimeException('Failed to finish upload session: ' . $e->getMessage());
+//                    }
+//
+//                    break; // ✅ Don’t keep looping
+//                } else {
+//                    // Normal chunk append
+//                    $this->client->uploadSessionAppend($chunk, $cursor);
+//                }
+//            }
+//
+//            $offset += $length;
+//        }
+//
+//        fclose($stream);
+//    }
 
     public function download(string $cloudPath): string
     {
