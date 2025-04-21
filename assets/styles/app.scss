@@ -372,7 +372,7 @@ form .form-control {
 }
 
 .btn-xs {
-  font-size: 0.65rem; // smaller font
+  font-size: 0.7rem; // smaller font
   padding: 0.2rem 0.5rem; // tighter padding
   line-height: 1.1;
   min-width: 60px;
@@ -405,10 +405,10 @@ form .form-control {
 
     h6 {
       font-size: 1rem;
-      font-weight: bold;
+      font-weight: 400;
     }
   }
-
+//moo
   .btn {
     margin-top: 0.5rem;
   }
@@ -429,7 +429,7 @@ form .form-control {
   background-color: #FF004D;
   color: #fff;
   border: none;
-  font-weight: 600;
+  font-weight: 400;
   padding: 0.5rem 1.25rem;
   border-radius: 0.5rem;
   border: 2px solid #FF004D;
@@ -451,7 +451,7 @@ form .form-control {
   background-color: transparent;
   color: #FF004D;
   border: 2px solid #FF004D;
-  font-weight: 600;
+  font-weight: 400;
   border-radius: 0.5rem;
   padding: 0.5rem 1.25rem;
   transition: background-color 0.2s ease, color 0.2s ease;
@@ -516,6 +516,11 @@ form .form-control {
 
 a {
   color: #FF4B6E; // softer branded red for body links
+  &.btn {
+    &:hover {
+      text-decoration: none;
+    }
+  }
 
   &:hover {
     color: #FF004D; // brighter on hover
