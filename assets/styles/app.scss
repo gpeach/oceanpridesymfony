@@ -1,13 +1,217 @@
 @import "~bootstrap/scss/bootstrap";
 
 // Typography
+
 body {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "open sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-variation-settings: "wdth" 100;
+  font-size: 1.1em;
+  font-style: normal;
   line-height: 1.6;
   background-color: #121212; // changed from #ff004d to dark grey
   color: #e0e0e0;
   padding-bottom: 50px;
 }
+
+.headline {
+  font-family: "League Spartan", sans-serif;
+  font-size: 2.5em;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.subhead {
+  font-family: "League Spartan", sans-serif;
+  font-size: 1.75em;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+figcaption {
+  font-family: "open sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-variation-settings: "wdth" 100;
+  font-size: .8em;
+  font-style: italic;
+}
+
+.coiny-regular {
+  font-family: "Coiny", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.permanent-marker-regular {
+  font-family: "Permanent Marker", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+// <weight>: Use a value from 300 to 900
+// <uniquifier>: Use a unique and descriptive class name
+
+.rubik-regular > {
+  font-family: "Rubik", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+// <weight>: Use a value from 100 to 900
+// <uniquifier>: Use a unique and descriptive class name
+
+.league-spartan-regular {
+  font-family: "League Spartan", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+// <weight>: Use a value from 100 to 900
+// <uniquifier>: Use a unique and descriptive class name
+
+.roboto-regular {
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+
+.poppins-thin {
+  font-family: "Poppins", sans-serif;
+  font-weight: 100;
+  font-style: normal;
+}
+
+.poppins-extralight {
+  font-family: "Poppins", sans-serif;
+  font-weight: 200;
+  font-style: normal;
+}
+
+.poppins-light {
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.poppins-regular {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.poppins-medium {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.poppins-semibold {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.poppins-bold {
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.poppins-extrabold {
+  font-family: "Poppins", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+}
+
+.poppins-black {
+  font-family: "Poppins", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+}
+
+.poppins-thin-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: 100;
+  font-style: italic;
+}
+
+.poppins-extralight-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: 200;
+  font-style: italic;
+}
+
+.poppins-light-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.poppins-regular-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.poppins-medium-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.poppins-semibold-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.poppins-bold-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.poppins-extrabold-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: 800;
+  font-style: italic;
+}
+
+.poppins-black-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: 900;
+  font-style: italic;
+}
+
+// <weight>: Use a value from 100 to 900
+// <uniquifier>: Use a unique and descriptive class name
+
+.raleway-regular {
+  font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+// <weight>: Use a value from 300 to 800
+// <uniquifier>: Use a unique and descriptive class name
+
+.open-sans-regular {
+  font-family: "Open Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+
 
 // Sections
 section {
