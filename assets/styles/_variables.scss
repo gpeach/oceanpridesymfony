@@ -1,0 +1,49 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// _variables.scss
+// Define typography settings and semantic color palette for the site
+// ─────────────────────────────────────────────────────────────────────────────
+
+@import "~bootstrap/scss/bootstrap";
+
+// ─ Typography Variables ──────────────────────────────────────────────────────
+$font-body-family:        "Open Sans", sans-serif !default;
+$font-body-optical:       auto;
+$font-body-weight:        300;
+$font-body-variation:     'wdth' 100;
+$font-body-size:          1.1em;
+$font-body-style:         normal;
+$font-body-line-height:   1.6;
+
+$font-headline-family:    "League Spartan", sans-serif !default;
+$font-headline-weight:    400;
+$font-headline-size:      2.5em;
+$font-subhead-size:       1.75em;
+
+$font-caption-family:     "Open Sans", sans-serif;
+$font-caption-size:       0.8em;
+$font-caption-style:      italic;
+
+// ─ Color Palette Variables ─────────────────────────────────────────────────
+$default-palette-dark:    #121212 !default;
+$default-palette-light:   #e0e0e0 !default;
+
+// Light-mode colors
+$default-palette-light-bg:   #ffffff;
+$default-palette-light-text: #121212;
+
+$palette-primary:         #1E2A47;
+$palette-primary-dark:    #16203A;
+$palette-primary-light:   #344469;
+
+$palette-accent:          #D4AF37;
+$palette-accent-dark:     #B08B2C;
+$palette-accent-light:    #E4C86F;
+
+// Panel background colors
+$panel-bg-dark:  #1a1a1a;
+$panel-bg-light: #f9f9f9;
+
+// Legacy reds (commented)
+// $color-bright-red:       #FF004D;
+// $color-soft-red:         #FF3366;
+// $color-dark-red:         #990030;

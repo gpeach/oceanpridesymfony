@@ -3,32 +3,26 @@
 {% block title %}Fort Lauderdale FL Aerial Video | Home{% endblock %}
 
 {% block content %}
-    <section class="bg-dark text-white text-center p-5 rounded border-red-deep mt-5">
+    <section class="bg-dark text-white text-center p-5 rounded border-primary-dark mt-5">
         <div class="container">
-            <div class="row">
+            <div class="row align-items-center">
                 <div class="col-md-6">
                     <h1 class="headline text-start">Welcome to<br>{{ corp_name }}</h1>
-                    <p class="text-start">Gary Hardin-Peach<br>
+                    <p class="text-start">
+                        Gary Hardin-Peach<br>
                         Videographer - Camera Operator<br>
                         LICENSED DRONE PILOT<br>
-                        Video Editor</p></div>
-                {#                <div class="col-md-6"> #}
-                {#                    <img src="/media/image/22" alt="Main Photo" class="img-fluid rounded shadow-sm mb-3" /> #}
-                {#                </div> #}
+                        Video Editor
+                    </p>
+                </div>
                 <div class="col-md-6">
                     <div class="ratio ratio-16x9">
-                        {#                        <iframe src="https://www.youtube.com/embed/v4qo-e0m6v8" class="rounded shadow-sm" #}
-                        {#                                title="Predators Under The Pier" #}
-                        {#                                allowfullscreen allow="autoplay; encrypted-media"></iframe> #}
                         <figure>
                             <div class="video-container rounded shadow-sm">
-
                                 <video controls preload="auto" class="w-100 h-100 rounded" style="object-fit: cover;">
-                                    <source src="/media/image/22"
-                                            type="video/mp4">
+                                    <source src="/media/image/85" type="video/mp4">
                                     Your browser does not support the video tag.
                                 </video>
-
                             </div>
                             <figcaption class="text-center text-white mt-2">Beautiful Mansions in Las Olas</figcaption>
                         </figure>
@@ -36,45 +30,32 @@
                 </div>
             </div>
         </div>
-
     </section>
 
-    <section class="bg-dark text-white p-5 rounded border-red-deep">
+    <section class="bg-dark text-white p-5 rounded border-primary-dark">
         <div class="container">
-            <div class="row">
+            <div class="row align-items-center">
                 <div class="col-md-6 photo">
-                    {#                    <img src="{{ asset("images/dan.png") }}" alt="Your Photo" #}
-                    {#                         class="img-fluid rounded shadow-sm photo-lg"> #}
                     <h2 class="subhead mt-3 text-start">About Us</h2>
                     <p class="text-start">
-                        <strong>Ocean Pride Media
-                        </strong> is a creative aerial media company based in South Florida, specializing in
-                        high-quality drone photography and video production. Founded with a passion for stunning visuals
-                        and a love for coastal living, we capture breathtaking perspectives that elevate your brand,
-                        tell your story, and showcase your property from new heights.</p>
-
-                    <p class="text-start">We're FAA Part 107 certified, fully insured, and committed to delivering
-                        exceptional results
-                        with every flight.
+                        <strong>Ocean Pride Media</strong> is a creative aerial media company based in South Florida, specializing in
+                        high-quality drone photography and video production...
+                    </p>
+                    <p class="text-start">
+                        We're FAA Part 107 certified, fully insured, and committed to delivering
+                        exceptional results with every flight.
                     </p>
                 </div>
                 <div class="col-md-6">
                     <div class="ratio ratio-16x9">
-                        {#                        <iframe src="https://www.youtube.com/embed/v4qo-e0m6v8" class="rounded shadow-sm" #}
-                        {#                                title="Predators Under The Pier" #}
-                        {#                                allowfullscreen allow="autoplay; encrypted-media"></iframe> #}
                         <figure>
                             <div class="video-container rounded shadow-sm">
-
                                 <video controls preload="auto" class="w-100 h-100 rounded" style="object-fit: cover;">
-                                    <source src="/media/image/26"
-                                            type="video/mp4">
+                                    <source src="/media/image/76" type="video/mp4">
                                     Your browser does not support the video tag.
                                 </video>
-
                             </div>
-                            <figcaption class="text-center text-white mt-2">Another Lauderdale By The Sea Sunset
-                            </figcaption>
+                            <figcaption class="text-center text-white mt-2">Another Lauderdale By The Sea Sunset</figcaption>
                         </figure>
                     </div>
                 </div>
@@ -82,28 +63,7 @@
         </div>
     </section>
 
-    {#    <section class="bg-dark text-white text-center p-5 rounded border-red-deep"> #}
-    {#        <h2>Get in Touch</h2> #}
-    {#        <p>Call {{ phone }} or email <a href="mailto:{{ email }}">{{ email }}</a></p> #}
-    {#    </section> #}
-
-    {#    <section class="bg-dark p-5 text-white text-center rounded photo border-red-deep"> #}
-    {#        <div class="container"> #}
-    {#            <img src="/media/image/16" #}
-    {#                 alt="Main Photo" #}
-    {#                 class="img-fluid rounded shadow-sm mb-3 photo-carousel-landscape"> #}
-    {#            <div class="d-flex justify-content-center gap-2 flex-wrap"> #}
-    {#                <img src="/media/image/16" #}
-    {#                     alt="Thumbnail 1" class="img-thumbnail photo-thumbnail" #}
-    {#                     style="width:100px;"> #}
-    {#                <img src="/media/image/25" #}
-    {#                     alt="Thumbnail 2" class="img-thumbnail photo-thumbnail" #}
-    {#                     style="width:100px;"> #}
-    {#            </div> #}
-    {#        </div> #}
-    {#    </section> #}
-
-    <section class="bg-dark text-white text-center p-5 rounded border-red-deep">
+    <section class="bg-dark text-white text-center p-5 rounded border-primary-dark">
         <h2 class="subhead">for inquiries:</h2>
         <p>{{ my_name }}<br>{{ address }}<br>{{ phone }}<br><a href="mailto:{{ email }}">{{ email }}</a></p>
     </section>

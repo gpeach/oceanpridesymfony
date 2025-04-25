@@ -1,18 +1,15 @@
 {% extends 'base.html.twig' %}
-
 {% set body_class = 'gallery-page' %}
 
-{% block content %}
-{#    {{dump( _context )}}#}
-    <h1 class="m-4">Gallery</h1>
+{% block title %}{{ corp_name }} | Gallery{% endblock %}
 
+{% block content %}
+    <h2 class="headline text-center mb-4">Gallery</h2>
     <div class="row g-4">
         {% for image in images %}
             <div class="col-md-3">
-{#                gallery cards/tiles#}
-                <div class="card h-100 text-center p-1 border-red-deep">
-                    <div style="height: 200px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #111;"
-                         data-id="{{ image.id }}">
+                <div class="card h-100 text-center p-2 shadow-sm">
+                    <div class="ratio ratio-1x1 rounded overflow-hidden bg-secondary-light">
                         {% if image.type == 'image' %}
                             <img id="poster-{{ image.id }}"
                                  src="{{ image.posterUrl }}"
@@ -29,23 +26,22 @@
                         {% endif %}
                     </div>
                     <div class="card-body">
-                        <h6 class="card-title">{{ image.name }}</h6>
+                        <h6 class="card-title mb-2">{{ image.name }}</h6>
                         <div class="d-flex justify-content-center gap-2">
-
-                            <button class="btn btn-xs btn-red" data-bs-toggle="modal"
+                            <button class="btn btn-accent btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#previewModal{{ image.id }}">
                                 Preview
                             </button>
                             {% if image.type == 'image' %}
-                                <a class="btn btn-xs btn-outline-red" href="#" data-id="{{ image.id }}"
+                                <a class="btn btn-xs btn-outline-accent" href="#" data-id="{{ image.id }}"
                                    data-action="full-size">Full Size</a>
                             {% elseif image.type == 'video' %}
-                                <a class="btn btn-xs btn-outline-red" href="#" data-id="{{ image.id }}"
+                                <a class="btn btn-xs btn-outline-accent" href="#" data-id="{{ image.id }}"
                                    data-action="fullscreen-preview">Full Size</a>
                             {% endif %}
                             {% if is_granted('ROLE_ADMIN') %}
                             <button
-                                    class="btn btn-xs btn-outline-red delete-button"
+                                    class="btn btn-xs btn-outline-secondary delete-button"
                                     data-image-id="{{ image.id }}"
                                     data-name="{{ image.name }}">
                                 Delete
@@ -56,15 +52,12 @@
                 </div>
             </div>
 
-            <!-- Modal for Video Preview -->
-            <div class="modal fade" id="previewModal{{ image.id }}" tabindex="-1"
-                 aria-labelledby="modalLabel{{ image.id }}" aria-hidden="true">
+            <div class="modal fade" id="previewModal{{ image.id }}" tabindex="-1" aria-labelledby="modalLabel{{ image.id }}" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-                    <div class="modal-content bg-dark text-white">
+                    <div class="modal-content rounded">
                         <div class="modal-header">
-                            <h6 class="modal-title" id="modalLabel{{ image.id }}">{{ image.name }}</h6>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
+                            <h5 class="modal-title" id="modalLabel{{ image.id }}">{{ image.name }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body text-center" style="max-height: 65vh; overflow-y: auto;">
 
@@ -82,13 +75,12 @@
                                 </video>
                                 <span style="display: none;">Video not found</span>
                             {% endif %}
-
                         </div>
                     </div>
                 </div>
             </div>
         {% else %}
-            <p>No images or videos uploaded yet.</p>
+            <p class="text-center">No media uploaded yet.</p>
         {% endfor %}
     </div>
 

@@ -1,553 +1,168 @@
-@import "~bootstrap/scss/bootstrap";
+// ─────────────────────────────────────────────────────────────────────────────
+// main.scss
+// Apply typography defaults, semantic colors, and light-mode rules
+// ─────────────────────────────────────────────────────────────────────────────
 
-// Typography
+@import "variables";
 
+// ─ Dark Mode (defaults) ──────────────────────────────────────────────────────
 body {
-  font-family: "open sans", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 300;
-  font-variation-settings: "wdth" 100;
-  font-size: 1.1em;
-  font-style: normal;
-  line-height: 1.6;
-  background-color: #121212; // changed from #ff004d to dark grey
-  color: #e0e0e0;
-  padding-bottom: 50px;
+  // Typography
+  font-family:             $font-body-family;
+  font-optical-sizing:     $font-body-optical;
+  font-weight:             $font-body-weight;
+  font-variation-settings: $font-body-variation;
+  font-size:               $font-body-size;
+  font-style:              $font-body-style;
+  line-height:             $font-body-line-height;
+
+  // Colors
+  background-color:        $default-palette-dark;
+  color:                   $default-palette-light;
+
+  padding-bottom:          50px;
 }
 
 .headline {
-  font-family: "League Spartan", sans-serif;
-  font-size: 2.5em;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
+  font-family:             $font-headline-family;
+  font-size:               $font-headline-size;
+  font-weight:             $font-headline-weight;
+  line-height:             1.2;
 }
 
 .subhead {
-  font-family: "League Spartan", sans-serif;
-  font-size: 1.75em;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
+  font-family:             $font-headline-family;
+  font-size:               $font-subhead-size;
+  font-weight:             $font-headline-weight;
 }
 
 figcaption {
-  font-family: "open sans", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 300;
-  font-variation-settings: "wdth" 100;
-  font-size: .8em;
-  font-style: italic;
+  font-family:             $font-caption-family;
+  font-size:               $font-caption-size;
+  font-style:              $font-caption-style;
 }
 
-.coiny-regular {
-  font-family: "Coiny", system-ui;
-  font-weight: 400;
-  font-style: normal;
+// ─ Utility Spacing ──────────────────────────────────────────────────────────
+$panel-spacing:           1.5rem;
+
+section,
+.card {
+  margin-bottom:           $panel-spacing;
 }
 
-.permanent-marker-regular {
-  font-family: "Permanent Marker", cursive;
-  font-weight: 400;
-  font-style: normal;
+// ─ Panel Backgrounds ────────────────────────────────────────────────────────
+section,
+.card,
+.modal-content {
+  background-color:        $panel-bg-dark;
+  color:                   $default-palette-light;
 }
 
-// <weight>: Use a value from 300 to 900
-// <uniquifier>: Use a unique and descriptive class name
-
-.rubik-regular > {
-  font-family: "Rubik", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
+// ─ Light Mode Overrides ─────────────────────────────────────────────────────
+// Triggered when <html data-bs-theme="light">
+html[data-bs-theme="light"] body {
+  background-color:        $default-palette-light-bg;
+  color:                   $default-palette-light-text;
 }
 
-// <weight>: Use a value from 100 to 900
-// <uniquifier>: Use a unique and descriptive class name
-
-.league-spartan-regular {
-  font-family: "League Spartan", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
+html[data-bs-theme="light"] section,
+html[data-bs-theme="light"] .card,
+html[data-bs-theme="light"] .modal-content,
+html[data-bs-theme="light"] .bg-dark {
+  background-color:        $panel-bg-light !important;
+  color:                   $default-palette-light-text;
 }
 
-// <weight>: Use a value from 100 to 900
-// <uniquifier>: Use a unique and descriptive class name
-
-.roboto-regular {
-  font-family: "Roboto", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-  font-variation-settings: "wdth" 100;
+html[data-bs-theme="light"] #uploadProgress {
+  background-color:        darken($panel-bg-light, 5%) !important;
 }
 
-.poppins-thin {
-  font-family: "Poppins", sans-serif;
-  font-weight: 100;
-  font-style: normal;
+// Override text utilities under light mode
+html[data-bs-theme="light"] .text-white {
+  color:                   $default-palette-light-text !important;
 }
 
-.poppins-extralight {
-  font-family: "Poppins", sans-serif;
-  font-weight: 200;
-  font-style: normal;
-}
-
-.poppins-light {
-  font-family: "Poppins", sans-serif;
-  font-weight: 300;
-  font-style: normal;
-}
-
-.poppins-regular {
-  font-family: "Poppins", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.poppins-medium {
-  font-family: "Poppins", sans-serif;
-  font-weight: 500;
-  font-style: normal;
-}
-
-.poppins-semibold {
-  font-family: "Poppins", sans-serif;
-  font-weight: 600;
-  font-style: normal;
-}
-
-.poppins-bold {
-  font-family: "Poppins", sans-serif;
-  font-weight: 700;
-  font-style: normal;
-}
-
-.poppins-extrabold {
-  font-family: "Poppins", sans-serif;
-  font-weight: 800;
-  font-style: normal;
-}
-
-.poppins-black {
-  font-family: "Poppins", sans-serif;
-  font-weight: 900;
-  font-style: normal;
-}
-
-.poppins-thin-italic {
-  font-family: "Poppins", sans-serif;
-  font-weight: 100;
-  font-style: italic;
-}
-
-.poppins-extralight-italic {
-  font-family: "Poppins", sans-serif;
-  font-weight: 200;
-  font-style: italic;
-}
-
-.poppins-light-italic {
-  font-family: "Poppins", sans-serif;
-  font-weight: 300;
-  font-style: italic;
-}
-
-.poppins-regular-italic {
-  font-family: "Poppins", sans-serif;
-  font-weight: 400;
-  font-style: italic;
-}
-
-.poppins-medium-italic {
-  font-family: "Poppins", sans-serif;
-  font-weight: 500;
-  font-style: italic;
-}
-
-.poppins-semibold-italic {
-  font-family: "Poppins", sans-serif;
-  font-weight: 600;
-  font-style: italic;
-}
-
-.poppins-bold-italic {
-  font-family: "Poppins", sans-serif;
-  font-weight: 700;
-  font-style: italic;
-}
-
-.poppins-extrabold-italic {
-  font-family: "Poppins", sans-serif;
-  font-weight: 800;
-  font-style: italic;
-}
-
-.poppins-black-italic {
-  font-family: "Poppins", sans-serif;
-  font-weight: 900;
-  font-style: italic;
-}
-
-// <weight>: Use a value from 100 to 900
-// <uniquifier>: Use a unique and descriptive class name
-
-.raleway-regular {
-  font-family: "Raleway", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-}
-
-// <weight>: Use a value from 300 to 800
-// <uniquifier>: Use a unique and descriptive class name
-
-.open-sans-regular {
-  font-family: "Open Sans", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-  font-variation-settings: "wdth" 100;
-}
-
-
-// Sections
-section {
-  margin-bottom: 3rem;
-}
-
-// Welcome Section
-.welcome {
-  text-align: center;
-  padding: 3rem 1rem;
-}
-
-// About Section
-.about {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2rem;
-  align-items: center;
-}
-
-.left-container,
-.right-container {
-  flex: 1 1 400px;
-}
-
-.photo-about {
-  max-width: 100%;
-  border-radius: 1rem;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-}
-
-// Video container (16:9 aspect)
-.video-container-about,
-.video-container {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border-radius: 0.75rem;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
-
-  iframe {
-    width: 100%;
-    height: 100%;
-  }
-}
-
-// Call to Action
-.call-to-action {
-  background: #1f1f1f;
-  padding: 2rem;
-  border-radius: 1rem;
-  text-align: center;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
-}
-
-// Photo Section
-.photo {
-  text-align: center;
-
-  .photo-lg, .photo-carousel {
-    max-width: 400px;
-    height: auto;
-    border-radius: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-
-    @media (max-width: 768px) {
-      max-width: 100%;
-    }
-  }
-
-  .photo-carousel-landscape {
-    max-width: 900px;
-    height: auto;
-    border-radius: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-
-    @media (max-width: 768px) {
-      max-width: 100%;
-    }
-  }
-
-  .photo-thumbnails {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-
-    .photo-thumbnail {
-      width: 100px;
-      height: auto;
-      border-radius: 0.5rem;
-      box-shadow: 0 0 6px rgba(255, 255, 255, 0.1);
-      transition: transform 0.2s ease;
-
-      &:hover {
-        transform: scale(1.05);
-      }
-    }
-  }
-}
-
-// Forms
-form .form-control {
-  border-radius: 0.5rem;
-  padding: 0.75rem;
-}
-
-// Buttons
-.btn {
-  border-radius: 0.5rem;
-}
-
-// Shared nav link base
+// ─ Navbar Links ────────────────────────────────────────────────────────────
 .navbar .nav-link {
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  text-decoration: none;
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  color:                   $palette-accent;
+  background-color:        transparent;
+  border:                  none;
+  font-weight:             500;
 }
 
-// Mobile default (text links)
-.navbar .nav-link {
-  color: #FF4B6E;
-  background-color: transparent;
-  border: none;
-}
-
-// Highlight current route (mobile)
 .navbar .nav-link.active {
-  color: #fff;
-  background-color: #FF004D;
+  color:                   $default-palette-light;
+  background-color:        $palette-accent;
 }
 
-// On desktop: convert nav links to buttons
 @media (min-width: 768px) {
   .navbar .nav-link {
-    color: #fff;
-    background-color: #990030; // non-active = darker red
-    border: 2px solid #990030;
-    margin-right: 0.5rem;
+    color:                 $default-palette-light;
+    background-color:      $palette-primary;
+    border:                2px solid $palette-primary;
+    margin-right:          0.5rem;
   }
 
   .navbar .nav-link.active {
-    background-color: #FF004D; // active = bright red
-    border-color: #FF004D;
-    color: #fff;
+    background-color:      $palette-accent;
+    border-color:          $palette-accent;
   }
 
   .navbar .nav-link:hover {
-    background-color: #FF3366;
-    border-color: #FF3366;
-    color: #fff;
+    background-color:      $palette-accent-light;
+    border-color:          $palette-accent-light;
   }
 }
 
-.btn-xs {
-  font-size: 0.7rem; // smaller font
-  padding: 0.2rem 0.5rem; // tighter padding
-  line-height: 1.1;
-  min-width: 60px;
-  border-radius: 0.375rem;
-  @media (max-width: 480px) {
-    font-size: 0.6rem;
-    padding: 0.15rem 0.4rem;
-  }
-}
-
-
-// Upload progress bar
-#uploadProgress {
-  background-color: #2a2a2a;
-
-  .progress-bar {
-    font-weight: bold;
-  }
-}
-
-// Gallery Card Styling
-.card {
-  background-color: #1e1e1e;
-  border: none;
-  border-radius: 1rem;
-  overflow: hidden;
-
-  .card-body {
-    padding: 1rem;
-
-    h6 {
-      font-size: 1rem;
-      font-weight: 400;
-    }
-  }
-//moo
-  .btn {
-    margin-top: 0.5rem;
-  }
-}
-
-// Modal overrides for dark theme
-.modal-content {
-  background-color: #1a1a1a;
-  color: #fff;
-
-  .modal-header {
-    border-bottom: 1px solid #333;
-  }
-}
-
-// Custom Red Button Styles
-.btn-red {
-  background-color: #FF004D;
-  color: #fff;
-  border: none;
-  font-weight: 400;
-  padding: 0.5rem 1.25rem;
-  border-radius: 0.5rem;
-  border: 2px solid #FF004D;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+// ─ Button Variants ─────────────────────────────────────────────────────────
+.btn-accent {
+  background-color:        $palette-accent;
+  border:                  2px solid $palette-accent;
+  color:                   $default-palette-light;
 
   &:hover {
-    background-color: darken(#FF004D, 10%);
-    box-shadow: 0 0 10px rgba(255, 0, 77, 0.4);
-    color: #fff;
+    background-color:      $palette-accent-dark;
+    box-shadow:            0 0 10px rgba($palette-accent, 0.4);
   }
 
   &:focus {
-    outline: none;
-    box-shadow: 0 0 0 0.2rem rgba(255, 0, 77, 0.5);
+    box-shadow:            0 0 0 0.2rem rgba($palette-accent, 0.5);
   }
 }
 
-.btn-outline-red {
-  background-color: transparent;
-  color: #FF004D;
-  border: 2px solid #FF004D;
-  font-weight: 400;
-  border-radius: 0.5rem;
-  padding: 0.5rem 1.25rem;
-  transition: background-color 0.2s ease, color 0.2s ease;
+.btn-outline-accent {
+  background-color:        transparent;
+  color:                   $palette-accent;
+  border:                  2px solid $palette-accent;
 
   &:hover {
-    background-color: #FF004D;
-    color: #fff;
-  }
-
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 0.2rem rgba(255, 0, 77, 0.4);
+    background-color:      $palette-accent;
+    color:                 $default-palette-light;
   }
 }
 
-.btn-red-dark {
-  background-color: #990030;
-  color: #fff;
-  border: 2px solid #990030;
-  font-weight: 600;
-  padding: 0.5rem 1.25rem;
-  border-radius: 0.5rem;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+.btn-secondary {
+  background-color:        $palette-primary;
+  border:                  2px solid $palette-primary;
+  color:                   $default-palette-light;
 
   &:hover {
-    background-color: darken(#990030, 10%);
-    box-shadow: 0 0 10px rgba(153, 0, 48, 0.4);
-    color: #fff;
-  }
-
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 0.2rem rgba(153, 0, 48, 0.5);
+    background-color:      $palette-primary-dark;
   }
 }
 
-.btn-outline-red-dark {
-  background-color: transparent;
-  color: #990030;
-  border: 2px solid #990030;
-  font-weight: 600;
-  padding: 0.5rem 1.25rem;
-  border-radius: 0.5rem;
-  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+.btn-outline-secondary {
+  background-color:        transparent;
+  color:                   $palette-primary;
+  border:                  2px solid $palette-primary;
 
   &:hover {
-    background-color: #990030;
-    color: #fff;
-  }
-
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 0.2rem rgba(153, 0, 48, 0.4);
+    background-color:      $palette-primary;
+    color:                 $default-palette-light;
   }
 }
 
-.border-red-deep {
-  //border: 2px solid #66001f;
-  //border: 2px solid #4d0018; //using this but hidden for now
-  //border: 2px solid #330010;
+.border-primary-dark {
+  border:                  2px solid $palette-primary-dark;
 }
-
-a {
-  color: #FF4B6E; // softer branded red for body links
-  &.btn {
-    &:hover {
-      text-decoration: none;
-    }
-  }
-
-  &:hover {
-    color: #FF004D; // brighter on hover
-    text-decoration: underline;
-  }
-}
-
-// Override yellow link issue on dark backgrounds
-.bg-dark a,
-section.bg-dark a,
-.modal-content a,
-footer.bg-dark a {
-  color: #FF4B6E;
-
-  &:hover {
-    color: #FF004D;
-    text-decoration: underline;
-  }
-}
-
-// Call-to-action section links
-.call-to-action a {
-  color: #FF004D;
-  font-weight: 600;
-
-  &:hover {
-    color: #fff;
-    text-shadow: 0 0 8px rgba(255, 0, 77, 0.6);
-  }
-}
+// ─────────────────────────────────────────────────────────────────────────────

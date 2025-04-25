@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-bs-theme="{{ current_theme|default('light') }}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>{% block title %}Welcome!{% endblock %}</title>
     <link rel="icon"
           href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
@@ -13,81 +13,47 @@
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
     {% endblock %}
-
     {% block javascripts %}
         {{ encore_entry_script_tags('app') }}
         {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}
 </head>
 <body class="{{ body_class|default('') }}" data-storage="{{ cloud_storage|default('dropbox') }}">
-{% block body %}{% endblock %}
-<nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="blue">
+<nav class="navbar navbar-expand-lg border-bottom">
     <div class="container-fluid">
-        {#        <a class="navbar-brand" href="#">Navbar</a> #}
-        <a href="#" class="navbar-brand"><img src="{{ asset('images/dolphin_60px_72dpi.png') }}"></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" href="{{ path('app_home') }}">
+            <img src="{{ asset('images/dolphin_60px_72dpi.png') }}" alt="Logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#mainNav" aria-controls="mainNav"
+                aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav ms-auto">
                 {% set current = app.request.attributes.get('_route') %}
-
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link {{ current=='app_home'?'active':'' }}" href="{{ path('app_home') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ current=='app_contact'?'active':'' }}" href="{{ path('app_contact') }}">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ current=='gallery_index'?'active':'' }}" href="{{ path('gallery_index') }}">Gallery</a>
+                </li>
+                {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                     <li class="nav-item">
-                        <a href="{{ path('app_home') }}" class="nav-link {{ current == 'app_home' ? 'active' : '' }}">Home</a>
+                        <a class="nav-link {{ current=='app_login'?'active':'' }}" href="{{ path('app_login') }}">Login</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link {{ current=='gallery_upload'?'active':'' }}" href="{{ path('gallery_upload') }}">Upload</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ path('app_contact') }}"
-                           class="nav-link {{ current == 'app_contact' ? 'active' : '' }}">Contact</a>
+                        <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
                     </li>
-                    <li class="nav-item">
-                        <a href="{{ path('gallery_index') }}"
-                           class="nav-link {{ current == 'gallery_index' ? 'active' : '' }}">Gallery</a>
-                    </li>
-                    {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-                        <li class="nav-item">
-                            <a href="{{ path('app_login') }}"
-                               class="nav-link {{ current == 'app_login' ? 'active' : '' }}">Login</a>
-                        </li>
-                    {% endif %}
-                    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-                        <li class="nav-item">
-                            <a href="{{ path('gallery_upload') }}"
-                               class="nav-link {{ current == 'gallery_upload' ? 'active' : '' }}">Upload</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ path('app_logout') }}"
-                               class="nav-link {{ current == 'app_logout' ? 'active' : '' }}">Logout</a>
-                        </li>
-                    {% endif %}
-                </ul>
+                {% endif %}
             </ul>
-            {#                <li class="nav-item"> #}
-            {#                    <a class="nav-link active" aria-current="page" href="index_old.php">Home</a> #}
-            {#                </li> #}
-            {#                <li class="nav-item"> #}
-            {#                    <a class="nav-link" href="contact.php">Contact</a> #}
-            {#                </li> #}
-            {#                <li class="nav-item dropdown"> #}
-            {#                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> #}
-            {#                        Dropdown #}
-            {#                    </a> #}
-            {#                    <ul class="dropdown-menu"> #}
-            {#                        <li><a class="dropdown-item" href="#">Action</a></li> #}
-            {#                        <li><a class="dropdown-item" href="#">Another action</a></li> #}
-            {#                        <li><hr class="dropdown-divider"></li> #}
-            {#                        <li><a class="dropdown-item" href="#">Something else here</a></li> #}
-            {#                    </ul> #}
-            {#                </li> #}
-            {#                <li class="nav-item"> #}
-            {#                    <a class="nav-link disabled" aria-disabled="true">Disabled</a> #}
-            {#                </li> #}
-
-            {#            <form class="d-flex" role="search"> #}
-            {#                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"> #}
-            {#                <button class="btn btn-outline-success" type="submit">Search</button> #}
-            {#            </form> #}
         </div>
     </div>
 </nav>

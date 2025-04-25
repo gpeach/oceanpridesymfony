@@ -1,82 +1,29 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}{{ corp_name }} | Upload{% endblock %}
+
 {% block content %}
-    <div class="container py-5">
-        <h1 class="mb-4 text-center">📤 Upload to Gallery</h1>
-
-        <div class="card shadow-sm mx-auto border-red-deep" style="max-width: 600px;">
+    <section class="mx-auto" style="max-width:600px;">
+        <h2 class="headline text-center mb-4">Upload to Gallery</h2>
+        <div class="card shadow-sm">
             <div class="card-body">
-                {{ form_start(form, { attr: { id: 'uploadForm', enctype: 'multipart/form-data' } }) }}
-
-                <div class="form-floating mb-3">
-                    {{ form_widget(form.name, { attr: { class: 'form-control', placeholder: 'File Name' } }) }}
-                    <label for="{{ form.name.vars.id }}">Title / Label</label>
-                </div>
-
+                {{ form_start(form, {attr:{id:'uploadForm', enctype:'multipart/form-data'}}) }}
                 <div class="mb-3">
-                    <label for="{{ form.file.vars.id }}" class="form-label fw-semibold">Choose a photo or video</label>
-                    {{ form_widget(form.file, { attr: { class: 'form-control' } }) }}
+                    {{ form_label(form.name) }}
+                    {{ form_widget(form.name, {attr:{class:'form-control'}}) }}
                 </div>
-
-                <button type="submit" class="btn btn-red w-100">
-                    ⬆️ Upload File
-                </button>
-
+                <div class="mb-3">
+                    {{ form_label(form.file) }}
+                    {{ form_widget(form.file, {attr:{class:'form-control'}}) }}
+                </div>
+                <button type="submit" class="btn btn-accent w-100">Upload</button>
                 {{ form_end(form) }}
             </div>
         </div>
+    </section>
 
-        <div class="progress mt-4 d-none" id="uploadProgress" style="height: 20px; border-radius: 50px; overflow: hidden;">
-            <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%">0%</div>
-        </div>
-
-        <div class="alert mt-3 d-none text-center" id="uploadResult"></div>
+    <div class="progress mt-4 d-none" id="uploadProgress" style="height:20px;border-radius:50px;">
+        <div class="progress-bar" role="progressbar" style="width:0%">0%</div>
     </div>
-
-    <script>
-        {#const form = document.getElementById('uploadForm');#}
-        {#const progressBar = document.querySelector('.progress-bar');#}
-        {#const progressWrapper = document.getElementById('uploadProgress');#}
-        {#const result = document.getElementById('uploadResult');#}
-
-        {#form.addEventListener('submit', function (e) {#}
-        {#    e.preventDefault();#}
-
-        {#    const formData = new FormData(form);#}
-        {#    const xhr = new XMLHttpRequest();#}
-        {#    xhr.open('POST', '{{ path('gallery_upload') }}', true);#}
-
-        {#    xhr.upload.addEventListener('progress', function (e) {#}
-        {#        if (e.lengthComputable) {#}
-        {#            const percent = Math.round((e.loaded / e.total) * 100);#}
-        {#            progressWrapper.classList.remove('d-none');#}
-        {#            progressBar.style.width = percent + '%';#}
-        {#            progressBar.innerText = percent + '%';#}
-        {#        }#}
-        {#    });#}
-
-        {#    xhr.onload = function () {#}
-        {#        if (xhr.status === 200) {#}
-        {#            result.classList.remove('d-none', 'alert-danger');#}
-        {#            result.classList.add('alert-success');#}
-        {#            result.innerHTML = '✅ Upload complete! <a href=\"{{ path('gallery_index') }}\" class=\"text-decoration-underline text-reset\">View Gallery</a>';#}
-        {#            form.reset();#}
-        {#            progressBar.style.width = '0%';#}
-        {#            progressBar.innerText = '0%';#}
-        {#        } else {#}
-        {#            result.classList.remove('d-none', 'alert-success');#}
-        {#            result.classList.add('alert-danger');#}
-        {#            result.textContent = '❌ Upload failed.';#}
-        {#        }#}
-        {#    };#}
-
-        {#    xhr.onerror = function () {#}
-        {#        result.classList.remove('d-none', 'alert-success');#}
-        {#        result.classList.add('alert-danger');#}
-        {#        result.textContent = '❌ Network error during upload.';#}
-        {#    };#}
-
-        {#    xhr.send(formData);#}
-        {#});#}
-    </script>
+    <div id="uploadResult" class="alert mt-3 d-none text-center"></div>
 {% endblock %}

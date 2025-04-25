@@ -1,60 +1,45 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Miami FL Drone Video | Contact{% endblock %}
+{% block title %}{{ corp_name }} | Contact{% endblock %}
 
 {% block content %}
-    <section class="bg-dark text-white text-center p-5 rounded border-red-deep mt-5">
-        <h1 class="headline">Contact {{ corp_name }}</h1>
-        {#        <p></p> #}
+    <section class="text-center p-5 rounded mt-5">
+        <h1 class="headline mb-3">Contact {{ corp_name }}</h1>
+        <p>Licensed drone operators · Professional editing · Ultimate results</p>
     </section>
 
-    <section class="bg-dark text-white p-5 rounded border-red-deep">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h2 class="subhead">Why Us?</h2>
-                    <p>We provide experienced, licensed drone operators that will make sure that get the best photo and
-                        video of your project. Then we edit your footage with Adobe Premiere to make it look great and
-                        give you the results that you want.</p>
-                </div>
-                <div class="col-md-6">
-                    <div class="ratio ratio-16x9">
-                        {#                        <iframe src="https://www.youtube.com/embed/v4qo-e0m6v8" class="rounded shadow-sm" #}
-                        {#                                title="Predators Under The Pier" #}
-                        {#                                allowfullscreen allow="autoplay; encrypted-media"></iframe> #}
-                        <figure>
-                            <div class="video-container rounded shadow-sm">
+    <section class="container py-5">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <h2 class="subhead mb-3">Why Choose Us?</h2>
+                <p>We combine FAA-certified pilots with world-class editing to showcase your project from breathtaking angles.</p>
+            </div>
+            <div class="col-md-6">
+                <div class="ratio ratio-16x9 shadow-sm rounded">
+                    <figure>
+                        <div class="video-container rounded shadow-sm">
 
-                                <video controls preload="auto" class="w-100 h-100 rounded" style="object-fit: cover;">
-                                    <source src="/media/image/25"
-                                            type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                            <figcaption class="text-center text-white mt-2">Lauderdale By The Sea as Night Falls
-                            </figcaption>
-                        </figure>
-                    </div>
+                            <video controls preload="auto" class="w-100 h-100 rounded" style="object-fit: cover;">
+                                <source src="/media/image/78"
+                                        type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+
+                        </div>
+                        <figcaption class="text-center text-white mt-2">Beautiful Mansions in Las Olas</figcaption>
+                    </figure>
                 </div>
             </div>
         </div>
     </section>
 
-    {#    <section class="bg-dark text-white text-center p-5 rounded photo border-red-deep"> #}
-    {#        <div class="container"> #}
-    {#            <img src="/media/image/26" alt="Main Photo" #}
-    {#                 class="img-fluid rounded shadow-sm mb-3 photo-carousel"> #}
-    {#            <div class="d-flex justify-content-center gap-2 flex-wrap"> #}
-    {#                <img src="/media/image/26" alt="Thumbnail 1" class="img-thumbnail photo-thumbnail" #}
-    {#                     style="width:100px;"/> #}
-    {#                <img src="/media/image/27" alt="Thumbnail 2" class="img-thumbnail photo-thumbnail" #}
-    {#                     style="width:100px;"/> #}
-    {#            </div> #}
-    {#        </div> #}
-    {#   </section> #}
-
-    <section class="bg-dark text-white text-center p-5 rounded border-red-deep">
-        <h2 class="subhead">for inquiries:</h2>
-        <p>{{ my_name }}<br>{{ address }}<br>{{ phone }}<br><a href="mailto:{{ email }}">{{ email }}</a></p>
+    <section class="text-center p-5 rounded">
+        <h2 class="subhead mb-3">Get In Touch</h2>
+        <p>
+            {{ my_name }}<br>
+            {{ address }}<br>
+            {{ phone }}<br>
+            <a href="mailto:{{ email }}">{{ email }}</a>
+        </p>
     </section>
 {% endblock %}
