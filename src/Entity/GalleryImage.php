@@ -36,6 +36,18 @@ class GalleryImage
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $cloudStorageType = null;
 
+    #[ORM\Column(length: 20)]
+    private ?string $provider = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $externalId = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $externalUrl = null; // original URL (for reference)
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $description = null;
+
     // === Getters and Setters ===
 
     public function getId(): ?int
@@ -134,6 +146,51 @@ class GalleryImage
     {
         $this->cloudStorageType = $cloudStorageType;
 
+        return $this;
+    }
+
+    public function getProvider(): ?string
+    {
+        return $this->provider;
+    }
+
+    public function setProvider(?string $provider): self
+    {
+        $this->provider = $provider;
+        return $this;
+    }   // 'youtube' | 'vimeo' | null
+
+    public function getExternalId(): ?string
+    {
+        return $this->externalId;
+    }
+
+    public function setExternalId(?string $externalId): self
+    {
+        $this->externalId = $externalId;
+        return $this;
+    }
+
+    public function getExternalUrl(): ?string
+    {
+        return $this->externalUrl;
+    }
+
+    public function setExternalUrl(?string $externalUrl): self
+    {
+        $this->externalUrl = $externalUrl;
+        return $this;
+    } // the video ID (e.g. dQw4w9WgXcQ)
+
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
         return $this;
     }
 }

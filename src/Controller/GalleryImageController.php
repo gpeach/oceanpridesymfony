@@ -8,7 +8,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,7 +39,15 @@ class GalleryImageController extends AbstractController
             ->add('name', TextType::class)
             ->add('file', FileType::class, [
                 'mapped' => false,
-                'required' => true,
+                'required' => false,
+            ])
+            ->add('videoUrl', UrlType::class, [
+                'required' => false,
+                'mapped' => false,
+                'label' => 'YouTube or Vimeo URL'
+            ])
+            ->add('description', TextareaType::class, [
+                'required' => false
             ])
             ->getForm();
 
@@ -109,7 +119,38 @@ class GalleryImageController extends AbstractController
                     }
                     return $this->redirectToRoute('gallery_upload');
                 }
+            } else {
+                $url = $form->get('videoUrl')->getData();
+                if (preg_match(
+                    '#^(?:https?://)?(?:www\.)?(?:youtu\.be/|youtube\.com/(?:watch\?(?:.*&)?v=|embed/))([A-Za-z0-9_-]{11})#x',
+                    $url,
+                    $m
+                )) {
+                    $videoId = $m[1];
+                    $galleryImage->setProvider('youtube')
+                        ->setExternalId($videoId)
+                        ->setExternalUrl($url)
+                        ->setType('video');
+
+                    return $this->redirectToRoute('gallery_index');
+                    // poster image:
+                    $galleryImage->setPosterImagePath("https://img.youtube.com/vi/{$videoId}/hqdefault.jpg");
+                } elseif (preg_match('/vimeo\.com\/(\d+)/', $url, $m)) {
+                    $galleryImage->setProvider('vimeo')
+                        ->setExternalId($m[1])
+                        ->setExternalUrl($url)
+                        ->setType('video');
+
+                    return $this->redirectToRoute('gallery_index');
+                    // Optional: Vimeo oEmbed thumb
+                } else {
+                    $this->addFlash('danger', 'Unrecognised video URL');
+                    return $this->redirectToRoute('gallery_upload');
+                }
             }
+
+            $this->em->persist($galleryImage);
+            $this->em->flush();
         }
 
         return $this->render('gallery_image/upload.html.twig', [
@@ -121,26 +162,55 @@ class GalleryImageController extends AbstractController
     public function index(): Response
     {
         $cloudStorageType = $_ENV['CLOUD_STORAGE_DRIVER'] ?? 's3';
-        $images = $this->em->getRepository(GalleryImage::class)->findBy(['cloudStorageType' => $cloudStorageType]);
+
+        $qb = $this->em->getRepository(GalleryImage::class)
+            ->createQueryBuilder('g');
+
+        $orX = $qb->expr()->orX(
+            $qb->expr()->andX(
+                $qb->expr()->isNotNull('g.provider'),
+                $qb->expr()->neq('g.provider', ':empty')
+            ),
+            $qb->expr()->eq('g.cloudStorageType', ':driver')
+        );
+
+        $qb->where($orX)
+            ->setParameter('empty', '')
+            ->setParameter('driver', $cloudStorageType)
+            ->orderBy('g.id', 'DESC');
+
+//            ->where('g.provider IS NOT NULL')
+//            ->orWhere('g.cloudStorageType = :type')
+//            ->setParameter('type', $cloudStorageType);   // or whatever ordering you prefer
+
+        $images = $qb->getQuery()->getResult();
 
         $files = [];
         foreach ($images as $image) {
             try {
-                if (!$image->getPosterImagePath()) {
+                if (!$image->getPosterImagePath() && ($image->getProvider() == null || $image->getProvider() == '')) {
                     $posterImagePath = $this->generatePosterImage($image);
                     $image->setPosterImagePath($posterImagePath);
                     $this->em->persist($image);
                     $this->em->flush();
                 }
 
+                // if it’s an external video, link directly to that URL; otherwise use our proxy
+                if ($image->getProvider() !== null && $image->getProvider() !== '') {
+                    $mediaUrl = $image->getExternalUrl();
+                } else {
+                    $mediaUrl = $this->generateUrl('media_play', ['id' => $image->getId()]);
+                }
+
                 $files[] = [
                     'id' => $image->getId(),
                     'name' => $image->getName(),
                     'type' => $image->getType(),
-                    'cloudStorageType' => $image->getCloudStorageType(),
-                    'url' => $this->generateUrl('media_play', ['id' => $image->getId()]),
-                    // Let JS fetch signed video URL
+                    'provider' => $image->getProvider(),
+                    'url' => $mediaUrl,
+                    'externalId' => $image->getExternalId(),
                     'posterUrl' => $image->getPosterImagePath(),
+                    'description' => $image->getDescription(),
                 ];
             } catch (\Throwable $e) {
                 $this->log('Failed to retrieve poster image for ID ' . $image->getId() . ': ' . $e->getMessage());
@@ -324,8 +394,6 @@ class GalleryImageController extends AbstractController
     #[Route('/gallery/delete', name: 'gallery_delete', methods: ['POST'])]
     public function deleteImage(Request $request): JsonResponse
     {
-
-
         try {
             $data = json_decode($request->getContent(), true);
 

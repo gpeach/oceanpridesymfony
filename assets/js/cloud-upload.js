@@ -64,10 +64,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!form) return;
 
     form.addEventListener('submit', async function (e) {
-        e.preventDefault();
         const fileInput = form.elements['form[file]'];
-        const nameInput = form.elements['form[name]'];
+        // const file = fileInput?.files?.[0];
         const file = fileInput.files[0];
+
+          // ─── bail to standard form submit if no file selected ───
+             if (!file) {
+                // Let Symfony handle the URL/description-only submission
+                   return;
+              }
+
+              // ─── only preventDefault when actually uploading a file ───
+                + e.preventDefault();
+        // const fileInput = form.elements['form[file]'];
+        const nameInput = form.elements['form[name]'];
+        // const file = fileInput.files[0];
         const name = nameInput.value;
         const type = file.type;
 

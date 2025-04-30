@@ -12,10 +12,23 @@
                     {{ form_label(form.name) }}
                     {{ form_widget(form.name, {attr:{class:'form-control'}}) }}
                 </div>
+
                 <div class="mb-3">
                     {{ form_label(form.file) }}
                     {{ form_widget(form.file, {attr:{class:'form-control'}}) }}
                 </div>
+
+                {# ← NEW: render URL and description *before* the submit #}
+                <div class="mb-3">
+                    {{ form_label(form.videoUrl) }}
+                    {{ form_widget(form.videoUrl, {attr:{class:'form-control'}}) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description, {attr:{class:'form-control'}}) }}
+                </div>
+
                 <button type="submit" class="btn btn-accent w-100">Upload</button>
                 {{ form_end(form) }}
             </div>

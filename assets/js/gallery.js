@@ -177,47 +177,126 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    //video player setup in full screen
+
+
+    function cleanupPlayers() {
+        const videoEl  = document.getElementById('preview-fullscreen-player');
+        const iframeEl = document.getElementById('preview-fullscreen-iframe');
+
+        // teardown <video>
+        videoEl.pause();
+        videoEl.removeAttribute('src');
+        videoEl.style.display = 'none';
+        videoEl.load();
+
+        // teardown <iframe>
+        iframeEl.style.display = 'none';
+        iframeEl.innerHTML = '';
+    }
+
     document.querySelectorAll('[data-action="fullscreen-preview"]').forEach(btn => {
         btn.addEventListener('click', e => {
             e.preventDefault();
-            const id = btn.getAttribute('data-id');
 
-            fetch(`/media/play/${id}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (!data.url) {
-                        console.error(`No URL returned for preview ID ${id}`, data);
-                        return;
-                    }
+            // clear out any previously‐injected players
+            cleanupPlayers();
 
-                    const player = document.getElementById('preview-fullscreen-player');
-                    player.src = data.url;
-                    player.style.display = 'block';
-                    player.play();
+            const id       = btn.dataset.id;
+            const provider = btn.dataset.provider;    // 'youtube'|'vimeo' or undefined
+            const extId    = btn.dataset.externalId;  // video ID
 
-                    if (player.requestFullscreen) {
-                        player.requestFullscreen();
-                    } else if (player.webkitRequestFullscreen) {
-                        player.webkitRequestFullscreen();
-                    } else if (player.msRequestFullscreen) {
-                        player.msRequestFullscreen();
-                    }
+            const videoEl  = document.getElementById('preview-fullscreen-player');
+            const iframeEl = document.getElementById('preview-fullscreen-iframe');
 
-                    const exitHandler = () => {
-                        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                            player.pause();
-                            player.style.display = 'none';
-                            player.removeAttribute('src');
-                            player.load();
-                            document.removeEventListener('fullscreenchange', exitHandler);
-                            document.removeEventListener('webkitfullscreenchange', exitHandler);
-                        }
-                    };
+            // once the user exits fullscreen, clean up again
+            function onFsExit() {
+                if (
+                    !document.fullscreenElement &&
+                    !document.webkitFullscreenElement &&
+                    !document.mozFullScreenElement &&
+                    !document.msFullscreenElement
+                ) {
+                    cleanupPlayers();
+                    ['fullscreenchange','webkitfullscreenchange','mozfullscreenchange','MSFullscreenChange']
+                        .forEach(evt => document.removeEventListener(evt, onFsExit));
+                }
+            }
+            ['fullscreenchange','webkitfullscreenchange','mozfullscreenchange','MSFullscreenChange']
+                .forEach(evt => document.addEventListener(evt, onFsExit));
 
-                    document.addEventListener('fullscreenchange', exitHandler);
-                    document.addEventListener('webkitfullscreenchange', exitHandler);
-                });
+            if (provider) {
+                // External embed path
+                const src = provider === 'youtube'
+                    ? `https://www.youtube.com/embed/${extId}?autoplay=1&rel=0`
+                    : `https://player.vimeo.com/video/${extId}?autoplay=1`;
+
+                const ifr = document.createElement('iframe');
+                ifr.src             = src;
+                ifr.allow           = 'autoplay; fullscreen; picture-in-picture';
+                ifr.allowFullscreen = true;
+                Object.assign(ifr.style, { width:'100%', height:'100%', border:'0' });
+
+                iframeEl.appendChild(ifr);
+                iframeEl.style.display = 'block';
+                (iframeEl.requestFullscreen || iframeEl.webkitRequestFullscreen).call(iframeEl);
+
+            } else {
+                // Self-hosted video path
+                fetch(`/media/play/${id}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.url) return console.error(`No URL for ID ${id}`, data);
+                        videoEl.src           = data.url;
+                        videoEl.style.display = 'block';
+                        videoEl.play();
+                        (videoEl.requestFullscreen || videoEl.webkitRequestFullscreen)
+                            .call(videoEl);
+                    });
+            }
         });
     });
+
+    //video player setup in full screen
+    // document.querySelectorAll('[data-action="fullscreen-preview"]').forEach(btn => {
+    //     btn.addEventListener('click', e => {
+    //         e.preventDefault();
+    //         const id = btn.getAttribute('data-id');
+    //
+    //         fetch(`/media/play/${id}`)
+    //             .then(res => res.json())
+    //             .then(data => {
+    //                 if (!data.url) {
+    //                     console.error(`No URL returned for preview ID ${id}`, data);
+    //                     return;
+    //                 }
+    //
+    //                 const player = document.getElementById('preview-fullscreen-player');
+    //                 player.src = data.url;
+    //                 player.style.display = 'block';
+    //                 player.play();
+    //
+    //                 if (player.requestFullscreen) {
+    //                     player.requestFullscreen();
+    //                 } else if (player.webkitRequestFullscreen) {
+    //                     player.webkitRequestFullscreen();
+    //                 } else if (player.msRequestFullscreen) {
+    //                     player.msRequestFullscreen();
+    //                 }
+    //
+    //                 const exitHandler = () => {
+    //                     if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+    //                         player.pause();
+    //                         player.style.display = 'none';
+    //                         player.removeAttribute('src');
+    //                         player.load();
+    //                         document.removeEventListener('fullscreenchange', exitHandler);
+    //                         document.removeEventListener('webkitfullscreenchange', exitHandler);
+    //                     }
+    //                 };
+    //
+    //                 document.addEventListener('fullscreenchange', exitHandler);
+    //                 document.addEventListener('webkitfullscreenchange', exitHandler);
+    //             });
+    //     });
+    // });
 });

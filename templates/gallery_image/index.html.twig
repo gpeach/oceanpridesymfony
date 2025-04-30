@@ -2,10 +2,11 @@
 {% set body_class = 'gallery-page' %}
 
 {% block title %}{{ corp_name }} | Gallery{% endblock %}
-{#TODO add links to poster images#}
-{#TODO add play buttons over video posters#}
-{#TODO Add vimeo and youtube gallery uploads#}
+{# TODO add links to poster images #}
+{# TODO add play buttons over video posters #}
+{# TODO finish fixing youtube gallery upload #}
 {% block content %}
+    {#    {{ dump(_context) }} #}
     <h2 class="headline text-center mb-4">Gallery</h2>
     <div class="row g-4">
         {% for image in images %}
@@ -18,13 +19,28 @@
                                  alt="Image preview" style="max-height: 100%; max-width: 100%; object-fit: contain;"
                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"/>
                             <span style="display: none;">Image not found</span>
+                        {% elseif image.provider == 'youtube' %}
+                            <div class="ratio ratio-16x9">
+                                <iframe src="https://www.youtube.com/embed/{{ image.externalId }}?autoplay=1&mute=1&playsinline=1&rel=0"
+                                        allowfullscreen loading="lazy"></iframe>
+                            </div>
+                        {% elseif image.provider == 'vimeo' %}
+                            <div class="ratio ratio-16x9">
+                                <iframe src="https://player.vimeo.com/video/{{ image.externalId }}?autoplay=1"
+                                        allowfullscreen loading="lazy"></iframe>
+                            </div>
                         {% elseif image.type == 'video' %}
+
                             <img id="poster-{{ image.id }}"
                                  src="{{ image.posterUrl }}"
                                  alt="Video preview" style="max-height: 100%; max-width: 100%; object-fit: contain;"/>
                             <video id="thumb-video-{{ image.id }}" preload="metadata"
                                    style="display:none; max-height: 100%; max-width: 100%; object-fit: contain;"
                                    muted></video>
+                        {% elseif image.provider in ['youtube', 'vimeo'] %}
+                            <img src="{{ image.posterUrl ?? ('https://img.youtube.com/vi/' ~ image.externalId ~ '/hqdefault.jpg') }}"
+                                 alt="Video preview"
+                                 style="max-height:100%;max-width:100%;object-fit:contain;">
                         {% endif %}
                     </div>
                     <div class="card-body">
@@ -39,22 +55,24 @@
                                    data-action="full-size">Full Size</a>
                             {% elseif image.type == 'video' %}
                                 <a class="btn btn-xs btn-outline-accent" href="#" data-id="{{ image.id }}"
-                                   data-action="fullscreen-preview">Full Size</a>
+                                   data-action="fullscreen-preview" data-provider="{{ image.provider }}"
+                                   data-external-id="{{ image.externalId }}">Full Size</a>
                             {% endif %}
                             {% if is_granted('ROLE_ADMIN') %}
-                            <button
-                                    class="btn btn-xs btn-outline-secondary delete-button"
-                                    data-image-id="{{ image.id }}"
-                                    data-name="{{ image.name }}">
-                                Delete
-                            </button>
+                                <button
+                                        class="btn btn-xs btn-outline-secondary delete-button"
+                                        data-image-id="{{ image.id }}"
+                                        data-name="{{ image.name }}">
+                                    Delete
+                                </button>
                             {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="modal fade" id="previewModal{{ image.id }}" tabindex="-1" aria-labelledby="modalLabel{{ image.id }}" aria-hidden="true">
+            <div class="modal fade" id="previewModal{{ image.id }}" tabindex="-1"
+                 aria-labelledby="modalLabel{{ image.id }}" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content rounded">
                         <div class="modal-header">
@@ -70,8 +88,19 @@
                                          style="max-height: 60vh; display: none;" alt="{{ image.name }}">
                                     <span style="display: none;">Video not found</span>
                                 </div>
+                            {% elseif image.provider == 'youtube' %}
+                                <div class="ratio ratio-16x9">
+                                    <iframe src="https://www.youtube.com/embed/{{ image.externalId }}?autoplay=1&mute=1&playsinline=1&rel=0"
+                                            allowfullscreen loading="lazy"></iframe>
+                                </div>
+                            {% elseif image.provider == 'vimeo' %}
+                                <div class="ratio ratio-16x9">
+                                    <iframe src="https://player.vimeo.com/video/{{ image.externalId }}?autoplay=1"
+                                            allowfullscreen loading="lazy"></iframe>
+                                </div>
                             {% elseif image.type == 'video' %}
-                                <video controls preload="auto" style="max-height: 60vh; width: 100%; object-fit: contain;"
+                                <video controls preload="auto"
+                                       style="max-height: 60vh; width: 100%; object-fit: contain;"
                                        id="modal-video-{{ image.id }}" class="rounded shadow-sm">
                                     <!-- src is set dynamically -->
                                 </video>
@@ -86,23 +115,23 @@
         {% endfor %}
     </div>
 
-{#    <!-- Fullscreen Modal -->#}
-{#    <div class="modal fade" id="fullscreenModal" tabindex="-1" aria-labelledby="fullscreenLabel" aria-hidden="true">#}
-{#        <div class="modal-dialog modal-fullscreen modal-dialog-centered">#}
-{#            <div class="modal-content bg-black text-white">#}
-{#                <div class="modal-header">#}
-{#                    <h5 class="modal-title" id="fullscreenLabel"></h5>#}
-{#                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"#}
-{#                            aria-label="Close"></button>#}
-{#                </div>#}
-{#                <div class="modal-body text-center d-flex align-items-center justify-content-center"#}
-{#                     style="background: black;">#}
-{#                    <img id="fullscreenImage" class="img-fluid d-none" alt="Full-size image"/>#}
-{#                    <video id="fullscreenVideo" class="w-100 h-auto d-none" controls style="max-height: 90vh;"></video>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
+    {#    <!-- Fullscreen Modal --> #}
+    {#    <div class="modal fade" id="fullscreenModal" tabindex="-1" aria-labelledby="fullscreenLabel" aria-hidden="true"> #}
+    {#        <div class="modal-dialog modal-fullscreen modal-dialog-centered"> #}
+    {#            <div class="modal-content bg-black text-white"> #}
+    {#                <div class="modal-header"> #}
+    {#                    <h5 class="modal-title" id="fullscreenLabel"></h5> #}
+    {#                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" #}
+    {#                            aria-label="Close"></button> #}
+    {#                </div> #}
+    {#                <div class="modal-body text-center d-flex align-items-center justify-content-center" #}
+    {#                     style="background: black;"> #}
+    {#                    <img id="fullscreenImage" class="img-fluid d-none" alt="Full-size image"/> #}
+    {#                    <video id="fullscreenVideo" class="w-100 h-auto d-none" controls style="max-height: 90vh;"></video> #}
+    {#                </div> #}
+    {#            </div> #}
+    {#        </div> #}
+    {#    </div> #}
 
     <!-- Fullscreen Image Reusable Element | for blowing up gallery cards with images to full screen-->
     <div id="fullscreen-image-container"
@@ -123,4 +152,7 @@
     <video id="preview-fullscreen-player" controls preload="auto"
            style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; background: black;"
            autoplay></video>
+    <div id="preview-fullscreen-iframe"
+         style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:9999; background:black;">
+    </div>
 {% endblock %}
