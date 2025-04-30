@@ -131,6 +131,8 @@ class GalleryImageController extends AbstractController
                         ->setExternalId($videoId)
                         ->setExternalUrl($url)
                         ->setType('video');
+                    $this->em->persist($galleryImage);
+                    $this->em->flush();
 
                     return $this->redirectToRoute('gallery_index');
                     // poster image:
@@ -140,6 +142,8 @@ class GalleryImageController extends AbstractController
                         ->setExternalId($m[1])
                         ->setExternalUrl($url)
                         ->setType('video');
+                    $this->em->persist($galleryImage);
+                    $this->em->flush();
 
                     return $this->redirectToRoute('gallery_index');
                     // Optional: Vimeo oEmbed thumb
