@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // External embed path
                 const src = provider === 'youtube'
                     ? `https://www.youtube.com/embed/${extId}?autoplay=1&rel=0`
-                    : `https://player.vimeo.com/video/${extId}?autoplay=1`;
+                    : `https://player.vimeo.com/video/${extId}?autoplay=1&quality=4k`;
 
                 const ifr = document.createElement('iframe');
                 ifr.src             = src;
