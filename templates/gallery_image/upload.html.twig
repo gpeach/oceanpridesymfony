@@ -3,35 +3,33 @@
 {% block title %}{{ corp_name }} | Upload{% endblock %}
 
 {% block content %}
-    <section class="mx-auto" style="max-width:600px;">
+    <section class="mx-auto mt-5 p-5 rounded" style="max-width:600px;">
         <h2 class="headline text-center mb-4">Upload to Gallery</h2>
-        <div class="card shadow-sm">
-            <div class="card-body">
-                {{ form_start(form, {attr:{id:'uploadForm', enctype:'multipart/form-data'}}) }}
-                <div class="mb-3">
-                    {{ form_label(form.name) }}
-                    {{ form_widget(form.name, {attr:{class:'form-control'}}) }}
-                </div>
-
-                <div class="mb-3">
-                    {{ form_label(form.file) }}
-                    {{ form_widget(form.file, {attr:{class:'form-control'}}) }}
-                </div>
-
-                {# ← NEW: render URL and description *before* the submit #}
-                <div class="mb-3">
-                    {{ form_label(form.videoUrl) }}
-                    {{ form_widget(form.videoUrl, {attr:{class:'form-control'}}) }}
-                </div>
-
-                <div class="mb-3">
-                    {{ form_label(form.description) }}
-                    {{ form_widget(form.description, {attr:{class:'form-control'}}) }}
-                </div>
-
-                <button type="submit" class="btn btn-accent w-100">Upload</button>
-                {{ form_end(form) }}
+        <div class="rounded">
+            {{ form_start(form, {attr:{id:'uploadForm', enctype:'multipart/form-data'}}) }}
+            <div class="mb-3">
+                {{ form_label(form.name) }}
+                {{ form_widget(form.name, {attr:{class:'form-control'}}) }}
             </div>
+
+            <div class="mb-3">
+                {{ form_label(form.file) }}
+                {{ form_widget(form.file, {attr:{class:'form-control'}}) }}
+            </div>
+
+            {# ← NEW: render URL and description *before* the submit #}
+            <div class="mb-3">
+                {{ form_label(form.videoUrl) }}
+                {{ form_widget(form.videoUrl, {attr:{class:'form-control'}}) }}
+            </div>
+
+            <div class="mb-4">
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description, {attr:{class:'form-control'}}) }}
+            </div>
+
+            <button type="submit" class="btn btn-accent w-100">Upload</button>
+            {{ form_end(form) }}
         </div>
     </section>
 
