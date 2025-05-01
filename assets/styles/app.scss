@@ -8,161 +8,155 @@
 // ─ Dark Mode (defaults) ──────────────────────────────────────────────────────
 body {
   // Typography
-  font-family:             $font-body-family;
-  font-optical-sizing:     $font-body-optical;
-  font-weight:             $font-body-weight;
+  font-family: $font-body-family;
+  font-optical-sizing: $font-body-optical;
+  font-weight: $font-body-weight;
   font-variation-settings: $font-body-variation;
-  font-size:               $font-body-size;
-  font-style:              $font-body-style;
-  line-height:             $font-body-line-height;
+  font-size: $font-body-size;
+  font-style: $font-body-style;
+  line-height: $font-body-line-height;
 
   // Colors
-  background-color:        $default-palette-dark;
-  color:                   $default-palette-light;
+  background-color: $default-palette-dark;
+  color: $default-palette-light;
 
-  padding-bottom:          50px;
+  padding-bottom: 50px;
 }
 
 .headline {
-  font-family:             $font-headline-family;
-  font-size:               $font-headline-size;
-  font-weight:             $font-headline-weight;
-  line-height:             1.2;
+  font-family: $font-headline-family;
+  font-size: $font-headline-size;
+  font-weight: $font-headline-weight;
+  line-height: 1.2;
 }
 
 .subhead {
-  font-family:             $font-headline-family;
-  font-size:               $font-subhead-size;
-  font-weight:             $font-headline-weight;
+  font-family: $font-headline-family;
+  font-size: $font-subhead-size;
+  font-weight: $font-headline-weight;
 }
 
 figcaption {
-  font-family:             $font-caption-family;
-  font-size:               $font-caption-size;
-  font-style:              $font-caption-style;
+  font-family: $font-caption-family;
+  font-size: $font-caption-size;
+  font-style: $font-caption-style;
 }
 
 // ─ Utility Spacing ──────────────────────────────────────────────────────────
-$panel-spacing:           1.5rem;
+$panel-spacing: 1.5rem;
 
 section,
 .card {
-  margin-bottom:           $panel-spacing;
+  margin-bottom: $panel-spacing;
 }
 
 // ─ Panel Backgrounds ────────────────────────────────────────────────────────
 section,
 .card,
 .modal-content {
-  background-color:        $panel-bg-dark;
-  color:                   $default-palette-light;
+  background-color: $panel-bg-dark;
+  color: $default-palette-light;
 }
 
 // ─ Light Mode Overrides ─────────────────────────────────────────────────────
 // Triggered when <html data-bs-theme="light">
 html[data-bs-theme="light"] body {
-  background-color:        $default-palette-light-bg;
-  color:                   $default-palette-light-text;
+  background-color: $default-palette-light-bg;
+  color: $default-palette-light-text;
 }
 
 html[data-bs-theme="light"] section,
 html[data-bs-theme="light"] .card,
 html[data-bs-theme="light"] .modal-content,
 html[data-bs-theme="light"] .bg-dark {
-  background-color:        $panel-bg-light !important;
-  color:                   $default-palette-light-text;
+  background-color: $panel-bg-light !important;
+  color: $default-palette-light-text;
 }
 
 html[data-bs-theme="light"] #uploadProgress {
-  background-color:        darken($panel-bg-light, 5%) !important;
+  background-color: darken($panel-bg-light, 5%) !important;
 }
 
 // Override text utilities under light mode
 html[data-bs-theme="light"] .text-white {
-  color:                   $default-palette-light-text !important;
+  color: $default-palette-light-text !important;
 }
 
 // ─ Navbar Links ────────────────────────────────────────────────────────────
+
+.navbar .nav-link.active {
+  color: $default-palette-light;
+  background-color: $palette-accent;
+}
+
 .navbar .nav-link {
-  color:                   $palette-accent;
-  background-color:        transparent;
-  border:                  none;
-  font-weight:             500;
+  color: $default-palette-light;
+  background-color: $palette-primary;
+  border: 2px solid $palette-primary;
+  margin: 0 0.5rem 0.25rem 0.5rem;
+  padding-left: 1em;
 }
 
 .navbar .nav-link.active {
-  color:                   $default-palette-light;
-  background-color:        $palette-accent;
+  background-color: $palette-accent;
+  border-color: $palette-accent;
 }
 
-@media (min-width: 768px) {
-  .navbar .nav-link {
-    color:                 $default-palette-light;
-    background-color:      $palette-primary;
-    border:                2px solid $palette-primary;
-    margin-right:          0.5rem;
-  }
-
-  .navbar .nav-link.active {
-    background-color:      $palette-accent;
-    border-color:          $palette-accent;
-  }
-
-  .navbar .nav-link:hover {
-    background-color:      $palette-accent-light;
-    border-color:          $palette-accent-light;
-  }
+.navbar .nav-link:hover {
+  background-color: $palette-accent-light;
+  border-color: $palette-accent-light;
 }
 
 // ─ Button Variants ─────────────────────────────────────────────────────────
 .btn-accent {
-  background-color:        $palette-accent;
-  border:                  2px solid $palette-accent;
-  color:                   $default-palette-light;
+  background-color: $palette-accent;
+  border: 2px solid $palette-accent;
+  color: $default-palette-light;
 
   &:hover {
-    background-color:      $palette-accent-dark;
-    box-shadow:            0 0 10px rgba($palette-accent, 0.4);
+    background-color: $palette-accent-dark;
+    box-shadow: 0 0 10px rgba($palette-accent, 0.4);
   }
 
   &:focus {
-    box-shadow:            0 0 0 0.2rem rgba($palette-accent, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba($palette-accent, 0.5);
   }
 }
 
 .btn-outline-accent {
-  background-color:        transparent;
-  color:                   $palette-accent;
-  border:                  2px solid $palette-accent;
+  background-color: transparent;
+  color: $palette-accent;
+  border: 2px solid $palette-accent;
 
   &:hover {
-    background-color:      $palette-accent;
-    color:                 $default-palette-light;
+    background-color: $palette-accent;
+    color: $default-palette-light;
   }
 }
 
 .btn-secondary {
-  background-color:        $palette-primary;
-  border:                  2px solid $palette-primary;
-  color:                   $default-palette-light;
+  background-color: $palette-primary;
+  border: 2px solid $palette-primary;
+  color: $default-palette-light;
 
   &:hover {
-    background-color:      $palette-primary-dark;
+    background-color: $palette-primary-dark;
   }
 }
 
 .btn-outline-secondary {
-  background-color:        transparent;
-  color:                   $palette-primary;
-  border:                  2px solid $palette-primary;
+  background-color: transparent;
+  color: $palette-primary;
+  border: 2px solid $palette-primary;
 
   &:hover {
-    background-color:      $palette-primary;
-    color:                 $default-palette-light;
+    background-color: $palette-primary;
+    color: $default-palette-light;
   }
 }
 
 .border-primary-dark {
-  border:                  2px solid $palette-primary-dark;
+  border: 2px solid $palette-primary-dark;
 }
+
 // ─────────────────────────────────────────────────────────────────────────────
