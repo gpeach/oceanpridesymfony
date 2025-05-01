@@ -10,9 +10,9 @@
     <h2 class="headline text-center mb-4">Gallery</h2>
     <div class="row g-4">
         {% for image in images %}
-            <div class="col-md-3">
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
                 <div class="card h-100 text-center p-2 shadow-sm">
-                    <div class="ratio ratio-1x1 rounded overflow-hidden bg-secondary-light">
+                    <div class="ratio ratio-16x9 rounded overflow-hidden bg-secondary-light">
                         {% if image.type == 'image' %}
                             <img id="poster-{{ image.id }}"
                                  src="{{ image.posterUrl }}"
@@ -43,9 +43,9 @@
                                  style="max-height:100%;max-width:100%;object-fit:contain;">
                         {% endif %}
                     </div>
-                    <div class="card-body">
-                        <h6 class="card-title mb-2">{{ image.name }}</h6>
-                        <div class="d-flex justify-content-center gap-2">
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="card-title mt-1 mb-1">{{ image.name }}</h6>
+                        <div class="mt-auto d-flex justify-content-center gap-2">
                             <button class="btn btn-accent btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#previewModal{{ image.id }}">
                                 Preview
@@ -59,8 +59,7 @@
                                    data-external-id="{{ image.externalId }}">Full Size</a>
                             {% endif %}
                             {% if is_granted('ROLE_ADMIN') %}
-                                <button
-                                        class="btn btn-xs btn-outline-secondary delete-button"
+                                <button class="btn btn-xs btn-outline-secondary delete-button"
                                         data-image-id="{{ image.id }}"
                                         data-name="{{ image.name }}">
                                     Delete

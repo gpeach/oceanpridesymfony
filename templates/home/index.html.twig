@@ -3,7 +3,7 @@
 {% block title %}Fort Lauderdale FL Aerial Video | Home{% endblock %}
 
 {% block content %}
-    <section class="bg-dark text-white text-center p-5 rounded border-primary-dark mt-5">
+    <section class="bg-dark text-white text-center p-5 rounded mt-5">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-6">
@@ -16,23 +16,21 @@
                     </p>
                 </div>
                 <div class="col-md-6">
-                    <div class="ratio ratio-16x9">
-                        <figure>
-                            <div class="video-container rounded shadow-sm">
-                                <video controls preload="auto" class="w-100 h-100 rounded" style="object-fit: cover;">
-                                    <source src="/media/image/22" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                            <figcaption class="text-center text-white mt-2">Beautiful Mansions in Las Olas</figcaption>
-                        </figure>
-                    </div>
+                    <figure>
+                        <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden">
+                            <video controls preload="auto" class="w-100 h-100" style="object-fit: cover;">
+                                <source src="/media/image/22" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <figcaption class="text-center text-white mt-2 fst-italic">Beautiful Mansions in Las Olas</figcaption>
+                    </figure>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="bg-dark text-white p-5 rounded border-primary-dark">
+    <section class="bg-dark text-white p-5 rounded">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-6 photo">
@@ -50,23 +48,21 @@
                     </p>
                 </div>
                 <div class="col-md-6">
-                    <div class="ratio ratio-16x9">
-                        <figure>
-                            <div class="video-container rounded shadow-sm">
-                                <video controls preload="auto" class="w-100 h-100 rounded" style="object-fit: cover;">
-                                    <source src="/media/image/26" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                            <figcaption class="text-center text-white mt-2">Another Lauderdale By The Sea Sunset</figcaption>
-                        </figure>
-                    </div>
+                    <figure>
+                        <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden">
+                            <video controls preload="auto" class="w-100 h-100" style="object-fit: cover;">
+                                <source src="/media/image/26" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <figcaption class="text-center text-white mt-2 fst-italic">Another Lauderdale By The Sea Sunset</figcaption>
+                    </figure>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="bg-dark text-white text-center p-5 rounded border-primary-dark">
+    <section class="bg-dark text-white text-center p-5 rounded">
         <h2 class="subhead">for inquiries:</h2>
         <p>{{ my_name }}<br>{{ address }}<br>{{ phone }}<br><a href="mailto:{{ email }}">{{ email }}</a></p>
     </section>

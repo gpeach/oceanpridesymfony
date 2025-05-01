@@ -7,7 +7,7 @@
         <h1 class="headline mb-3">Contact {{ corp_name }}</h1>
     </section>
 
-    <section class="container py-5">
+    <section class="container rounded p-5">
         <div class="row g-4">
             <div class="col-md-6">
                 <h2 class="subhead mb-3">Why Choose Us?</h2>
@@ -16,20 +16,17 @@
                     give you the results that you want.</p>
             </div>
             <div class="col-md-6">
-                <div class="ratio ratio-16x9 shadow-sm rounded">
-                    <figure>
-                        <div class="video-container rounded shadow-sm">
-
-                            <video controls preload="auto" class="w-100 h-100 rounded" style="object-fit: cover;">
-                                <source src="/media/image/25"
-                                        type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-
-                        </div>
-                        <figcaption class="text-center text-white mt-2">Beautiful Mansions in Las Olas</figcaption>
-                    </figure>
-                </div>
+                <figure>
+                    <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden">
+                        <video controls preload="auto" class="w-100 h-100" style="object-fit: cover;">
+                            <source src="/media/image/25" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <figcaption class="text-center text-muted mt-2 fst-italic">
+                        Beautiful Mansions in Las Olas
+                    </figcaption>
+                </figure>
             </div>
         </div>
     </section>
