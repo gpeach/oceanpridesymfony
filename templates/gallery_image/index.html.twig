@@ -3,8 +3,7 @@
 
 {% block title %}{{ corp_name }} | Gallery{% endblock %}
 {# TODO add links to poster images #}
-{# TODO add play buttons over video posters #}
-{# TODO finish fixing youtube gallery upload #}
+{# TODO more css work on play button consistency #}
 {% block content %}
     {#    {{ dump(_context) }} #}
     <h2 class="headline text-center mb-4 mt-5">Gallery</h2>
@@ -16,12 +15,13 @@
                         {% if image.type == 'image' %}
                             <img id="poster-{{ image.id }}"
                                  src="{{ image.posterUrl }}"
-                                 alt="Image preview" style="max-height: 100%; max-width: 100%; object-fit: contain;"
-                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"/>
+                                 alt="Image preview" style="cursor: pointer; max-height: 100%; max-width: 100%; object-fit: contain;"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" data-bs-toggle="modal"
+                                 data-bs-target="#previewModal{{ image.id }}"/>
                             <span style="display: none;">Image not found</span>
                         {% elseif image.provider == 'youtube' %}
                             <div class="ratio ratio-16x9">
-                                <iframe src="https://www.youtube.com/embed/{{ image.externalId }}?autoplay=1&mute=1&playsinline=1&rel=0"
+                                <iframe src="https://www.youtube.com/embed/{{ image.externalId }}?autoplay=0&mute=1&playsinline=1&rel=0"
                                         allowfullscreen loading="lazy"></iframe>
                             </div>
                         {% elseif image.provider == 'vimeo' %}
@@ -34,6 +34,12 @@
                             <img id="poster-{{ image.id }}"
                                  src="{{ image.posterUrl }}"
                                  alt="Video preview" style="max-height: 100%; max-width: 100%; object-fit: contain;"/>
+                            <button class="btn btn-accent position-absolute top-50 start-50 translate-middle"
+                                    data-id="{{ image.id }}"
+                                    data-type="video" data-bs-toggle="modal"
+                                    data-bs-target="#previewModal{{ image.id }}">
+                                <div>▶</div>
+                            </button>
                             <video id="thumb-video-{{ image.id }}" preload="metadata"
                                    style="display:none; max-height: 100%; max-width: 100%; object-fit: contain;"
                                    muted></video>

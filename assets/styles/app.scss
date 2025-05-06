@@ -160,3 +160,34 @@ html[data-bs-theme="light"] .text-white {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+
+//play buttons
+.ratio .btn {
+   z-index: 2;
+   font-size: 2rem;
+   padding: 0.5rem 1rem;
+   border-radius: 4px;
+   background-color: rgba(0, 0, 0, 0.9);
+   color: white;
+   border: none;
+   cursor: pointer;
+   height: 35px;
+   width: 60px;
+   transition: background-color 0.3s ease;
+ }
+
+.ratio .btn div{
+  font-size: 20px;
+  position: relative;
+  top: -6px;
+  left: 2px;
+  border: none;
+}
+
+.ratio .btn div:hover{
+  color: black;
+}
+
+.ratio .btn:hover {
+  background-color: #00adef;
+}
