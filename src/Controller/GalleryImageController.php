@@ -330,6 +330,12 @@ class GalleryImageController extends AbstractController
             }
 
             return $publicRelativePath;
+        } catch (\Throwable $e) {
+            $this->log('Error generating poster image: ' . $e->getMessage(), [
+                'exception' => $e,
+                'galleryImageId' => $galleryImage->getId(),
+            ]);
+            throw $e; // Re-throw the exception after logging
         } finally {
             if (file_exists($localVideoPath)) {
                 unlink($localVideoPath);
