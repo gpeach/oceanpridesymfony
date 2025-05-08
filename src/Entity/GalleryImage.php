@@ -36,7 +36,7 @@ class GalleryImage
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $cloudStorageType = null;
 
-    #[ORM\Column(length: 20)]
+    #[ORM\Column(length: 20, nullable: true)]
     private ?string $provider = null;
 
     #[ORM\Column(length: 255, nullable: true)]
