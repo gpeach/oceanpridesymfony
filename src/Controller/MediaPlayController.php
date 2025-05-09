@@ -25,7 +25,12 @@ class MediaPlayController extends AbstractController
             return $this->json(['error' => 'Not found'], 404);
         }
 
-        $url = $this->cloudStorage->getSignedUrl($_ENV['CLOUD_FOLDER'] . '/' . $image->getFilePath(), '+1 hour');
+        if($_ENV['CDN'] === 'true') {
+            $url = $_ENV['CDN_DOMAIN']  . '/' . $_ENV['CLOUD_FOLDER'] . '/' . $image->getFilePath();
+        } else {
+            $url = $this->cloudStorage->getSignedUrl($_ENV['CLOUD_FOLDER'] . '/' . $image->getFilePath(), '+1 hour');
+        }
+
         return $this->json(['url' => $url]);
     }
 }
