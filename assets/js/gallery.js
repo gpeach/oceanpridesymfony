@@ -56,6 +56,26 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(err => console.error(`Error fetching signed URL for card ID ${id}:`, err));
     });
 
+    //handle self-hosted play buttons
+    document.querySelectorAll('button[data-action="play-as-thumb"]').forEach(button => {
+        button.addEventListener('click', event => {
+            event.preventDefault();
+            const id = button.dataset.id;
+            const poster = document.getElementById(`poster-${id}`);
+            const video = document.getElementById(`thumb-video-${id}`);
+
+            // Hide the poster and button
+            if (poster) poster.style.display = 'none';
+            button.style.display = 'none';
+
+            // Show and play the video
+            if (video) {
+                video.style.display = 'block';
+                video.play();
+            }
+        });
+    });
+
     // Handle modal image and video preview buttons
     document.querySelectorAll('[data-bs-target^="#previewModal"]').forEach(button => {
         button.addEventListener('click', () => {

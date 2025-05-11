@@ -26,7 +26,7 @@
                             </div>
                         {% elseif image.provider == 'vimeo' %}
                             <div class="ratio ratio-16x9">
-                                <iframe src="https://player.vimeo.com/video/{{ image.externalId }}?autoplay=0&quality=4k"
+                                <iframe src="https://player.vimeo.com/video/{{ image.externalId }}?autoplay=0&quality=4k&playsinline=0"
                                         allowfullscreen loading="lazy"></iframe>
                             </div>
                         {% elseif image.type == 'video' %}
@@ -36,36 +36,44 @@
                                  alt="Video preview" style="max-height: 100%; max-width: 100%; object-fit: contain;"/>
                             <button class="btn btn-accent position-absolute top-50 start-50 translate-middle"
                                     data-id="{{ image.id }}"
-                                    data-type="video" data-bs-toggle="modal"
-                                    data-bs-target="#previewModal{{ image.id }}">
+{#                                    data-type="video" data-bs-toggle="modal"#}
+{#                                    data-bs-target="#previewModal{{ image.id }}"#}
+
+                                    data-action="play-as-thumb"
+
+
+{#                                    href="#"#}
+{#                                    data-action="fullscreen-preview" data-provider="{{ image.provider }}"#}
+{#                                    data-external-id="{{ image.externalId }}"#}
+                            >
                                 <div>▶</div>
                             </button>
-                            <video id="thumb-video-{{ image.id }}" preload="metadata"
+                            <video id="thumb-video-{{ image.id }}" controls preload="metadata"
                                    style="display:none; max-height: 100%; max-width: 100%; object-fit: contain;"
                                    muted></video>
                         {% elseif image.provider in ['youtube', 'vimeo'] %}
-                            <img src="{{ image.posterUrl ?? ('https://img.youtube.com/vi/' ~ image.externalId ~ '/hqdefault.jpg') }}"
-                                 alt="Video preview"
-                                 style="max-height:100%;max-width:100%;object-fit:contain;">
+{#                            <img src="{{ image.posterUrl ?? ('https://img.youtube.com/vi/' ~ image.externalId ~ '/hqdefault.jpg') }}"#}
+{#                                 alt="Video preview"#}
+{#                                 style="max-height:100%;max-width:100%;object-fit:contain;">#}
                         {% endif %}
                     </div>
                     <div class="card-body d-flex flex-column">
                         <h6 class="card-title mt-1 mb-1">{{ image.name }}</h6>
                         <div class="mt-auto d-flex justify-content-center gap-2">
-                            <button class="btn btn-accent btn-sm" data-bs-toggle="modal"
+                            <button class="btn btn-accent btn-card btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#previewModal{{ image.id }}">
                                 Preview
                             </button>
                             {% if image.type == 'image' %}
-                                <a class="btn btn-xs btn-outline-accent" href="#" data-id="{{ image.id }}"
-                                   data-action="full-size">Full Size</a>
+                                <a class="btn btn-xs btn-card btn-outline-accent" href="#" data-id="{{ image.id }}"
+                                   data-action="full-size">Fullscreen</a>
                             {% elseif image.type == 'video' %}
-                                <a class="btn btn-xs btn-outline-accent" href="#" data-id="{{ image.id }}"
+                                <a class="btn btn-xs btn-card btn-outline-accent" href="#" data-id="{{ image.id }}"
                                    data-action="fullscreen-preview" data-provider="{{ image.provider }}"
-                                   data-external-id="{{ image.externalId }}">Full Size</a>
+                                   data-external-id="{{ image.externalId }}">Fullscreen</a>
                             {% endif %}
                             {% if is_granted('ROLE_ADMIN') %}
-                                <button class="btn btn-xs btn-outline-secondary delete-button"
+                                <button class="btn btn-xs btn-card btn-outline-secondary delete-button"
                                         data-image-id="{{ image.id }}"
                                         data-name="{{ image.name }}">
                                     Delete

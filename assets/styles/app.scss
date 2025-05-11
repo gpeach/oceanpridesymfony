@@ -3,7 +3,15 @@
 // Apply typography defaults, semantic colors, and light-mode rules
 // ─────────────────────────────────────────────────────────────────────────────
 
+
 @import "variables";
+
+// new tailwind
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 
 // ─ Dark Mode (defaults) ──────────────────────────────────────────────────────
 body {
@@ -153,6 +161,11 @@ html[data-bs-theme="light"] .text-white {
     background-color: $palette-primary;
     color: $default-palette-light;
   }
+}
+
+.card-body .btn-card {
+  padding: .25em;
+  font-size: .75em;
 }
 
 .border-primary-dark {
