@@ -1,62 +1,160 @@
+{# {% extends 'base.html.twig' %} #}
+
+{# {% block title %}Fort Lauderdale FL Aerial Video | Home{% endblock %} #}
+
+{# {% block content %} #}
+{#    <section class="bg-dark text-white text-center p-5 rounded mt-5"> #}
+{#        <div class="container"> #}
+{#            <div class="row align-items-center"> #}
+{#                <div class="col-md-6"> #}
+{#                    <h1 class="headline text-start">Welcome to<br>{{ corp_name }}</h1> #}
+{#                    <p class="text-start"> #}
+{#                        Gary Hardin-Peach<br> #}
+{#                        Videographer - Camera Operator<br> #}
+{#                        LICENSED DRONE PILOT<br> #}
+{#                        Video Editor #}
+{#                    </p> #}
+{#                </div> #}
+{#                <div class="col-md-6"> #}
+{#                    <figure> #}
+{#                        <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden"> #}
+{#                            #}{#                            <video controls preload="auto" class="w-100 h-100" style="object-fit: cover;"> #}
+{#                            #}{#                                <source src="/media/image/26" type="video/mp4"> #}
+{#                            #}{#                                Your browser does not support the video tag. #}
+{#                            #}{#                            </video> #}
+{#                            <iframe src="https://player.vimeo.com/video/1079661311?badge=0&autopause=0&player_id=0&app_id=58479&quality=4k" #}
+{#                                    frameborder="0" #}
+{#                                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" #}
+{#                                    style="position:absolute;top:0;left:0;width:100%;height:100%;" #}
+{#                                    title="1541 South Ocean Blvd Restoration Project"></iframe> #}
+{#                        </div> #}
+{#                        <figcaption class="text-center text-white mt-2 fst-italic">Lauderdale By The Sea #}
+{#                            $3.5MM Condo Restoration #}
+{#                        </figcaption> #}
+{#                    </figure> #}
+{#                </div> #}
+{#            </div> #}
+{#        </div> #}
+{#    </section> #}
+
+{#    <section class="bg-dark text-white p-5 rounded"> #}
+{#        <div class="container"> #}
+{#            <div class="row align-items-center"> #}
+{#                <div class="col-md-6 photo"> #}
+{#                    <h2 class="subhead mt-3 text-start">About Us</h2> #}
+{#                    <p class="text-start"> #}
+{#                        <strong>Ocean Pride Media #}
+{#                        </strong> is a creative aerial media company based in South Florida, specializing in #}
+{#                        high-quality drone photography and video production. Founded with a passion for stunning visuals #}
+{#                        and a love for coastal living, we capture breathtaking perspectives that elevate your brand, #}
+{#                        tell your story, and showcase your property from new heights.</p> #}
+
+{#                    <p class="text-start">We're FAA Part 107 certified, fully insured, and committed to delivering #}
+{#                        exceptional results #}
+{#                        with every flight. #}
+{#                    </p> #}
+{#                </div> #}
+{#                <div class="col-md-6"> #}
+{#                    <figure> #}
+{#                        <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden"> #}
+{#                            <video controls preload="auto" class="w-100 h-100" style="object-fit: cover;"> #}
+{#                                <source src="/media/image/22" type="video/mp4"> #}
+{#                                Your browser does not support the video tag. #}
+{#                            </video> #}
+{#                        </div> #}
+{#                        <figcaption class="text-center text-white mt-2 fst-italic">Beautiful Mansions in Las Olas #}
+{#                        </figcaption> #}
+{#                    </figure> #}
+{#                </div> #}
+{#            </div> #}
+{#        </div> #}
+{#    </section> #}
+
+{#    <section class="bg-dark text-white text-center p-5 rounded"> #}
+{#        <h2 class="subhead">for inquiries:</h2> #}
+{#        <p>{{ my_name }}<br>{{ address }}<br>{{ phone }}<br><a href="mailto:{{ email }}">{{ email }}</a></p> #}
+{#    </section> #}
+{# {% endblock %} #}
+
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Fort Lauderdale FL Aerial Video | Home{% endblock %}
 
 {% block content %}
-    <section class="bg-dark text-white text-center p-5 rounded mt-5">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h1 class="headline text-start">Welcome to<br>{{ corp_name }}</h1>
-                    <p class="text-start">
+    <section class="hero-video-only">
+        {% if use_same_video_for_all %}
+            <div class="video-wrapper">
+                <iframe
+                        src="https://player.vimeo.com/video/{{ hero_video_id }}?autoplay=1&quality=1080p&muted=1&loop=1&background=1"
+                        frameborder="0"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowfullscreen
+                        title="Hero Video">
+                </iframe>
+            </div>
+        {% else %}
+            <div class="video-wrapper video-desktop">
+                <iframe
+                        src="https://player.vimeo.com/video/{{ hero_video_desktop_id }}?autoplay=1&muted=1&loop=1&background=1"
+                        frameborder="0"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowfullscreen
+                        title="Hero Video Desktop">
+                </iframe>
+            </div>
+            <div class="video-wrapper video-mobile">
+                <iframe
+                        src="https://player.vimeo.com/video/{{ hero_video_mobile_id }}?autoplay=1&muted=1&loop=1&background=1"
+                        frameborder="0"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowfullscreen
+                        title="Hero Video Mobile">
+                </iframe>
+            </div>
+        {% endif %}
+    </section>
+
+    <div class="container">
+
+        <section class="section bg-secondary text-white text-start mt-3 mt-md-5 p-1 p-md-4">
+{#            <div class="container">#}
+{#                <h1 class="headline">Welcome to<br>{{ corp_name }}</h1>#}
+{#                <p>#}
+{#                    Gary Hardin-Peach<br>#}
+{#                    Videographer - Camera Operator<br>#}
+{#                    LICENSED DRONE PILOT<br>#}
+{#                    Video Editor#}
+{#                </p>#}
+{#            </div>#}
+            <div class="container row align-items-center mx-auto">
+                <div class="col-lg-6">
+                    <h1 class="headline mt-3 mt-md-0">Welcome to<br>{{ corp_name }}</h1>
+                </div>
+                <div class="col-lg-6">
+                    <p>
                         Gary Hardin-Peach<br>
                         Videographer - Camera Operator<br>
                         LICENSED DRONE PILOT<br>
                         Video Editor
                     </p>
                 </div>
-                <div class="col-md-6">
-                    <figure>
-                        <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden">
-                            {#                            <video controls preload="auto" class="w-100 h-100" style="object-fit: cover;"> #}
-                            {#                                <source src="/media/image/26" type="video/mp4"> #}
-                            {#                                Your browser does not support the video tag. #}
-                            {#                            </video> #}
-                            <iframe src="https://player.vimeo.com/video/1079661311?badge=0&autopause=0&player_id=0&app_id=58479&quality=4k"
-                                    frameborder="0"
-                                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-                                    style="position:absolute;top:0;left:0;width:100%;height:100%;"
-                                    title="1541 South Ocean Blvd Restoration Project"></iframe>
-                        </div>
-                        <figcaption class="text-center text-white mt-2 fst-italic">Lauderdale By The Sea
-                            $3.5MM Condo Restoration
-                        </figcaption>
-                    </figure>
-                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="bg-dark text-white p-5 rounded">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6 photo">
-                    <h2 class="subhead mt-3 text-start">About Us</h2>
+        <section class="section bg-secondary text-white">
+            <div class="container row align-items-center mx-auto">
+                <div class="col-lg-6 p-1 p-md-4">
+                    <h2 class="subhead text-start mt-3 mt-md-0">About Us</h2>
                     <p class="text-start">
-                        <strong>Ocean Pride Media
-                        </strong> is a creative aerial media company based in South Florida, specializing in
-                        high-quality drone photography and video production. Founded with a passion for stunning visuals
-                        and a love for coastal living, we capture breathtaking perspectives that elevate your brand,
-                        tell your story, and showcase your property from new heights.</p>
-
-                    <p class="text-start">We're FAA Part 107 certified, fully insured, and committed to delivering
-                        exceptional results
-                        with every flight.
+                        <strong>Ocean Pride Media</strong> is a creative aerial media company based in South Florida...
                     </p>
+                    <p class="text-start">We're FAA Part 107 certified, fully insured, and committed to delivering
+                        exceptional results.</p>
                 </div>
-                <div class="col-md-6">
+                <div class="col-lg-6 p-0 p-lg-4">
                     <figure>
-                        <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden">
+                        <div class="ratio ratio-16x9 overflow-hidden mt-0 mt-lg-3">
                             <video controls preload="auto" class="w-100 h-100" style="object-fit: cover;">
                                 <source src="/media/image/22" type="video/mp4">
                                 Your browser does not support the video tag.
@@ -67,11 +165,11 @@
                     </figure>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="bg-dark text-white text-center p-5 rounded">
-        <h2 class="subhead">for inquiries:</h2>
-        <p>{{ my_name }}<br>{{ address }}<br>{{ phone }}<br><a href="mailto:{{ email }}">{{ email }}</a></p>
-    </section>
+        <section class="section bg-secondary text-white text-center p-1 p-md-4">
+            <h2 class="subhead mt-3">for inquiries:</h2>
+            <p>{{ my_name }}<br>{{ address }}<br>{{ phone }}<br><a href="mailto:{{ email }}">{{ email }}</a></p>
+        </section>
+    </div>
 {% endblock %}

@@ -22,6 +22,10 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
             'address' => '1541 South Ocean Blvd #411, Pompano Beach, FL, USA',
             'my_name' => 'Gary Hardin-Peach',
             'my_first_name' => 'Gary',
+            'use_same_video_for_all' => true,
+            'hero_video_id' => '1079661311', // if using same for both
+            'hero_video_desktop_id' => '987654321',
+            'hero_video_mobile_id' => '456789123',
         ];
     }
 

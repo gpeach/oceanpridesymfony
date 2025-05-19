@@ -204,3 +204,40 @@ html[data-bs-theme="light"] .text-white {
 .ratio .btn:hover {
   background-color: #00adef;
 }
+
+.hero-video-only {
+  margin: 0;
+  padding: 0;
+  background-color: black;
+
+  .video-wrapper {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+  }
+
+  .video-mobile {
+    display: none;
+  }
+
+  .video-desktop {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-video-only .video-desktop {
+    display: none;
+  }
+
+  .hero-video-only .video-mobile {
+    display: block;
+  }
+}
