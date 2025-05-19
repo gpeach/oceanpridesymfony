@@ -3,40 +3,38 @@
 {% block title %}{{ corp_name }} | Upload{% endblock %}
 
 {% block content %}
-    <div class="container allow-nav">
-        <section class="mx-auto mt-5 p-5 rounded" style="max-width:600px;">
-            <h2 class="headline text-center mb-4">Upload to Gallery</h2>
-            <div class="rounded">
-                {{ form_start(form, {attr:{id:'uploadForm', enctype:'multipart/form-data'}}) }}
-                <div class="mb-3">
-                    {{ form_label(form.name) }}
-                    {{ form_widget(form.name, {attr:{class:'form-control'}}) }}
-                </div>
-
-                <div class="mb-3">
-                    {{ form_label(form.file) }}
-                    {{ form_widget(form.file, {attr:{class:'form-control'}}) }}
-                </div>
-
-                {# ← NEW: render URL and description *before* the submit #}
-                <div class="mb-3">
-                    {{ form_label(form.videoUrl) }}
-                    {{ form_widget(form.videoUrl, {attr:{class:'form-control'}}) }}
-                </div>
-
-                <div class="mb-4">
-                    {{ form_label(form.description) }}
-                    {{ form_widget(form.description, {attr:{class:'form-control'}}) }}
-                </div>
-
-                <button type="submit" class="btn btn-accent w-100">Upload</button>
-                {{ form_end(form) }}
+    <section class="mx-auto mt-5 p-5 rounded" style="max-width:600px;">
+        <h2 class="headline text-center mb-4">Upload to Gallery</h2>
+        <div class="rounded">
+            {{ form_start(form, {attr:{id:'uploadForm', enctype:'multipart/form-data'}}) }}
+            <div class="mb-3">
+                {{ form_label(form.name) }}
+                {{ form_widget(form.name, {attr:{class:'form-control'}}) }}
             </div>
-        </section>
 
-        <div class="progress mt-4 d-none" id="uploadProgress" style="height:20px;border-radius:50px;">
-            <div class="progress-bar" role="progressbar" style="width:0%">0%</div>
+            <div class="mb-3">
+                {{ form_label(form.file) }}
+                {{ form_widget(form.file, {attr:{class:'form-control'}}) }}
+            </div>
+
+            {# ← NEW: render URL and description *before* the submit #}
+            <div class="mb-3">
+                {{ form_label(form.videoUrl) }}
+                {{ form_widget(form.videoUrl, {attr:{class:'form-control'}}) }}
+            </div>
+
+            <div class="mb-4">
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description, {attr:{class:'form-control'}}) }}
+            </div>
+
+            <button type="submit" class="btn btn-accent w-100">Upload</button>
+            {{ form_end(form) }}
         </div>
-        <div id="uploadResult" class="alert mt-3 d-none text-center"></div>
+    </section>
+
+    <div class="progress mt-4 d-none" id="uploadProgress" style="height:20px;border-radius:50px;">
+        <div class="progress-bar" role="progressbar" style="width:0%">0%</div>
     </div>
+    <div id="uploadResult" class="alert mt-3 d-none text-center"></div>
 {% endblock %}

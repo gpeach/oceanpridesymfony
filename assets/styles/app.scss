@@ -48,10 +48,6 @@ figcaption {
   font-style: $font-caption-style;
 }
 
-.container.allow-nav {
-  margin-top: 130px;
-}
-
 // ─ Utility Spacing ──────────────────────────────────────────────────────────
 $panel-spacing: 1.5rem;
 
@@ -93,14 +89,6 @@ html[data-bs-theme="light"] .text-white {
 }
 
 // ─ Navbar Links ────────────────────────────────────────────────────────────
-
-#opm-navbar {
-  position: absolute;
-  width: 100%;
-  opacity: .9;
-  top:0;
-  left: 0;
-}
 
 .navbar .nav-link.active {
   color: $default-palette-light;
