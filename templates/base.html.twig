@@ -22,8 +22,12 @@
 {% block body %}{% endblock %}
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ path('app_home') }}">
-            <img src="{{ asset('images/dolphin_60px_72dpi.png') }}" alt="Logo">
+        <a class="navbar-brand d-flex align-items-center" href="{{ path('app_home') }}">
+            <img src="{{ asset('images/dolphin_60px_72dpi.png') }}" alt="Logo" class="navbar-logo me-3">
+            <div class="navbar-text text-center">
+                <h2 class="mb-0 logo_headline">Ocean Pride Media</h2>
+                <p class="mb-0 logo-subhead">Aerial Photography & Videography</p>
+            </div>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#mainNav" aria-controls="mainNav"
@@ -44,11 +48,13 @@
                 </li>
                 {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                     <li class="nav-item">
-                        <a class="nav-link {{ current=='app_login'?'active':'' }}" href="{{ path('app_login') }}">Login</a>
+                        <a class="nav-link {{ current=='app_login'?'active':'' }}"
+                           href="{{ path('app_login') }}">Login</a>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link {{ current=='gallery_upload'?'active':'' }}" href="{{ path('gallery_upload') }}">Upload</a>
+                        <a class="nav-link {{ current=='gallery_upload'?'active':'' }}"
+                           href="{{ path('gallery_upload') }}">Upload</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
@@ -58,8 +64,8 @@
         </div>
     </div>
 </nav>
-{#<div class="container">#}
-    {% block content %}{% endblock %}
-{#</div>#}
+{# <div class="container"> #}
+{% block content %}{% endblock %}
+{# </div> #}
 </body>
 </html>
