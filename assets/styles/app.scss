@@ -90,6 +90,12 @@ html[data-bs-theme="light"] .text-white {
 
 // ─ Navbar Links ────────────────────────────────────────────────────────────
 
+#opm-navbar {
+  position: absolute;
+  width: 100%;
+  opacity: .9;
+}
+
 .navbar .nav-link.active {
   color: $default-palette-light;
   background-color: $palette-accent;
