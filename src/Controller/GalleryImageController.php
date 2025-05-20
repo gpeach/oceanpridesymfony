@@ -25,7 +25,7 @@ class GalleryImageController extends AbstractController
     public function __construct(
         private EntityManagerInterface $em,
         private LoggerInterface $log,
-        private CloudStorageInterface $cloudStorage,
+        private CloudStorageInterface $cloudStorage
     ) {
     }
 
@@ -95,11 +95,11 @@ class GalleryImageController extends AbstractController
                     $this->em->persist($galleryImage);
                     $this->em->flush();
 
-                    $posterPath = Path::canonicalize(
-                        $this->getParameter(
-                            'kernel.project_dir'
-                        ) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . $galleryImage->getPosterImagePath()
-                    );
+//                    $posterPath = Path::canonicalize(
+//                        $this->getParameter(
+//                            'kernel.project_dir'
+//                        ) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . $galleryImage->getPosterImagePath()
+//                    );
                     if (!$galleryImage->getPosterImagePath()) {
                         $posterImagePath = $this->generatePosterImage($galleryImage);
                         $galleryImage->setPosterImagePath($posterImagePath);
@@ -179,8 +179,10 @@ class GalleryImageController extends AbstractController
         );
 
         $qb->where($orX)
+            ->andWhere($qb->expr()->eq('g.type', ':type'))
             ->setParameter('empty', '')
             ->setParameter('driver', $cloudStorageType)
+            ->setParameter('type', 'video')
             ->orderBy('g.id', 'DESC');
 
 //            ->where('g.provider IS NOT NULL')
@@ -222,6 +224,73 @@ class GalleryImageController extends AbstractController
         }
 
         return $this->render('gallery_image/index.html.twig', [
+            'images' => $files,
+        ]);
+    }
+
+
+    #[Route('/gallery/photos', name: 'gallery_photos')]
+    public function photos(): Response
+    {
+        $cloudStorageType = $_ENV['CLOUD_STORAGE_DRIVER'] ?? 's3';
+
+        $qb = $this->em->getRepository(GalleryImage::class)
+            ->createQueryBuilder('g');
+
+        $orX = $qb->expr()->orX(
+            $qb->expr()->andX(
+                $qb->expr()->isNotNull('g.provider'),
+                $qb->expr()->neq('g.provider', ':empty')
+            ),
+            $qb->expr()->eq('g.cloudStorageType', ':driver')
+        );
+
+        $qb->where($orX)
+            ->andWhere($qb->expr()->eq('g.type', ':type'))
+            ->setParameter('empty', '')
+            ->setParameter('driver', $cloudStorageType)
+            ->setParameter('type', 'image')
+            ->orderBy('g.id', 'DESC');
+
+//            ->where('g.provider IS NOT NULL')
+//            ->orWhere('g.cloudStorageType = :type')
+//            ->setParameter('type', $cloudStorageType);   // or whatever ordering you prefer
+
+        $images = $qb->getQuery()->getResult();
+
+        $files = [];
+        foreach ($images as $image) {
+            try {
+                if (!$image->getPosterImagePath() && ($image->getProvider() == null || $image->getProvider() == '')) {
+                    $posterImagePath = $this->generatePosterImage($image);
+                    $image->setPosterImagePath($posterImagePath);
+                    $this->em->persist($image);
+                    $this->em->flush();
+                }
+
+                // if it’s an external video, link directly to that URL; otherwise use our proxy
+                if ($image->getProvider() !== null && $image->getProvider() !== '') {
+                    $mediaUrl = $image->getExternalUrl();
+                } else {
+                    $mediaUrl = $this->generateUrl('media_play', ['id' => $image->getId()]);
+                }
+
+                $files[] = [
+                    'id' => $image->getId(),
+                    'name' => $image->getName(),
+                    'type' => $image->getType(),
+                    'provider' => $image->getProvider(),
+                    'url' => $mediaUrl,
+                    'externalId' => $image->getExternalId(),
+                    'posterUrl' => $image->getPosterImagePath(),
+                    'description' => $image->getDescription(),
+                ];
+            } catch (\Throwable $e) {
+                $this->log('Failed to retrieve poster image for ID ' . $image->getId() . ': ' . $e->getMessage());
+            }
+        }
+
+        return $this->render('gallery_image/photos.html.twig', [
             'images' => $files,
         ]);
     }

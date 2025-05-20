@@ -204,12 +204,14 @@ html[data-bs-theme="light"] .text-white {
 }
 
 .logo-headline {
-  font-size: 1.35rem;
+  font-size: 1.5rem;
+  font-family: $font-headline-family;
   color: #6ea8fe;
 }
 
 .logo-subhead {
   font-size: .8rem;
+  font-family: $font-body-family;
   color: white;
 }
 

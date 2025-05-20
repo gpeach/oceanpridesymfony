@@ -25,7 +25,7 @@
         <a class="navbar-brand d-flex align-items-center" href="{{ path('app_home') }}">
             <img src="{{ asset('images/dolphin_60px_72dpi.png') }}" alt="Logo" class="navbar-logo me-3">
             <div class="navbar-text text-center">
-                <h2 class="mb-0 logo-headline">Ocean Pride Media</h2>
+                <h2 class="mb-0 logo-headline">OCEAN PRIDE MEDIA</h2>
                 <p class="mb-0 logo-subhead">Aerial Videography & Photography</p>
             </div>
         </a>
@@ -45,6 +45,9 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ current=='gallery_index'?'active':'' }}" href="{{ path('gallery_index') }}">Gallery</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ current=='gallery_photos'?'active':'' }}" href="{{ path('gallery_photos') }}">Image Gallery</a>
                 </li>
                 {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                     <li class="nav-item">
