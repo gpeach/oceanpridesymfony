@@ -27,7 +27,7 @@
                                 </div>
                             {% elseif image.provider == 'vimeo' %}
                                 <div class="ratio ratio-16x9">
-                                    <iframe src="https://player.vimeo.com/video/{{ image.externalId }}?autoplay=0&quality=4k&playsinline=0"
+                                    <iframe src="https://player.vimeo.com/video/{{ image.externalId }}?autoplay=0&playsinline=0"
                                             allowfullscreen loading="lazy"></iframe>
                                 </div>
                             {% elseif image.type == 'video' %}
@@ -38,16 +38,7 @@
                                      style="max-height: 100%; max-width: 100%; object-fit: contain;"/>
                                 <button class="btn btn-accent position-absolute top-50 start-50 translate-middle"
                                         data-id="{{ image.id }}"
-                                        {#                                    data-type="video" data-bs-toggle="modal" #}
-                                        {#                                    data-bs-target="#previewModal{{ image.id }}" #}
-
-                                        data-action="play-as-thumb"
-
-
-                                        {#                                    href="#" #}
-                                        {#                                    data-action="fullscreen-preview" data-provider="{{ image.provider }}" #}
-                                        {#                                    data-external-id="{{ image.externalId }}" #}
-                                >
+                                        data-action="play-as-thumb">
                                     <div>▶</div>
                                 </button>
                                 <video id="thumb-video-{{ image.id }}" controls preload="metadata"
@@ -111,7 +102,7 @@
                                     </div>
                                 {% elseif image.provider == 'vimeo' %}
                                     <div class="ratio ratio-16x9">
-                                        <iframe src="https://player.vimeo.com/video/{{ image.externalId }}?autoplay=1&quality=4k"
+                                        <iframe src="https://player.vimeo.com/video/{{ image.externalId }}?autoplay=1"
                                                 allowfullscreen loading="lazy"></iframe>
                                     </div>
                                 {% elseif image.type == 'video' %}
@@ -130,24 +121,6 @@
                 <p class="text-center">No media uploaded yet.</p>
             {% endfor %}
         </div>
-
-        {#    <!-- Fullscreen Modal --> #}
-        {#    <div class="modal fade" id="fullscreenModal" tabindex="-1" aria-labelledby="fullscreenLabel" aria-hidden="true"> #}
-        {#        <div class="modal-dialog modal-fullscreen modal-dialog-centered"> #}
-        {#            <div class="modal-content bg-black text-white"> #}
-        {#                <div class="modal-header"> #}
-        {#                    <h5 class="modal-title" id="fullscreenLabel"></h5> #}
-        {#                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" #}
-        {#                            aria-label="Close"></button> #}
-        {#                </div> #}
-        {#                <div class="modal-body text-center d-flex align-items-center justify-content-center" #}
-        {#                     style="background: black;"> #}
-        {#                    <img id="fullscreenImage" class="img-fluid d-none" alt="Full-size image"/> #}
-        {#                    <video id="fullscreenVideo" class="w-100 h-auto d-none" controls style="max-height: 90vh;"></video> #}
-        {#                </div> #}
-        {#            </div> #}
-        {#        </div> #}
-        {#    </div> #}
 
         <!-- Fullscreen Image Reusable Element | for blowing up gallery cards with images to full screen-->
         <div id="fullscreen-image-container"
