@@ -16,22 +16,22 @@
 {#                    </p> #}
 {#                </div> #}
 {#                <div class="col-md-6"> #}
-{#                    <figure>#}
-{#                        <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden">#}
-{#                                                        <video controls preload="auto" class="w-100 h-100" style="object-fit: cover;">#}
-{#                                                            <source src="/media/image/26" type="video/mp4">#}
-{#                                                            Your browser does not support the video tag.#}
-{#                                                        </video>#}
-{#                            <iframe src="https://player.vimeo.com/video/1079661311?badge=0&autopause=0&player_id=0&app_id=58479&quality=4k"#}
-{#                                    frameborder="0"#}
-{#                                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"#}
-{#                                    style="position:absolute;top:0;left:0;width:100%;height:100%;"#}
-{#                                    title="1541 South Ocean Blvd Restoration Project"></iframe>#}
-{#                        </div>#}
-{#                        <figcaption class="text-center text-white mt-2 fst-italic">Lauderdale By The Sea#}
-{#                            $3.5MM Condo Restoration#}
-{#                        </figcaption>#}
-{#                    </figure>#}
+{#                    <figure> #}
+{#                        <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden"> #}
+{#                                                        <video controls preload="auto" class="w-100 h-100" style="object-fit: cover;"> #}
+{#                                                            <source src="/media/image/26" type="video/mp4"> #}
+{#                                                            Your browser does not support the video tag. #}
+{#                                                        </video> #}
+{#                            <iframe src="https://player.vimeo.com/video/1079661311?badge=0&autopause=0&player_id=0&app_id=58479&quality=4k" #}
+{#                                    frameborder="0" #}
+{#                                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" #}
+{#                                    style="position:absolute;top:0;left:0;width:100%;height:100%;" #}
+{#                                    title="1541 South Ocean Blvd Restoration Project"></iframe> #}
+{#                        </div> #}
+{#                        <figcaption class="text-center text-white mt-2 fst-italic">Lauderdale By The Sea #}
+{#                            $3.5MM Condo Restoration #}
+{#                        </figcaption> #}
+{#                    </figure> #}
 {#                </div> #}
 {#            </div> #}
 {#        </div> #}
@@ -86,7 +86,7 @@
         {% if use_same_video_for_all %}
             <div class="video-wrapper">
                 <iframe
-                        src="https://player.vimeo.com/video/{{ hero_video_id }}?autoplay=1&muted=1&loop=1&background=1"
+                        src="https://player.vimeo.com/video/{{ hero_video_id }}?autoplay=1&muted=1&loop=1&background=1&transparent=0&quality=-4k"
                         frameborder="0"
                         allow="autoplay; fullscreen; picture-in-picture"
                         allowfullscreen
@@ -96,7 +96,7 @@
         {% else %}
             <div class="video-wrapper video-desktop">
                 <iframe
-                        src="https://player.vimeo.com/video/{{ hero_video_desktop_id }}?autoplay=1&muted=1&loop=1&background=1"
+                        src="https://player.vimeo.com/video/{{ hero_video_desktop_id }}?autoplay=1&muted=1&loop=1&background=1&transparent=0&quality=-4k"
                         frameborder="0"
                         allow="autoplay; fullscreen; picture-in-picture"
                         allowfullscreen
@@ -105,7 +105,7 @@
             </div>
             <div class="video-wrapper video-mobile">
                 <iframe
-                        src="https://player.vimeo.com/video/{{ hero_video_mobile_id }}?autoplay=1&muted=1&loop=1&background=1"
+                        src="https://player.vimeo.com/video/{{ hero_video_mobile_id }}?autoplay=1&muted=1&loop=1&background=1&transparent=0&quality=-4k"
                         frameborder="0"
                         allow="autoplay; fullscreen; picture-in-picture"
                         allowfullscreen
@@ -118,15 +118,15 @@
     <div class="container">
 
         <section class="section bg-secondary text-white text-start mt-3 mt-md-5 p-1 p-md-4">
-{#            <div class="container">#}
-{#                <h1 class="headline">Welcome to<br>{{ corp_name }}</h1>#}
-{#                <p>#}
-{#                    Gary Hardin-Peach<br>#}
-{#                    Videographer - Camera Operator<br>#}
-{#                    LICENSED DRONE PILOT<br>#}
-{#                    Video Editor#}
-{#                </p>#}
-{#            </div>#}
+            {#            <div class="container"> #}
+            {#                <h1 class="headline">Welcome to<br>{{ corp_name }}</h1> #}
+            {#                <p> #}
+            {#                    Gary Hardin-Peach<br> #}
+            {#                    Videographer - Camera Operator<br> #}
+            {#                    LICENSED DRONE PILOT<br> #}
+            {#                    Video Editor #}
+            {#                </p> #}
+            {#            </div> #}
             <div class="container row align-items-center mx-auto">
                 <div class="col-lg-6">
                     <h1 class="headline mt-3 mt-md-0">Welcome to<br>{{ corp_name }}</h1>
@@ -171,16 +171,16 @@
                         </figcaption>
                     </figure>
 
-{#                    <figure>#}
-{#                        <div class="ratio ratio-16x9 overflow-hidden mt-0 mt-lg-3">#}
-{#                            <video controls preload="auto" class="w-100 h-100" style="object-fit: cover;">#}
-{#                                <source src="/media/image/22" type="video/mp4">#}
-{#                                Your browser does not support the video tag.#}
-{#                            </video>#}
-{#                        </div>#}
-{#                        <figcaption class="text-center text-white mt-2 fst-italic">Beautiful Mansions in Las Olas#}
-{#                        </figcaption>#}
-{#                    </figure>#}
+                    {#                    <figure> #}
+                    {#                        <div class="ratio ratio-16x9 overflow-hidden mt-0 mt-lg-3"> #}
+                    {#                            <video controls preload="auto" class="w-100 h-100" style="object-fit: cover;"> #}
+                    {#                                <source src="/media/image/22" type="video/mp4"> #}
+                    {#                                Your browser does not support the video tag. #}
+                    {#                            </video> #}
+                    {#                        </div> #}
+                    {#                        <figcaption class="text-center text-white mt-2 fst-italic">Beautiful Mansions in Las Olas #}
+                    {#                        </figcaption> #}
+                    {#                    </figure> #}
                 </div>
             </div>
         </section>

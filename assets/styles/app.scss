@@ -170,9 +170,7 @@ html[data-bs-theme="light"] .text-white {
   border: 2px solid $palette-primary-dark;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-
-//play buttons
+// ─ Play Buttons ─────────────────────────────────────────────────────────
 .ratio .btn {
   z-index: 2;
   font-size: 2rem;
@@ -203,6 +201,7 @@ html[data-bs-theme="light"] .text-white {
   background-color: #00adef;
 }
 
+// ─ Navbar Branding Logo ─────────────────────────────────────────────────────────
 .logo-headline {
   font-size: 1.5rem;
   font-family: $font-headline-family;
@@ -215,6 +214,7 @@ html[data-bs-theme="light"] .text-white {
   color: white;
 }
 
+// ─ Hero Video ─────────────────────────────────────────────────────────
 .hero-video-only {
   margin: 0;
   padding: 0;
@@ -242,12 +242,38 @@ html[data-bs-theme="light"] .text-white {
   }
 }
 
-@media (max-width: 768px) {
-  .hero-video-only .video-desktop {
-    display: none;
+  // ─ Image Galleries ─────────────────────────────────────────────────────────
+  .gallery-page {
+    .card {
+      .poster-image {
+        cursor: pointer;
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+        background: $default-palette-dark;
+      }
+    }
   }
 
-  .hero-video-only .video-mobile {
-    display: block;
+  @media (max-width: 768px) {
+    // ─ Navbar Branding Logo ─────────────────────────────────────────────────────────
+    .logo-headline {
+      font-size: 1.25rem;
+      font-family: $font-headline-family;
+      color: #6ea8fe;
+    }
+
+    .logo-subhead {
+      font-size: .7rem;
+      font-family: $font-body-family;
+      color: white;
+    }
+    // ─ Hero Video ─────────────────────────────────────────────────────────
+    .hero-video-only .video-desktop {
+      display: none;
+    }
+
+    .hero-video-only .video-mobile {
+      display: block;
+    }
   }
-}
