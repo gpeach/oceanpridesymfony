@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ media.name }}{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="text-center my-5">{{ media.name }}</h1>
+
+        <div class="text-center mb-4">
+            {% if media.type == 'image' %}
+                <img src="{{ media.posterUrl }}" alt="{{ media.name }}" class="img-fluid rounded">
+            {% elseif media.provider == 'youtube' %}
+                <div class="ratio ratio-16x9">
+                    <iframe src="https://www.youtube.com/embed/{{ media.externalId }}" allowfullscreen></iframe>
+                </div>
+            {% elseif media.provider == 'vimeo' %}
+                <div class="ratio ratio-16x9">
+                    <iframe src="https://player.vimeo.com/video/{{ media.externalId }}" allowfullscreen></iframe>
+                </div>
+            {% elseif media.type == 'video' %}
+                <video controls preload="metadata" style="max-width: 100%; height: auto;" poster="{{ media.posterUrl }}">
+                    <source src="{{ media.url }}" type="video/mp4">
+                </video>
+            {% endif %}
+        </div>
+
+        <p class="text-center">{{ media.description }}</p>
+    </div>
+{% endblock %}

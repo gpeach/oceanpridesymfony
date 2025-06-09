@@ -502,4 +502,19 @@ class GalleryImageController extends AbstractController
             return $this->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    #[Route('/gallery/item/{id}', name: 'gallery_item', methods: ['GET'])]
+    public function item(int $id): Response
+    {
+        $media = $this->em->getRepository(GalleryImage::class)->find($id);
+
+        if (!$media) {
+            throw $this->createNotFoundException('Media not found');
+        }
+
+        return $this->render('gallery_image/item.html.twig', [
+            'media' => $media,
+        ]);
+    }
+
 }
