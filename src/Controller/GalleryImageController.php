@@ -504,7 +504,7 @@ class GalleryImageController extends AbstractController
     }
 
     #[Route('/gallery/item/{id}', name: 'gallery_item', methods: ['GET'])]
-    public function item(int $id): Response
+    public function galleryItem(int $id): Response
     {
         $media = $this->em->getRepository(GalleryImage::class)->find($id);
 
@@ -516,5 +516,53 @@ class GalleryImageController extends AbstractController
             'media' => $media,
         ]);
     }
+    #[Route('/gallery/sample-reel', name: 'sample_reel')]
+    public function sampleReel(Request $request): Response
+    {
+        $itemId = 68; // use db ID and send them to that detail page
+        return $this->forward('App\\Controller\\GalleryImageController::galleryItem', [
+            'id' => $itemId,
+            'request' => $request,
+        ]);
+    }
 
+    #[Route('/gallery/hype-reel', name: 'hype_reel')]
+    public function hypeReel(Request $request): Response
+    {
+        $itemId = 68; // use db ID and send them to that detail page
+        return $this->forward('App\\Controller\\GalleryImageController::galleryItem', [
+            'id' => $itemId,
+            'request' => $request,
+        ]);
+    }
+
+    #[Route('/gallery/property-reel', name: 'property_reel')]
+    public function propertyReel(Request $request): Response
+    {
+        $itemId = 48; // use db ID and send them to that detail page
+        return $this->forward('App\\Controller\\GalleryImageController::galleryItem', [
+            'id' => $itemId,
+            'request' => $request,
+        ]);
+    }
+
+    #[Route('/gallery/lifestyle-reel', name: 'lifestyle_reel')]
+    public function lifestyleReel(Request $request): Response
+    {
+        $itemId = 48; // use db ID and send them to that detail page
+        return $this->forward('App\\Controller\\GalleryImageController::galleryItem', [
+            'id' => $itemId,
+            'request' => $request,
+        ]);
+    }
+
+    #[Route('/gallery/day-to-night-reel', name: 'day_to_night_reel')]
+    public function dayToNightReel(Request $request): Response
+    {
+        $itemId = 48; // use db ID and send them to that detail page
+        return $this->forward('App\\Controller\\GalleryImageController::galleryItem', [
+            'id' => $itemId,
+            'request' => $request,
+        ]);
+    }
 }
