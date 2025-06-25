@@ -23,6 +23,36 @@ if (fileInput) {
 document.addEventListener('DOMContentLoaded', () => {
     // if (!document.body.classList.contains('gallery-page')) return;
 
+    // Find all elements with a data-url attribute and fetch the corresponding media URL
+    document.querySelectorAll('[data-url]').forEach(el => {
+        const id = el.getAttribute('data-url');
+        if (!id) return;
+
+        fetch(`/media/play/${id}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.url) {
+                    el.src = data.url;
+                    if (el.tagName.toLowerCase() === 'video') {
+                        el.addEventListener('loadeddata', function () {
+                            el.style.visibility = 'visible';
+                        });
+                    } else if (el.tagName.toLowerCase() === 'img') {
+                        el.addEventListener('load', function () {
+                            el.style.visibility = 'visible';
+                        });
+                    }
+                } else {
+                    console.warn(`No URL found in response for ID ${id}`, data);
+                }
+            })
+            .catch(err => {
+                console.error(`Failed to fetch URL for ID ${id}:`, err);
+            });
+    });
+
+
+
     // Handle gallery card thumbnail image and video (hidden right now, using poster images)
     document.querySelectorAll('[data-id]').forEach(card => {
         const id = card.dataset.id;

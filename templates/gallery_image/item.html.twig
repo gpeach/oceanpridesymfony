@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ media.name }}{% endblock %}
+{% block description %}{{ media.name }} - {{ media.description }}{% endblock %}
+
+{% set playUrl = path('media_play', { id: media.id }) %}
 
 {% block content %}
     <div class="container">
@@ -8,7 +11,7 @@
 
         <div class="text-center mb-4">
             {% if media.type == 'image' %}
-                <img src="{{ media.posterUrl }}" alt="{{ media.name }}" class="img-fluid rounded">
+                <img data-url="{{ media.id }}" style="visibility: hidden;" alt="{{ media.name }}" class="img-fluid rounded">
             {% elseif media.provider == 'youtube' %}
                 <div class="ratio ratio-16x9">
                     <iframe src="https://www.youtube.com/embed/{{ media.externalId }}" allowfullscreen></iframe>
@@ -18,9 +21,11 @@
                     <iframe src="https://player.vimeo.com/video/{{ media.externalId }}" allowfullscreen></iframe>
                 </div>
             {% elseif media.type == 'video' %}
-                <video controls preload="metadata" style="max-width: 100%; height: auto;" poster="{{ media.posterUrl }}">
-                    <source src="{{ media.url }}" type="video/mp4">
-                </video>
+{#                <video controls preload="metadata" crossorigin="anonymous" style="max-width: 100%; height: auto;">#}
+{#                    <source src="" data-url="{{ media.id }}" style="display: none;" type="video/mp4">#}
+{#                </video>#}
+                <video data-url="{{ media.id }}" controls preload="metadata"
+                       style="visibility: hidden; max-height: 100%; max-width: 100%; object-fit: contain;"></video>
             {% endif %}
         </div>
 

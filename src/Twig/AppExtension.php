@@ -17,10 +17,10 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
         $this->requestStack = $requestStack;
         $this->globals = [
             'corp_name' => 'Ocean Pride Media',
-            'email' => 'gary@oceanpridemedia.com',
+            'email' => 'info@oceanpridemedia.com',
             'phone' => '(754) 366-0563',
-            'address' => '1541 South Ocean Blvd #411, Pompano Beach, FL, USA',
-            'my_name' => 'Gary Hardin-Peach',
+            'address' => 'Pompano Beach, FL, USA',
+            'my_name' => 'Ocean Pride Media',
             'my_first_name' => 'Gary',
             'use_same_video_for_all' => true,
             'hero_video_id' => '1085770749', // if using same for both
