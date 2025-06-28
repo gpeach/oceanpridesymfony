@@ -369,7 +369,7 @@ class GalleryImageController extends AbstractController
             if (str_starts_with($mimeType, 'video/') && !file_exists($posterFullPath)) {
                 // ffmpeg poster from video
                 $command = sprintf(
-                    '%s -i %s -ss 00:00:01.000 -vframes 1 -vf scale=640:-1 %s &',
+                    '%s -i %s -ss 00:00:01.000 -vframes 1 -vf scale=640:-1,transpose=auto %s &',
                     escapeshellarg($ffmpegPath),
                     escapeshellarg($localVideoPath),
                     escapeshellarg($posterTempPath)
