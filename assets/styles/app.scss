@@ -250,6 +250,7 @@ html[data-bs-theme="light"] .text-white {
         max-height: 100%;
         max-width: 100%;
         object-fit: contain;
+        image-orientation: from-image;
         background: $default-palette-dark;
       }
     }
