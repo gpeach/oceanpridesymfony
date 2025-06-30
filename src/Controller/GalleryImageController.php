@@ -17,6 +17,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Imagick;
+
 
 class GalleryImageController extends AbstractController
 {
@@ -320,7 +322,6 @@ class GalleryImageController extends AbstractController
             ) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'tmp'
         );
 
-
         if (!is_dir($posterDir)) {
             mkdir($posterDir, 0775, true);
         }
@@ -365,11 +366,10 @@ class GalleryImageController extends AbstractController
                 $this->log->info('[UPLOAD DEBUG] $publicRelativePath: ' . $publicRelativePath);
             }
 
-
             if (str_starts_with($mimeType, 'video/') && !file_exists($posterFullPath)) {
                 // ffmpeg poster from video
                 $command = sprintf(
-                    '-noautorotate %s -i %s -ss 00:00:01.000 -vframes 1 -vf scale=640:-1 %s &',
+                    '%s -i %s -ss 00:00:01.000 -vframes 1 -vf scale=640:-1 %s &',
                     escapeshellarg($ffmpegPath),
                     escapeshellarg($localVideoPath),
                     escapeshellarg($posterTempPath)
@@ -377,18 +377,13 @@ class GalleryImageController extends AbstractController
                 exec($command, $output, $returnVar);
             } else {
                 if (!file_exists($posterFullPath)) {
-                    // Resize image input with ffmpeg
-                    $command = sprintf(
-                        '%s -i %s -vf scale=640:-1 %s &',
-                        escapeshellarg($ffmpegPath),
-                        escapeshellarg($localVideoPath),
-                        escapeshellarg($posterTempPath)
-                    );
-                    exec($command, $output, $returnVar);
+                    // Fix rotation issues and generate poster for image files
+                    $this->fixAndResizeImage($localVideoPath, $posterTempPath, 640);
                 }
             }
-            if ($returnVar !== 0 || !file_exists($posterTempPath)) {
-                throw new \RuntimeException("Failed to generate poster image: " . implode("\n", $output));
+
+            if (!file_exists($posterTempPath)) {
+                throw new \RuntimeException("Failed to generate poster image.");
             }
 
             try {
@@ -414,6 +409,7 @@ class GalleryImageController extends AbstractController
             }
         }
     }
+
 
     #[Route('/gallery/s3put', name: 'gallery_s3_put_presign', methods: ['POST'])]
     public function s3PutPresign(Request $request): JsonResponse
@@ -564,5 +560,55 @@ class GalleryImageController extends AbstractController
             'id' => $itemId,
             'request' => $request,
         ]);
+    }
+
+    private function fixAndResizeImage(string $inputPath, string $outputPath, int $width): void
+    {
+        try {
+            $imagick = new \Imagick($inputPath);
+
+            // Fix EXIF orientation if necessary
+            if ($imagick->getImageOrientation() != \Imagick::ORIENTATION_UNDEFINED) {
+                switch ($imagick->getImageOrientation()) {
+                    case \Imagick::ORIENTATION_TOPRIGHT:
+                        $imagick->flopImage(); // Flip horizontally
+                        break;
+                    case \Imagick::ORIENTATION_BOTTOMRIGHT:
+                        $imagick->rotateImage('#000', 180); // Rotate 180 degrees
+                        break;
+                    case \Imagick::ORIENTATION_BOTTOMLEFT:
+                        $imagick->flipImage(); // Flip vertically
+                        break;
+                    case \Imagick::ORIENTATION_LEFTTOP:
+                        $imagick->rotateImage('#000', -90); // Rotate 90° CCW
+                        $imagick->flopImage();
+                        break;
+                    case \Imagick::ORIENTATION_RIGHTTOP:
+                        $imagick->rotateImage('#000', 90); // Rotate 90° CW
+                        break;
+                    case \Imagick::ORIENTATION_RIGHTBOTTOM:
+                        $imagick->rotateImage('#000', 90); // Rotate 90° CW
+                        $imagick->flopImage(); // Flip horizontally
+                        break;
+                    case \Imagick::ORIENTATION_LEFTBOTTOM:
+                        $imagick->rotateImage('#000', -90); // Rotate 90° CCW
+                        break;
+                }
+
+                // Reset orientation to "Top Left" after adjustment
+                $imagick->setImageOrientation(\Imagick::ORIENTATION_TOPLEFT);
+            }
+
+            // Resize image while maintaining aspect ratio
+            $imagick->resizeImage($width, 0, \Imagick::FILTER_LANCZOS, 1);
+
+            // Save the fixed and resized image
+            $imagick->writeImage($outputPath);
+
+            $imagick->clear();
+            $imagick->destroy();
+        } catch (\Throwable $e) {
+            throw new \RuntimeException('Failed to process image with Imagick: ' . $e->getMessage());
+        }
     }
 }
