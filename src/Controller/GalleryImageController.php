@@ -515,7 +515,8 @@ class GalleryImageController extends AbstractController
     #[Route('/gallery/sample-reel', name: 'sample_reel')]
     public function sampleReel(Request $request): Response
     {
-        $itemId = 68; // use db ID and send them to that detail page
+        //$itemId = 68; // use db ID and send them to that detail page - website hero reel
+        $itemId = 48; // use db ID and send them to that detail page - 1541 reel with music
         return $this->forward('App\\Controller\\GalleryImageController::galleryItem', [
             'id' => $itemId,
             'request' => $request,
