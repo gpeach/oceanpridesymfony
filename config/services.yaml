@@ -50,3 +50,9 @@ services:
 
     App\Service\CloudStorageInterface:
         factory: ['@App\Service\CloudStorageFactory', 'getStorage']
+
+    App\Controller\SitemapController:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'
+            $router: '@router'
+        tags: [ 'controller.service_arguments' ]
