@@ -42,11 +42,11 @@ export async function uploadToS3(file, type, onProgress) {
     return { filename: data.filename, storage: 's3' };
 }
 
-export async function saveToDatabase({ name, filename, type, storage }) {
+export async function saveToDatabase({ name, filename, type, storage, description }) {
     const response = await fetch('/gallery/metadata', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, file_path: filename, type, cloud_storage_type: storage })
+        body: JSON.stringify({ name, file_path: filename, type, cloud_storage_type: storage, description })
     });
 
     return response.json();
@@ -80,6 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const nameInput = form.elements['form[name]'];
         // const file = fileInput.files[0];
         const name = nameInput.value;
+        const descriptionInput = form.elements['form[description]'];
+        const description = descriptionInput.value;
         const type = file.type;
 
         if (storageType === 's3') {
@@ -97,7 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     name,
                     filename: uploadInfo.filename,
                     type,
-                    storage: uploadInfo.storage
+                    storage: uploadInfo.storage,
+                    description
                 });
 
                 result.classList.remove('d-none', 'alert-danger');

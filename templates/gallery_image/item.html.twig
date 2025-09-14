@@ -1,11 +1,14 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ media.name }}{% endblock %}
+
 {% block description %}{{ media.name }} - {{ media.description }}{% endblock %}
 
 {% set playUrl = path('media_play', { id: media.id }) %}
 
 {% block content %}
+{#    {{ dump(_context) }}#}
+{#    {{ dump(media) }}#}
     <div class="container">
         <h1 class="text-center my-5">{{ media.name }}</h1>
 

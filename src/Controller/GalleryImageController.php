@@ -84,6 +84,8 @@ class GalleryImageController extends AbstractController
 
                     $galleryImage->setFilePath($filename);
                     $galleryImage->setName($form->get('name')->getData());
+                    $galleryImage->setDescription($form->get('description')->getData());
+
 
                     $mime = $file->getMimeType();
                     if (str_starts_with($mime, 'image/')) {
@@ -443,6 +445,7 @@ class GalleryImageController extends AbstractController
 
         $image = new GalleryImage();
         $image->setName($data['name']);
+        $image->setDescription($data['description']);
         $image->setFilePath($data['file_path']);
         if (str_starts_with($data['type'], 'video/')) {
             $image->setType('video');
